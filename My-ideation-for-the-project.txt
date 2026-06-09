@@ -1,0 +1,149 @@
+## FinSight AI — Project Handoff Summary
+
+### What this project is
+
+An agentic, full-stack AI stock market advisor for Indian retail investors. Built with Python/FastAPI backend, React frontend, and LangGraph as the agent framework. The system runs on **paper trading** — real NSE/BSE market data, virtual money. No real broker integration needed.
+
+**Core problem solved:** Retail investors make emotional, uninformed decisions. FinSight AI automates research, portfolio tracking, risk analysis, and sentiment analysis — and pushes proactive, data-backed alerts without the user needing to ask.
+
+---
+
+### Current stage
+
+System design is 100% finalised. No code has been written yet. 
+
+---
+
+### Two agent tracks
+
+**Track A — Reactive (user-triggered)**
+User asks a question like "should I sell my TATASTEEL?" → FastAPI → LangGraph orchestrator → 4 sub-agents run in parallel (Research, Sentiment, Risk, Portfolio) → LLM synthesises → structured response card (signal, confidence, rationale, risk level).
+
+**Track B — Proactive (always-on monitor)**
+Celery Beat triggers every 15 minutes during NSE market hours (09:15–15:30 IST, Mon–Fri). Fetches all active user portfolios. Runs per-stock health checks (price, RSI, sentiment, volume, P&L vs buy price). If any alert threshold is breached, LLM generates a natural-language actionable insight and pushes it via WebSocket to the user in real time. End-of-day digest emailed at 15:30 IST.
+
+---
+
+### Agent internals
+
+**Framework:** LangGraph (LangChain)
+
+**ReAct loop per sub-agent:**
+Think → Act (call one tool) → Observe (append result to context) → repeat (max 10 iterations) → return answer to orchestrator.
+
+**Available tools:**
+- `fetch_price_data(ticker, period)` → TimescaleDB
+- `get_sentiment_score(ticker)` → PostgreSQL sentiment table
+- `run_ml_model(ticker, model_type)` → XGBoost / LSTM / Prophet
+- `rag_search(query)` → ChromaDB vector search
+- `get_fundamentals(ticker)` → PostgreSQL
+- `get_portfolio_position(user_id, ticker)` → PostgreSQL
+
+---
+
+### Three memory tiers (all scoped per user)
+
+| Tier | Storage | Contents | Lifetime |
+|------|---------|----------|----------|
+| Working | Redis | LangGraph state, conversation history, tool results this session | 2hr TTL |
+| Episodic | PostgreSQL `user_memory_log` | LLM-summarised user profile — risk appetite, preferred sectors, past decisions, alert response patterns | Permanent, loaded at session start |
+| Semantic | ChromaDB | Past agent analysis reports (auto-embedded), NSE filings, sector notes | Permanent, top-5 cosine similarity retrieval |
+
+At prompt time: System prompt + Tier 2 (user profile) + Tier 3 (RAG chunks) + Tier 1 (conversation history) + current task + tool results → LLM context window.
+
+---
+
+### Auth
+
+Google OAuth 2.0 via `authlib`. Flow: React → Google → `/auth/google/callback` → exchange code for profile → upsert user in PostgreSQL → set signed httpOnly session cookie (session stored in Redis, 30-day TTL). No passwords, no JWT, no refresh tokens. One day to build, never touched again.
+
+---
+
+### Paper trade execution flow
+
+User places trade → validate (balance, position size, valid ticker, market hours) → risk check (VaR gate, 30% single-stock cap, 40% sector cap) → fetch fill price from Redis (60s TTL, fallback to yfinance) → simulate fill (0.05% slippage + NSE STT charges) → dual write to `trade_log` (PostgreSQL) and `portfolio` state → WebSocket confirmation to user → signal logged to eval store for backtesting.
+
+---
+
+### Sentiment pipeline
+
+Sources: NewsAPI (every 15 min), Reddit PRAW (r/IndiaInvestments, r/DalalStreet, every 30 min), X cashtag mentions, Moneycontrol + Economic Times RSS.
+
+Flow: Collect → deduplicate + clean + extract ticker mentions → FinBERT scoring (score: −1.0 to +1.0), VADER as fallback → volume-weighted, recency-decayed (4hr half-life), source-credibility-weighted aggregation per ticker → store in PostgreSQL sentiment table → surfaced on dashboard as gauge + sparkline.
+
+Score scale: +0.6→+1.0 = bullish, −0.6→−1.0 = bearish, −0.2→+0.2 = neutral.
+
+---
+
+### Market data (Indian markets, all free)
+
+| Source | Data | Library |
+|--------|------|---------|
+| yfinance | OHLCV — `RELIANCE.NS`, `TCS.NS`, `^NSEI` | `yfinance` |
+| nsetools | Live NSE quotes | `nsetools` |
+| nsepy | Historical, F&O | `nsepy` |
+| Angel One SmartAPI | Real-time ticks (upgrade path) | `smartapi-python` |
+| NewsAPI | Financial headlines | `requests` |
+| Reddit PRAW | r/IndiaInvestments, r/DalalStreet | `praw` |
+| RSS | Moneycontrol, Economic Times | `feedparser` |
+
+NSE market hours (IST): 09:15–15:30, Mon–Fri. Celery Beat polls every 1 min during hours, hourly off-hours. NSE holiday calendar fetched quarterly, stored in PostgreSQL.
+
+---
+
+### Alert trigger matrix (proactive monitor)
+
+| Trigger | Condition | Priority |
+|---------|-----------|----------|
+| Stop-loss breach | price ≤ buy_price × (1 − sl%) | CRITICAL |
+| Target hit | price ≥ buy_price × (1 + tg%) | HIGH |
+| Sentiment crash | score drops >0.4 in 2 hours | HIGH |
+| Sentiment surge | score rises >0.4 in 2 hours | MEDIUM |
+| RSI overbought | RSI > 75 | MEDIUM |
+| RSI oversold | RSI < 30 | MEDIUM |
+| Volume spike | volume > 3× 20-day average | MEDIUM |
+| Concentration risk | single stock > 30% portfolio | LOW |
+| Sector overweight | sector > 40% portfolio | LOW |
+| Earnings alert | NSE results within 3 days | INFO |
+| 52-week high/low | price hits either extreme | INFO |
+
+User can set personal stop-loss % and target % per holding.
+
+---
+
+### Observability (three pillars)
+
+**Pillar 1 — Tracing:** LangSmith. Traces every LLM call, tool call, token count, latency. Replay any agent run step by step.
+
+**Pillar 2 — Metrics:** Prometheus + Grafana (both Docker-native, free). Key metrics: agent P95 latency (<8s), LLM cost per query (<₹0.50), data freshness lag (<90s), Celery queue depth (<20), monitor agent success rate (>99%), Redis cache hit rate (>80%).
+
+**Pillar 3 — Evaluation:** Custom backtesting engine. Every BUY/SELL/HOLD signal logged with timestamp + price. Celery task runs 7 days later, checks outcome, updates signal accuracy %, rolling Sharpe ratio, false alert rate. User thumbs-up/thumbs-down on alerts feeds back into auto-tuning thresholds. After 100 data points per alert type, thresholds adjust automatically.
+
+---
+
+### Full technology stack
+
+| Layer | Technology |
+|-------|-----------|
+| API | FastAPI (Python) |
+| Agent | LangGraph (LangChain) |
+| Task queue | Celery + Redis broker |
+| LLM | GPT-4o / Claude Sonnet |
+| Embedding | text-embedding-3-small |
+| Forecasting | Facebook Prophet |
+| Classification | XGBoost |
+| Deep learning | PyTorch LSTM |
+| Sentiment NLP | FinBERT (VADER fallback) |
+| Vector store | ChromaDB → Pinecone (upgrade) |
+| Auth | Authlib + Google OAuth |
+| Time-series DB | PostgreSQL + TimescaleDB |
+| Relational DB | PostgreSQL |
+| Cache + pub/sub | Redis |
+| Frontend | React + TailwindCSS + Recharts + Zustand |
+| Charts | Recharts + TradingView Lightweight Charts |
+| Real-time | Native WebSocket |
+| Tracing | LangSmith |
+| Metrics | Prometheus + Grafana |
+| Logging | structlog + Grafana Loki |
+| CI/CD | GitHub Actions |
+| Deployment | Docker + Docker Compose |
