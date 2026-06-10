@@ -32,6 +32,53 @@ services:
       - chromadata:/chroma/chroma
     restart: unless-stopped
 
+  backend:
+    build: ./backend
+    container_name: finsight_backend
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8001 --reload
+    env_file: .env
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db
+      - redis
+      - chromadb
+
+  celery_worker:
+    build: ./backend
+    container_name: finsight_worker
+    command: celery -A backend.celery_app worker --loglevel=info --concurrency=4
+    env_file: .env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+
+  celery_beat:
+    build: ./backend
+    container_name: finsight_beat
+    command: celery -A backend.celery_app beat --loglevel=info
+    env_file: .env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+
+  frontend:
+    build: ./frontend
+    container_name: finsight_frontend
+    command: npm run dev -- --host
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+
 volumes:
   pgdata:
   redisdata:

@@ -20,9 +20,18 @@ class MarketDataProvider:
         """
         try:
             stock = yf.Ticker(ticker)
-            data = stock.history(period="1d")
+            
+            # Attempt to use the real-time quote API first
+            if hasattr(stock, 'fast_info') and 'lastPrice' in stock.fast_info:
+                price = float(stock.fast_info['lastPrice'])
+                if price > 0:
+                    return price
+
+            # Fallback to 1m intraday data
+            data = stock.history(period="1d", interval="1m")
             if not data.empty:
                 return float(data['Close'].iloc[-1])
+                
             return None
         except Exception as e:
             logger.error("Failed to fetch latest price", ticker=ticker, error=str(e))

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, DateTime, Integer, Boolean, ForeignKey, Enum
+from sqlalchemy import Column, String, Float, DateTime, Integer, Boolean, ForeignKey, Enum, Text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 import enum
@@ -33,6 +33,7 @@ class User(Base):
     
     portfolios = relationship("Portfolio", back_populates="owner")
     trades = relationship("TradeLog", back_populates="owner")
+    alerts = relationship("AlertLog", back_populates="owner")
 
 class TradeSide(enum.Enum):
     BUY = "BUY"
@@ -86,3 +87,40 @@ class SentimentScore(Base):
     source_count = Column(Integer, default=1)
     confidence = Column(Float, default=1.0)
 
+class AlertLog(Base):
+    __tablename__ = "alert_log"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    ticker = Column(String(50), index=True)
+    alert_type = Column(String(50))
+    message = Column(Text)
+    signal = Column(String(50))
+    price_at_alert = Column(Float)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    owner = relationship("User", back_populates="alerts")
+
+class AlertFeedback(Base):
+    __tablename__ = "alert_feedback"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    alert_id = Column(Integer, ForeignKey("alert_log.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
+    is_positive = Column(Boolean)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class SignalLog(Base):
+    __tablename__ = "signal_log"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    ticker = Column(String(50), index=True)
+    signal = Column(String(50))
+    price_at_signal = Column(Float)
+    rationale = Column(Text)
+    outcome = Column(String(50), nullable=True)
+    outcome_price = Column(Float, nullable=True)
+    outcome_checked_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

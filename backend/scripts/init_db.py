@@ -16,6 +16,15 @@ def init_db():
     # Create all tables (this creates the standard postgres tables)
     Base.metadata.create_all(bind=engine)
     
+    logger.info("Creating additional indexes...")
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("CREATE INDEX IF NOT EXISTS idx_alert_log_user_read ON alert_log(user_id, is_read);"))
+            conn.execute(text("CREATE INDEX IF NOT EXISTS idx_signal_log_created_at ON signal_log(created_at);"))
+            conn.commit()
+    except Exception as e:
+        logger.error("Failed to create indexes", error=str(e))
+    
     logger.info("Converting OHLCV table to TimescaleDB hypertable (if not already converted)...")
     try:
         with engine.connect() as conn:

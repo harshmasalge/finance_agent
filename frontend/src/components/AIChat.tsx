@@ -9,14 +9,36 @@ export default function AIChat() {
   ]);
   const [input, setInput] = useState('');
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
-    setMessages([...messages, { role: 'user', content: input }]);
+    const userMessage = input;
+    const currentMessages = [...messages];
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setInput('');
-    // Simulate AI thinking (Backend integration in Checkpoint 8)
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'ai', content: 'This is a placeholder response. In Checkpoint 8, this will be connected to the LangGraph AI orchestrator!' }]);
-    }, 1000);
+    
+    // Send last 10 messages
+    const history = currentMessages.slice(-10);
+
+    try {
+      const res = await fetch('http://localhost:8001/agent/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          message: userMessage,
+          conversation_history: history
+        })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(prev => [...prev, { role: 'ai', content: data.response }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'ai', content: 'Error: Failed to reach AI backend.' }]);
+      }
+    } catch (err) {
+      setMessages(prev => [...prev, { role: 'ai', content: 'Network error connecting to AI.' }]);
+    }
   };
 
   return (

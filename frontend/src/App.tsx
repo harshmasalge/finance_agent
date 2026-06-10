@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import Dashboard from './components/Dashboard';
 import AIChat from './components/AIChat';
 import Portfolio from './components/Portfolio';
-import { LayoutDashboard, MessageSquare, Briefcase, Settings, LogIn, LogOut } from 'lucide-react';
+import Alerts from './components/Alerts';
+import { LayoutDashboard, MessageSquare, Briefcase, Settings, LogIn, LogOut, Bell } from 'lucide-react';
 
 export interface User {
   id: number;
@@ -28,6 +29,41 @@ function App() {
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);
+
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchUnread = () => {
+      fetch('http://localhost:8001/alerts/unread-count', { credentials: 'include' })
+        .then(res => res.json())
+        .then(data => setUnreadCount(data.count))
+        .catch(console.error);
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
+
+  // Global WebSocket listener for real-time balance updates
+  useEffect(() => {
+    if (!user) return;
+    
+    const ws = new WebSocket(`ws://localhost:8001/ws/${user.id}`);
+    
+    ws.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.event === 'alert' && msg.data.type === 'balance_update') {
+          setUser(prev => prev ? { ...prev, balance: msg.data.balance } : prev);
+        }
+      } catch (err) {
+        console.error("WS parse error", err);
+      }
+    };
+
+    return () => ws.close();
+  }, [user?.id]);
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -122,6 +158,21 @@ function App() {
             isActive={activeTab === 'ai'} 
             onClick={() => setActiveTab('ai')} 
           />
+          <NavItem 
+            icon={
+              <div className="relative">
+                <Bell />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
+              </div>
+            }
+            label="Alerts" 
+            isActive={activeTab === 'alerts'} 
+            onClick={() => setActiveTab('alerts')} 
+          />
         </div>
         <div className="p-4 border-t border-gray-800 space-y-4">
           <div className="flex items-center space-x-3 px-4 py-2">
@@ -145,6 +196,7 @@ function App() {
       <main className="flex-1 overflow-y-auto">
         {activeTab === 'dashboard' && <Dashboard user={user} />}
         {activeTab === 'portfolio' && <Portfolio />}
+        {activeTab === 'alerts' && <Alerts />}
         {activeTab === 'ai' && <AIChat />}
       </main>
     </div>

@@ -1,6 +1,7 @@
 import logging
 import structlog
 import asyncio
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, Response, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -10,6 +11,9 @@ from backend.services.auth import AuthService
 from backend.db.database import get_db
 from backend.db.models import User
 from sqlalchemy.orm import Session
+from backend.routers.portfolio import portfolio_router
+from backend.routers.alerts import alerts_router
+from backend.routers.agent import agent_router
 
 # Configure structlog
 structlog.configure(
@@ -30,11 +34,23 @@ structlog.configure(
 
 logger = structlog.get_logger(__name__)
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Starting up FastAPI and background tasks...")
+    task = asyncio.create_task(redis_listener())
+    yield
+    task.cancel()
+
 app = FastAPI(
     title="FinSight AI API",
     description="Agentic AI Stock Market Advisor",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
+
+app.include_router(portfolio_router)
+app.include_router(alerts_router)
+app.include_router(agent_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -44,10 +60,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event("startup")
-async def startup_event():
-    logger.info("Starting up FastAPI and background tasks...")
-    asyncio.create_task(redis_listener())
+
 
 class HealthResponse(BaseModel):
     status: str
@@ -105,6 +118,11 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
     """
     WebSocket endpoint for real-time updates.
     """
+    session_user_id = AuthService.get_current_user_id(websocket)
+    if str(session_user_id) != user_id:
+        await websocket.close(code=1008, reason="Unauthorized")
+        return
+        
     await manager.connect(websocket, user_id)
     try:
         while True:

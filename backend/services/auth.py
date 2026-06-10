@@ -1,3 +1,4 @@
+import os
 import uuid
 import json
 import structlog
@@ -27,7 +28,7 @@ class AuthService:
             max_age=SESSION_EXPIRY,
             httponly=True,
             samesite="lax",
-            secure=False # Set True in production (HTTPS)
+            secure=os.getenv("ENVIRONMENT", "development") != "development"
         )
         logger.info("Session created", user_id=user_id)
 
