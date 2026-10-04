@@ -1,5 +1,6 @@
 """Synthesis (final answer) and Validator (checker) nodes."""
 import json
+import logging
 import re
 from typing import List
 
@@ -10,6 +11,9 @@ from backend.agent.schemas import FinalAnswer, ValidationVerdict
 from backend.agent.scoring import BUY_THRESHOLD, SELL_THRESHOLD, build_scorecards
 from backend.agent.state import AgentState
 from backend.agent.utils import get_llm, get_structured_llm
+from backend.review.notes import analyst_notes_for
+
+logger = logging.getLogger(__name__)
 
 MAX_ATTEMPTS = 2  # first answer + one revision
 
@@ -39,7 +43,9 @@ Hard rules:
 3. Only discuss Indian NSE/BSE stocks that appear in the evidence. Never mention US or other foreign stocks.
 4. If data is missing (available=false), say so in data_gaps and lower confidence. Missing sentiment is "unknown", never "stable".
 5. The verdict must be consistent with the evidence; mention conflicting signals.
-6. Keep claims short (one sentence each), 2-4 claims per section. Use ₹ for prices."""
+6. Keep claims short (one sentence each), 2-4 claims per section. Use ₹ for prices.
+7. Evidence with ids A1, A2, ... are notes from human analysts who corrected earlier answers about the same stock.
+   Follow them unless fresh tool evidence contradicts them, and cite the A id when you rely on one."""
 
 
 def _general_answer(state: AgentState) -> dict:
@@ -75,6 +81,15 @@ def synthesis_node(state: AgentState) -> dict:
                            "input": {"ticker": card["ticker"]}, "output": card, "created_at": evidence[-1]["created_at"] if evidence else None})
         update = {"scorecards": scorecards, "evidence": new_ev}
         state = {**state, "evidence": (state.get("evidence") or []) + new_ev}
+    if attempts == 1 and intent in ("research", "comparison"):  # once; evidence uses operator.add
+        try:
+            notes = analyst_notes_for(state.get("target_tickers") or [])
+        except Exception as e:  # the learning loop must never break an answer (e.g. review tables missing)
+            logger.warning("analyst_notes_for failed: %s", e)
+            notes = []
+        if notes:
+            update["evidence"] = (update.get("evidence") or []) + notes
+            state = {**state, "evidence": (state.get("evidence") or []) + notes}
     scorecards = scorecards or []
     reports = {k: state.get(k) for k in ("research_output", "sentiment_output", "risk_output") if state.get(k)}
     feedback = state.get("validation_feedback") or []

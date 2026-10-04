@@ -8,6 +8,7 @@ import AnswerView from './advisor/AnswerView';
 import EvidencePanel from './advisor/EvidencePanel';
 import { LiveSteps } from './advisor/AgentSteps';
 import ResizeHandle from './ResizeHandle';
+import ReviewBar from './review/ReviewBar';
 
 const SUGGESTIONS = [
   { icon: Briefcase, title: 'Check my portfolio health', prompt: 'Check the health of my portfolio' },
@@ -238,6 +239,10 @@ export default function Advisor() {
                         onCite={id => openDrawer(m.id, id)}
                         onOpenSources={() => openDrawer(m.id, null)} />
                     ) : <p className="text-[15px] text-fg-2">{m.content}</p>}
+                    {m.payload && (
+                      <ReviewBar messageId={m.id} payload={m.payload}
+                        onPayloadChange={p => setMessages(ms => ms.map(x => (x.id === m.id ? { ...x, payload: p } : x)))} />
+                    )}
                   </div>
                 </div>
               ))}

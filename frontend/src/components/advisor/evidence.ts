@@ -25,6 +25,7 @@ export const TOOL_LABELS: Record<string, string> = {
   get_portfolio_summary: 'Portfolio summary',
   get_position: 'Position lookup',
   compute_signal_scorecard: 'Signal scorecard',
+  analyst_note: 'Analyst note',
 };
 
 export const toolLabel = (e: Evidence) => TOOL_LABELS[e.tool] ?? e.tool.replace(/_/g, ' ');
@@ -40,4 +41,5 @@ export const SOURCE_LABELS: Record<string, string> = {
   get_portfolio_summary: 'Your paper portfolio',
   get_position: 'Your paper portfolio',
   compute_signal_scorecard: 'Rule-based scoring of the tool outputs above',
+  analyst_note: 'FinSight analyst review',
 };
