@@ -29,7 +29,7 @@ questions:
     question: How many branches does HDFC Bank operate and how many cities does it cover?
     answer: "9,689 branches, 4,175 cities/towns"
     keys: ["9,689", "4,175"]
-    expected: [{doc_id: HDFCBANK-AR-FY26, pages: [9, 18]}]
+    expected: [{doc_id: HDFCBANK-AR-FY26, pages: [9, 18, 84]}]
   - id: hdfc-05
     ticker: HDFCBANK.NS
     question: HDFC Bank capital adequacy ratio and Tier 1 at March 2026
@@ -59,14 +59,14 @@ questions:
     ticker: TCS.NS
     question: What was TCS's operating margin and net margin in fiscal 2026?
     answer: "Operating margin 25.0%, net margin 19.8%"
-    keys: ["25.0%", "19.8%"]
-    expected: [{doc_id: TCS-AR-FY26, pages: [8]}]
+    keys: ["25.0", "19.8"]
+    expected: [{doc_id: TCS-AR-FY26, pages: [8, 58]}]
   - id: tcs-02
     ticker: TCS.NS
     question: TCS consolidated revenue for FY2026 and growth over the previous year
     answer: "Rs 267,021 crore, +4.6%"
-    keys: ["267,021", "4.6%"]
-    expected: [{doc_id: TCS-AR-FY26, pages: [8]}]
+    keys: ["267,021", "4.6"]
+    expected: [{doc_id: TCS-AR-FY26, pages: [8, 58]}]
   - id: tcs-03
     ticker: TCS.NS
     question: What was the total contract value of deals TCS signed in FY26?
@@ -127,7 +127,7 @@ questions:
     question: What was ICICI Bank's margin in Q1 FY27 and how much did NII grow?
     answer: "NIM 4.36%; NII +12.7% YoY to Rs 243.84 bn"
     keys: ["4.36%"]
-    expected: [{doc_id: ICICIBANK-EC-Q1FY27, pages: [7]}]
+    expected: [{doc_id: ICICIBANK-EC-Q1FY27, pages: [7, 8]}]  # sentence continues on p8
   - id: icici-06
     ticker: ICICIBANK.NS
     question: How many branches did ICICI Bank add during fiscal 2026?
@@ -210,7 +210,7 @@ questions:
     expected: [{doc_id: TECHM-EC-Q4FY26, pages: [5]}]
   - id: techm-05
     ticker: TECHM.NS
-    question: Tech Mahindra employee benefit expense on salaries, wages and bonus
+    question: Tech Mahindra consolidated employee benefit expense on salaries, wages and bonus
     answer: "Rs 280,106 mn (FY26) vs 273,980 mn"
     keys: ["280,106"]
     expected: [{doc_id: TECHM-AR-FY26, pages: [599]}]

@@ -158,3 +158,17 @@ def test_kb_router(ingested):
 
 def test_clean_table_md_unescapes_cells():
     assert ingest.clean_table_md("|a&lt;br&gt;b|&amp;#45;15,528|") == "|a / b|-15,528|"
+
+
+def test_benchmark_scoring_helpers():
+    from backend.rag import benchmark as b
+    assert b.score_ranks([1, 2, None, 5]) == {"recall@1": 0.25, "recall@5": 0.75, "mrr": round((1 + 0.5 + 0.2) / 4, 3)}
+    q = {"expected": [{"doc_id": "D", "pages": [3, 4]}], "keys": ["1.15", "GNPA"]}
+    assert b.is_relevant({"doc_id": "D", "page": 4, "text": ""}, q)
+    assert not b.is_relevant({"doc_id": "D", "page": 9, "text": "GNPA was 1.15%"}, q)
+    assert b.is_relevant({"doc_id": "D", "page": 9, "text": "GNPA was 1.15%"}, q, lenient=True)
+    md = "|Particulars|FY25|FY26|\n|---|---|---|\n|**Net interest income**|811.65|880.75|"
+    assert b._row_matches(md, "Net interest income", ["811.65", "880.75"])
+    assert not b._row_matches(md, "Net interest income", ["880.75", "811.65"])
+    qs = b.load_questions()
+    assert len(qs) >= 30 and all(q["expected"] and q["keys"] for q in qs)
