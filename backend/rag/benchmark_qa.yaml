@@ -1,0 +1,216 @@
+# Retrieval benchmark for the filings corpus.
+# Ground truth was written by reading the extracted pages of each PDF; `pages` are physical PDF
+# page numbers (1-based, the same numbers the /kb/files/{doc_id}#page=N links use). A hit is
+# relevant when its (doc_id, page) matches any expected location (strict). The lenient score also
+# accepts any page of the same company whose chunk contains every string in `keys`. Questions are phrased the way
+# an analyst would ask, not copied from the passage.
+questions:
+  # ---------------------------------------------------------------- HDFC Bank
+  - id: hdfc-01
+    ticker: HDFCBANK.NS
+    question: What was HDFC Bank's gross NPA ratio at the end of FY26?
+    answer: "1.15% of gross advances"
+    keys: ["1.15"]
+    expected: [{doc_id: HDFCBANK-AR-FY26, pages: [9, 44, 248]}]
+  - id: hdfc-02
+    ticker: HDFCBANK.NS
+    question: How much did HDFC Bank's net profit grow in fiscal 2026?
+    answer: "Up 10.9% to Rs 74,671.3 crore from Rs 67,347.4 crore"
+    keys: ["74,671", "10.9"]
+    expected: [{doc_id: HDFCBANK-AR-FY26, pages: [247, 248, 44]}]
+  - id: hdfc-03
+    ticker: HDFCBANK.NS
+    question: What final dividend per share did the HDFC Bank board recommend for FY26?
+    answer: "Final dividend Rs 13.0 per share; total Rs 15.50 incl. special interim Rs 2.50"
+    keys: ["13.0", "dividend"]
+    expected: [{doc_id: HDFCBANK-AR-FY26, pages: [16]}]
+  - id: hdfc-04
+    ticker: HDFCBANK.NS
+    question: How many branches does HDFC Bank operate and how many cities does it cover?
+    answer: "9,689 branches, 4,175 cities/towns"
+    keys: ["9,689", "4,175"]
+    expected: [{doc_id: HDFCBANK-AR-FY26, pages: [9, 18]}]
+  - id: hdfc-05
+    ticker: HDFCBANK.NS
+    question: HDFC Bank capital adequacy ratio and Tier 1 at March 2026
+    answer: "19.7% (Tier 1 17.7%)"
+    keys: ["19.7", "17.7"]
+    expected: [{doc_id: HDFCBANK-AR-FY26, pages: [9, 248]}]
+  - id: hdfc-06
+    ticker: HDFCBANK.NS
+    question: How did HDFC Bank's core cost-to-income ratio change in Q4 FY26?
+    answer: "Declined from 40.5% to 39.5% on a core basis"
+    keys: ["40.5%", "39.5%"]
+    expected: [{doc_id: HDFCBANK-EC-Q4FY26, pages: [2]}]
+  - id: hdfc-07
+    ticker: HDFCBANK.NS
+    question: What liquidity coverage ratio range does HDFC Bank management want to sustain now that LDR is not the focus?
+    answer: "LCR around 114%, below 115%; discussion of the LCR range"
+    keys: ["LCR", "115%"]
+    expected: [{doc_id: HDFCBANK-EC-Q4FY26, pages: [8]}]
+  - id: hdfc-08
+    ticker: HDFCBANK.NS
+    question: What benefits has the merger with HDFC Limited brought three years on?
+    answer: "Merger synergies section of the MD & CEO letter"
+    keys: ["merger", "HDFC Limited"]
+    expected: [{doc_id: HDFCBANK-AR-FY26, pages: [11]}]
+  # ---------------------------------------------------------------- TCS
+  - id: tcs-01
+    ticker: TCS.NS
+    question: What was TCS's operating margin and net margin in fiscal 2026?
+    answer: "Operating margin 25.0%, net margin 19.8%"
+    keys: ["25.0%", "19.8%"]
+    expected: [{doc_id: TCS-AR-FY26, pages: [8]}]
+  - id: tcs-02
+    ticker: TCS.NS
+    question: TCS consolidated revenue for FY2026 and growth over the previous year
+    answer: "Rs 267,021 crore, +4.6%"
+    keys: ["267,021", "4.6%"]
+    expected: [{doc_id: TCS-AR-FY26, pages: [8]}]
+  - id: tcs-03
+    ticker: TCS.NS
+    question: What was the total contract value of deals TCS signed in FY26?
+    answer: "TCV US$ 40.7 bn (exceeded US$ 40 bn, 5 mega deals)"
+    keys: ["40", "TCV"]
+    expected: [{doc_id: TCS-AR-FY26, pages: [5, 8]}]
+  - id: tcs-04
+    ticker: TCS.NS
+    question: What is TCS's voluntary attrition rate in IT services?
+    answer: "13.7% LTM for FY 2026"
+    keys: ["13.7%", "attrition"]
+    expected: [{doc_id: TCS-AR-FY26, pages: [25, 55]}]
+  - id: tcs-05
+    ticker: TCS.NS
+    question: Total dividend per share paid by TCS for fiscal 2026
+    answer: "Final Rs 31; total Rs 110 per share"
+    keys: ["110", "dividend"]
+    expected: [{doc_id: TCS-AR-FY26, pages: [8]}]
+  - id: tcs-06
+    ticker: TCS.NS
+    question: How large is the TCS workforce and in how many countries?
+    answer: "Over 580,000 consultants across 56 countries"
+    keys: ["580,000", "56 countries"]
+    expected: [{doc_id: TCS-AR-FY26, pages: [5]}]
+  - id: tcs-07
+    ticker: TCS.NS
+    question: How much TCV did TCS book in Q1 FY27 and what mega deal was signed?
+    answer: "TCV $9.5 bn incl. US$ 800 mn mega deal with SKF"
+    keys: ["9.5 billion", "SKF"]
+    expected: [{doc_id: TCS-EC-Q1FY27, pages: [2, 5]}]
+  # ---------------------------------------------------------------- ICICI Bank
+  - id: icici-01
+    ticker: ICICIBANK.NS
+    question: ICICI Bank net NPA ratio March 2026 versus a year earlier
+    answer: "0.33% vs 0.39%"
+    keys: ["0.33%", "0.39%"]
+    expected: [{doc_id: ICICIBANK-AR-FY26, pages: [12]}]
+  - id: icici-02
+    ticker: ICICIBANK.NS
+    question: What was ICICI Bank's net interest margin in fiscal 2026?
+    answer: "4.32% (flat vs fiscal 2025)"
+    keys: ["4.32"]
+    expected: [{doc_id: ICICIBANK-MDA-FY26, pages: [4, 5]}, {doc_id: ICICIBANK-AR-FY26, pages: [6]}]
+  - id: icici-03
+    ticker: ICICIBANK.NS
+    question: What dividend has the ICICI Bank board recommended for FY2026?
+    answer: "Rs 12 per share"
+    keys: ["12 Rupees", "dividend"]
+    expected: [{doc_id: ICICIBANK-EC-Q4FY26, pages: [3]}]
+  - id: icici-04
+    ticker: ICICIBANK.NS
+    question: ICICI Bank CET-1 and total capital adequacy at March 31, 2026
+    answer: "CET-1 16.35%, total CAR 17.18%"
+    keys: ["16.35", "17.18"]
+    expected: [{doc_id: ICICIBANK-EC-Q4FY26, pages: [4]}, {doc_id: ICICIBANK-AR-FY26, pages: [12]}]
+  - id: icici-05
+    ticker: ICICIBANK.NS
+    question: What was ICICI Bank's margin in Q1 FY27 and how much did NII grow?
+    answer: "NIM 4.36%; NII +12.7% YoY to Rs 243.84 bn"
+    keys: ["4.36%"]
+    expected: [{doc_id: ICICIBANK-EC-Q1FY27, pages: [7]}]
+  - id: icici-06
+    ticker: ICICIBANK.NS
+    question: How many branches did ICICI Bank add during fiscal 2026?
+    answer: "528 added; network 7,511"
+    keys: ["528", "7,511"]
+    expected: [{doc_id: ICICIBANK-AR-FY26, pages: [4]}]
+  - id: icici-07
+    ticker: ICICIBANK.NS
+    question: ICICI Bank cost to income ratio and return on average equity fiscal 2026
+    answer: "Cost to income 39.75%, RoAE 15.97%"
+    keys: ["39.75", "15.97"]
+    expected: [{doc_id: ICICIBANK-MDA-FY26, pages: [4]}]
+  # ---------------------------------------------------------------- SBI
+  - id: sbin-01
+    ticker: SBIN.NS
+    question: How did SBI's gross and net NPA ratios move in FY26?
+    answer: "Gross NPA 1.49% (-33 bps), net NPA 0.39% (-8 bps)"
+    keys: ["1.49%", "0.39%"]
+    expected: [{doc_id: SBIN-AR-FY26, pages: [18, 5]}]
+  - id: sbin-02
+    ticker: SBIN.NS
+    question: What domestic net interest margin did SBI report in Q1 FY27?
+    answer: "Domestic NIM resilient at 3%"
+    keys: ["3%", "Net Interest Margin"]
+    expected: [{doc_id: SBIN-EC-Q1FY27, pages: [3]}]
+  - id: sbin-03
+    ticker: SBIN.NS
+    question: What credit growth does SBI expect for the current financial year?
+    answer: "Credit growth 13% to 14%"
+    keys: ["13% to 14%"]
+    expected: [{doc_id: SBIN-EC-Q4FY26, pages: [3]}]
+  - id: sbin-04
+    ticker: SBIN.NS
+    question: SBI quarterly net profit in the June 2026 quarter
+    answer: "Record Rs 21,121 crore"
+    keys: ["21,121"]
+    expected: [{doc_id: SBIN-EC-Q1FY27, pages: [3]}]
+  - id: sbin-05
+    ticker: SBIN.NS
+    question: What was SBI's domestic NIM in Q4 FY26 and its margin guidance?
+    answer: "3.03%; guidance to maintain NIM above 3%"
+    keys: ["3.03%"]
+    expected: [{doc_id: SBIN-EC-Q4FY26, pages: [3]}]
+  - id: sbin-06
+    ticker: SBIN.NS
+    question: SBI capital adequacy ratio at the end of FY26
+    answer: "15.40%, comfortably above regulatory requirement"
+    keys: ["15.40%", "Capital"]
+    expected: [{doc_id: SBIN-AR-FY26, pages: [18]}]
+  - id: sbin-07
+    ticker: SBIN.NS
+    question: Opening balance of amounts under collection account (AUCA) in SBI's accounts
+    answer: "Rs 1,71,433.33 crore (current year)"
+    keys: ["1,71,433.33"]
+    expected: [{doc_id: SBIN-AR-FY26, pages: [243]}]
+  # ---------------------------------------------------------------- Tech Mahindra
+  - id: techm-01
+    ticker: TECHM.NS
+    question: What total dividend did Tech Mahindra declare for FY26?
+    answer: "Rs 51 per share, highest in TechM's history"
+    keys: ["51 per share"]
+    expected: [{doc_id: TECHM-AR-FY26, pages: [19, 22]}]
+  - id: techm-02
+    ticker: TECHM.NS
+    question: How much did Tech Mahindra's EBIT and net profit grow in FY26?
+    answer: "EBIT +39.2% to Rs 7,152 crore; net profit +13.2% to Rs 4,811 crore; Q4 EBIT margin 13.8%"
+    keys: ["7,152", "4,811"]
+    expected: [{doc_id: TECHM-AR-FY26, pages: [19]}]
+  - id: techm-03
+    ticker: TECHM.NS
+    question: What were Tech Mahindra's total deal wins in Q1 FY27?
+    answer: "US$1.078 billion"
+    keys: ["1.078 billion"]
+    expected: [{doc_id: TECHM-EC-Q1FY27, pages: [5]}]
+  - id: techm-04
+    ticker: TECHM.NS
+    question: Tech Mahindra FY27 targets for EBIT margin and growth versus peers
+    answer: "EBIT margin of 15%; organic cc growth above peer average"
+    keys: ["15%", "EBIT margin"]
+    expected: [{doc_id: TECHM-EC-Q4FY26, pages: [5]}]
+  - id: techm-05
+    ticker: TECHM.NS
+    question: Tech Mahindra employee benefit expense on salaries, wages and bonus
+    answer: "Rs 280,106 mn (FY26) vs 273,980 mn"
+    keys: ["280,106"]
+    expected: [{doc_id: TECHM-AR-FY26, pages: [599]}]
