@@ -50,7 +50,6 @@ export default function Evaluation() {
 
   useEffect(() => {
     if (!runId) return;
-    setRun(null);
     api<EvalRun>(`/evals/runs/${encodeURIComponent(runId)}`).then(setRun).catch(e => setError(String(e.message ?? e)));
   }, [runId]);
 
@@ -59,7 +58,7 @@ export default function Evaluation() {
       <PageHeader title="Evaluation"
         subtitle="How we know it works: answer-quality metrics on real agent answers, and a backtest of the signal scorecard"
         actions={runs && runs.length > 0 ? (
-          <Select aria-label="Eval run" value={runId} onChange={e => setRunId(e.target.value)} className="w-[260px]">
+          <Select aria-label="Eval run" value={runId} onChange={e => { setRun(null); setRunId(e.target.value); }} className="w-[260px]">
             {runs.map(r => <option key={r.run_id} value={r.run_id}>{r.run_id} · {r.mode}</option>)}
           </Select>
         ) : undefined} />
