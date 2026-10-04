@@ -1,0 +1,1292 @@
+{
+ "run_id": "replay-fixtures-2026-10-04",
+ "mode": "replay",
+ "created_at": "2026-10-04T10:51:41+00:00",
+ "git_commit": "89593be",
+ "dataset": {
+  "path": "evals/dataset.yaml",
+  "n_cases": 25
+ },
+ "fixtures": "backend/tests/fixtures/answers.json",
+ "judge": false,
+ "summary": {
+  "n_cases": 25,
+  "n_evaluated": 6,
+  "n_not_run": 19,
+  "case_pass_rate": 0.3333,
+  "routing_accuracy": 1.0,
+  "ticker_f1": 1.0,
+  "answer_type_accuracy": 1.0,
+  "schema_validity": 1.0,
+  "claims": 51,
+  "citation_coverage": 1.0,
+  "citation_validity": 1.0,
+  "n_citation_validity": 5,
+  "numbers_checked": 64,
+  "numbers_grounded": 64,
+  "number_grounding": 1.0,
+  "claims_fully_grounded": 1.0,
+  "grounding_false_positive_rate": 0.0078,
+  "grounding_control_numbers": 128,
+  "forbidden_pass_rate": 1.0,
+  "must_include_rate": 0.4,
+  "n_must_include": 5,
+  "verdict_determinism": 1.0,
+  "verdict_matches_stored": 1.0,
+  "n_verdict_matches_stored": 1,
+  "verdict_consistency": 0.3333,
+  "n_verdict_consistency": 3,
+  "rule_checker_pass_rate": 0.6,
+  "n_rule_checker": 5,
+  "llm_validator_pass_rate": 0.2,
+  "n_llm_validator": 5,
+  "llm_validator_revisions": 0.8,
+  "latency_p50_s": 32.35,
+  "latency_p95_s": 40.4,
+  "latency_mean_s": 28.1,
+  "total_tokens_mean": null,
+  "cost_usd_total": null,
+  "judge_faithfulness": null,
+  "n_judged": 0,
+  "intent_confusion": {
+   "research": {
+    "research": 2
+   },
+   "comparison": {
+    "comparison": 1
+   },
+   "portfolio": {
+    "portfolio": 1
+   },
+   "ideas": {
+    "ideas": 1
+   },
+   "direct_answer": {
+    "direct_answer": 1
+   }
+  }
+ },
+ "metric_notes": {
+  "routing_accuracy": "Share of cases whose orchestrator intent (after post-processing) equals the expected intent.",
+  "ticker_f1": "Mean set-F1 of extracted NSE tickers vs expected (both empty counts as 1).",
+  "schema_validity": "Share of answers that parse as the FinalAnswer Pydantic model.",
+  "citation_coverage": "Claims with at least one citation / all claims (pooled over answers).",
+  "citation_validity": "Mean over answers of: cited ids that exist in the evidence / all cited ids.",
+  "number_grounding": "Numbers in claims found (within the claim's own rounding, ignoring sign/₹/commas, % <-> fraction) in the outputs of the evidence the claim cites / all checkable numbers. Window labels like '50-day', 'RSI (14)', dates are not checked. Lexical: derived numbers count as ungrounded.",
+  "grounding_false_positive_rate": "Negative control: every claim number perturbed by +/-10%; share still 'grounded'. Measures how lenient the grounding matcher is.",
+  "verdict_determinism": "Re-running the rule-based scorecard 3x on the recorded evidence gives identical output.",
+  "verdict_consistency": "Answer verdict equals the best re-computed scorecard verdict (only answers with a verdict).",
+  "rule_checker_pass_rate": "The app's deterministic checker (sections, citations exist, no foreign tickers, verdict present) re-run on the final answer.",
+  "llm_validator_pass_rate": "Recorded status of the app's LLM Validation Agent (passed vs warning after the revision budget). Informational - not gating.",
+  "case_pass_rate": "Cases where every applicable gating check passes (routing, tickers, answer type, schema, citations, grounding >= 90%, forbidden content, must_include, verdict consistency, rule checker)."
+ },
+ "cases": [
+  {
+   "id": "research-techm",
+   "question": "how is tech mahindra",
+   "history": [],
+   "status": "evaluated",
+   "passed": false,
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "TECHM.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   },
+   "actual": {
+    "intent": "research",
+    "tickers": [
+     "TECHM.NS"
+    ],
+    "answer_type": "stock_analysis",
+    "verdict": "HOLD",
+    "verdict_ticker": "TECHM.NS",
+    "headline": "Tech Mahindra Limited (TECHM.NS) stock analysis"
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected research, got research",
+     "value": "research",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['TECHM.NS'], got ['TECHM.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected stock_analysis, got stock_analysis",
+     "value": "stock_analysis",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 9 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "11/11 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": false,
+     "detail": "missing ['Why this verdict']",
+     "value": [
+      "Why this verdict"
+     ],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": false,
+     "detail": "answer HOLD vs scorecard TECHM.NS BUY (+36.8) · answer recorded without a scorecard (pre-scorecard pipeline)",
+     "value": false,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 2 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 9,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 11,
+    "numbers_grounded": 11,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 6,
+    "claims_fully_grounded": 6,
+    "forbidden_hits": 0,
+    "must_include_ok": false,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": false,
+    "rule_checker_ok": true,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 31.3,
+    "evidence_items": 8,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": false,
+    "recomputed": [
+     {
+      "ticker": "TECHM.NS",
+      "score": 36.8,
+      "verdict": "BUY"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Company name -> ticker. Recorded before the scorecard existed (verdict chosen by the LLM)."
+  },
+  {
+   "id": "research-policybazaar",
+   "question": "how is policy bazaar looking",
+   "history": [],
+   "status": "evaluated",
+   "passed": true,
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "POLICYBZR.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   },
+   "actual": {
+    "intent": "research",
+    "tickers": [
+     "POLICYBZR.NS"
+    ],
+    "answer_type": "stock_analysis",
+    "verdict": "HOLD",
+    "verdict_ticker": "POLICYBZR.NS",
+    "headline": "POLICYBZR.NS is currently rated as HOLD due to mixed signals from technical indicators and fundamentals."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected research, got research",
+     "value": "research",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['POLICYBZR.NS'], got ['POLICYBZR.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected stock_analysis, got stock_analysis",
+     "value": "stock_analysis",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 24 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "24/24 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": true,
+     "detail": "answer HOLD vs scorecard POLICYBZR.NS HOLD (-11.6)",
+     "value": true,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 1 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 24,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 24,
+    "numbers_grounded": 24,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 16,
+    "claims_fully_grounded": 16,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": true,
+    "verdict_consistent": true,
+    "rule_checker_ok": true,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 42.1,
+    "evidence_items": 9,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": true,
+    "answer_consistent": true,
+    "recomputed": [
+     {
+      "ticker": "POLICYBZR.NS",
+      "score": -11.6,
+      "verdict": "HOLD"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Brand name differs from the listed entity (PB Fintech) and the NSE symbol."
+  },
+  {
+   "id": "research-lt",
+   "question": "should I buy L&T?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Ampersand abbreviation -> LT.NS.",
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "LT.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   }
+  },
+  {
+   "id": "research-sbi",
+   "question": "sbi share price outlook",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Abbreviation -> SBIN.NS (not SBI.NS).",
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "SBIN.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   }
+  },
+  {
+   "id": "research-bajaj-auto",
+   "question": "what do you think about bajaj auto",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Hyphenated NSE symbol; must not be confused with Bajaj Finance / Finserv.",
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "BAJAJ-AUTO.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   }
+  },
+  {
+   "id": "research-tatasteel",
+   "question": "how is tata steel doing",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Tata group has many listed companies; only Tata Steel is meant.",
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "TATASTEEL.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   }
+  },
+  {
+   "id": "research-zomato",
+   "question": "is zomato a buy right now",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Zomato Ltd was renamed Eternal Ltd (NSE ETERNAL) in 2025; ZOMATO.NS is a stale symbol.",
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "ETERNAL.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   }
+  },
+  {
+   "id": "followup-infy",
+   "question": "what about Infosys?",
+   "history": [
+    "how is TCS doing"
+   ],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Follow-up; intent carried over from the previous turn, ticker replaced.",
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "INFY.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   }
+  },
+  {
+   "id": "followup-sentiment-hdfc",
+   "question": "and what is the news sentiment on it?",
+   "history": [
+    "analyse HDFC Bank"
+   ],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Pronoun resolution (\"it\" = HDFC Bank).",
+   "expected": {
+    "expected_intent": "sentiment",
+    "expected_tickers": [
+     "HDFCBANK.NS"
+    ],
+    "expected_answer_type": "sentiment"
+   }
+  },
+  {
+   "id": "followup-compare-icici",
+   "question": "compare it with ICICI Bank",
+   "history": [
+    "how is SBI"
+   ],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Comparison where one side comes from context.",
+   "expected": {
+    "expected_intent": "comparison",
+    "expected_tickers": [
+     "SBIN.NS",
+     "ICICIBANK.NS"
+    ],
+    "expected_answer_type": "comparison"
+   }
+  },
+  {
+   "id": "compare-tcs-infy",
+   "question": "Compare TCS and Infosys",
+   "history": [],
+   "status": "evaluated",
+   "passed": false,
+   "expected": {
+    "expected_intent": "comparison",
+    "expected_tickers": [
+     "TCS.NS",
+     "INFY.NS"
+    ],
+    "expected_answer_type": "comparison"
+   },
+   "actual": {
+    "intent": "comparison",
+    "tickers": [
+     "TCS.NS",
+     "INFY.NS"
+    ],
+    "answer_type": "comparison",
+    "verdict": "HOLD",
+    "verdict_ticker": "TCS.NS",
+    "headline": "TCS shows stronger revenue growth but is currently oversold, while Infosys has a buy signal despite being in a downtrend."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected comparison, got comparison",
+     "value": "comparison",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['TCS.NS', 'INFY.NS'], got ['TCS.NS', 'INFY.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected comparison, got comparison",
+     "value": "comparison",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 12 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "17/17 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": false,
+     "detail": "answer HOLD vs scorecard TCS.NS SELL (-27.9), INFY.NS SELL (-35.2) · answer recorded without a scorecard (pre-scorecard pipeline)",
+     "value": false,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": true,
+     "detail": "recorded status passed",
+     "value": "passed",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 12,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 17,
+    "numbers_grounded": 17,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 9,
+    "claims_fully_grounded": 9,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": false,
+    "rule_checker_ok": true,
+    "validator_status": "passed",
+    "validator_attempts": 1,
+    "latency_s": 33.4,
+    "evidence_items": 15,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 2,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": false,
+    "recomputed": [
+     {
+      "ticker": "TCS.NS",
+      "score": -27.9,
+      "verdict": "SELL"
+     },
+     {
+      "ticker": "INFY.NS",
+      "score": -35.2,
+      "verdict": "SELL"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Two-stock comparison; one section per stock plus head to head."
+  },
+  {
+   "id": "compare-mm-maruti",
+   "question": "M&M vs Maruti, which is better?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Symbol containing '&'.",
+   "expected": {
+    "expected_intent": "comparison",
+    "expected_tickers": [
+     "M&M.NS",
+     "MARUTI.NS"
+    ],
+    "expected_answer_type": "comparison"
+   }
+  },
+  {
+   "id": "compare-three-fmcg",
+   "question": "HUL vs ITC vs Nestle India",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Three-way comparison; HUL -> HINDUNILVR.",
+   "expected": {
+    "expected_intent": "comparison",
+    "expected_tickers": [
+     "HINDUNILVR.NS",
+     "ITC.NS",
+     "NESTLEIND.NS"
+    ],
+    "expected_answer_type": "comparison"
+   }
+  },
+  {
+   "id": "sentiment-reliance",
+   "question": "what is the latest news on Reliance?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "News-only request; no verdict should be given.",
+   "expected": {
+    "expected_intent": "sentiment",
+    "expected_tickers": [
+     "RELIANCE.NS"
+    ],
+    "expected_answer_type": "sentiment"
+   }
+  },
+  {
+   "id": "sentiment-tcs",
+   "question": "what are people saying about TCS",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Colloquial sentiment phrasing.",
+   "expected": {
+    "expected_intent": "sentiment",
+    "expected_tickers": [
+     "TCS.NS"
+    ],
+    "expected_answer_type": "sentiment"
+   }
+  },
+  {
+   "id": "portfolio-health",
+   "question": "check health of my portfolio",
+   "history": [],
+   "status": "evaluated",
+   "passed": false,
+   "expected": {
+    "expected_intent": "portfolio",
+    "expected_tickers": [],
+    "expected_answer_type": "portfolio_health"
+   },
+   "actual": {
+    "intent": "portfolio",
+    "tickers": [],
+    "answer_type": "portfolio_health",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Portfolio Health Overview"
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected portfolio, got portfolio",
+     "value": "portfolio",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected portfolio_health, got portfolio_health",
+     "value": "portfolio_health",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 3 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "4/4 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": false,
+     "detail": "missing ['Suggested actions']",
+     "value": [
+      "Suggested actions"
+     ],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": false,
+     "detail": "The answer needs at least two sections covering the requested format.",
+     "value": 1,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 2 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 3,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 4,
+    "numbers_grounded": 4,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 3,
+    "claims_fully_grounded": 3,
+    "forbidden_hits": 0,
+    "must_include_ok": false,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": false,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 23.8,
+    "evidence_items": 1,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "Portfolio answers must not carry a BUY/SELL/HOLD verdict."
+  },
+  {
+   "id": "portfolio-risk",
+   "question": "how risky is my portfolio right now?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Risk framing of a portfolio question.",
+   "expected": {
+    "expected_intent": "portfolio",
+    "expected_tickers": [],
+    "expected_answer_type": "portfolio_health"
+   }
+  },
+  {
+   "id": "portfolio-pnl",
+   "question": "what's my P&L?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Short form; P&L must not be read as a ticker.",
+   "expected": {
+    "expected_intent": "portfolio",
+    "expected_tickers": [],
+    "expected_answer_type": "portfolio_health"
+   }
+  },
+  {
+   "id": "ideas-add",
+   "question": "what should i add to my portfolio",
+   "history": [],
+   "status": "evaluated",
+   "passed": false,
+   "expected": {
+    "expected_intent": "ideas",
+    "expected_tickers": [],
+    "expected_answer_type": "ideas"
+   },
+   "actual": {
+    "intent": "ideas",
+    "tickers": [],
+    "answer_type": "ideas",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Consider adding Kotak Mahindra Bank, Coal India, and Dr. Reddy's Laboratories to your portfolio."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected ideas, got ideas",
+     "value": "ideas",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected ideas, got ideas",
+     "value": "ideas",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 3 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "8/8 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": false,
+     "detail": "missing ['Caveats']",
+     "value": [
+      "Caveats"
+     ],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": false,
+     "detail": "The answer needs at least two sections covering the requested format.",
+     "value": 1,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 1 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 3,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 8,
+    "numbers_grounded": 8,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 3,
+    "claims_fully_grounded": 3,
+    "forbidden_hits": 0,
+    "must_include_ok": false,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": false,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 35.3,
+    "evidence_items": 5,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "Ideas must come from the screener evidence."
+  },
+  {
+   "id": "ideas-diversify",
+   "question": "suggest a few stocks to diversify into",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Synonym phrasing of ideas.",
+   "expected": {
+    "expected_intent": "ideas",
+    "expected_tickers": [],
+    "expected_answer_type": "ideas"
+   }
+  },
+  {
+   "id": "clarify-buy-it",
+   "question": "should I buy it?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "No stock in the message or context.",
+   "expected": {
+    "expected_intent": "clarify",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   }
+  },
+  {
+   "id": "clarify-good-stock",
+   "question": "is this stock good for the long term?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Stock-specific question naming no stock.",
+   "expected": {
+    "expected_intent": "clarify",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   }
+  },
+  {
+   "id": "direct-hi",
+   "question": "hi",
+   "history": [],
+   "status": "evaluated",
+   "passed": true,
+   "expected": {
+    "expected_intent": "direct_answer",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   },
+   "actual": {
+    "intent": "direct_answer",
+    "tickers": [],
+    "answer_type": "general",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Hello! How can I assist you today with your stock research or portfolio?"
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected direct_answer, got direct_answer",
+     "value": "direct_answer",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected general, got general",
+     "value": "general",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": null,
+     "detail": "no claims",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": null,
+     "detail": "nothing cited",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": null,
+     "detail": "no checkable numbers",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": null,
+     "detail": "n/a",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": null,
+     "detail": "skipped for general answers (same as the app's validator)",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": null,
+     "detail": "recorded status skipped",
+     "value": "skipped",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 0,
+    "citation_coverage": null,
+    "citation_validity": null,
+    "numbers": 0,
+    "numbers_grounded": 0,
+    "grounding_rate": null,
+    "claims_with_numbers": 0,
+    "claims_fully_grounded": 0,
+    "forbidden_hits": 0,
+    "must_include_ok": null,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": null,
+    "validator_status": "skipped",
+    "validator_attempts": 1,
+    "latency_s": 2.7,
+    "evidence_items": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "Greeting; no tools should run."
+  },
+  {
+   "id": "direct-pe",
+   "question": "what is a P/E ratio?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "General finance question, no data needed.",
+   "expected": {
+    "expected_intent": "direct_answer",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   }
+  },
+  {
+   "id": "out-of-scope-apple",
+   "question": "should I buy Apple stock?",
+   "history": [],
+   "status": "not_run",
+   "reason": "no recorded answer for this question (live mode only)",
+   "passed": null,
+   "notes": "Foreign stock - must not be mapped to a ticker or analysed (orchestrator rule \"never output non-Indian tickers\").",
+   "expected": {
+    "expected_intent": "direct_answer",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   }
+  }
+ ]
+}

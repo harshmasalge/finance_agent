@@ -1,0 +1,9677 @@
+{
+ "generated_at": "2026-10-04T10:51:40+00:00",
+ "config": {
+  "horizon_trading_days": 30,
+  "rebalances": 12,
+  "rebalance_rule": "first trading day of each month",
+  "lookback_calendar_days": 365,
+  "min_history_days": 200,
+  "benchmark": "^NSEI",
+  "factors": [
+   "trend",
+   "momentum",
+   "rsi",
+   "returns"
+  ],
+  "thresholds": {
+   "buy": 15,
+   "sell": -15
+  },
+  "hit_rate_definition": "BUY: excess return > 0; SELL: excess return < 0; HOLD: not defined (see pct_outperform)"
+ },
+ "universe": {
+  "name": "NIFTY 50 (current constituents)",
+  "source": "https://www.niftyindices.com/IndexConstituent/ind_nifty50list.csv",
+  "n": 50,
+  "prices_downloaded_at": "2026-10-04T10:37:57+00:00",
+  "survivorship_bias": true
+ },
+ "rebalance_dates": [
+  "2025-09-01",
+  "2025-10-01",
+  "2025-11-03",
+  "2025-12-01",
+  "2026-01-01",
+  "2026-02-02",
+  "2026-03-02",
+  "2026-04-01",
+  "2026-05-04",
+  "2026-06-01",
+  "2026-07-01",
+  "2026-08-03"
+ ],
+ "data_end": "2026-10-01",
+ "n_observations": 579,
+ "n_tickers_scored": 49,
+ "buckets": [
+  {
+   "verdict": "BUY",
+   "count": 258,
+   "hit_rate": 0.5155,
+   "pct_outperform": 0.5155,
+   "mean_excess": 0.518,
+   "median_excess": 0.225,
+   "std_excess": 7.535,
+   "mean_return": -0.365
+  },
+  {
+   "verdict": "HOLD",
+   "count": 101,
+   "hit_rate": null,
+   "pct_outperform": 0.4851,
+   "mean_excess": 0.585,
+   "median_excess": -0.296,
+   "std_excess": 6.862,
+   "mean_return": 0.638
+  },
+  {
+   "verdict": "SELL",
+   "count": 220,
+   "hit_rate": 0.4636,
+   "pct_outperform": 0.5364,
+   "mean_excess": 1.943,
+   "median_excess": 1.003,
+   "std_excess": 8.435,
+   "mean_return": 2.431
+  },
+  {
+   "verdict": "ALL",
+   "count": 579,
+   "hit_rate": null,
+   "pct_outperform": 0.5181,
+   "mean_excess": 1.071,
+   "median_excess": 0.485,
+   "std_excess": 7.798,
+   "mean_return": 0.872
+  }
+ ],
+ "per_date": [
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "index_return": 2.113,
+   "n": 49,
+   "n_buy": 17,
+   "mean_excess_buy": -1.581,
+   "n_hold": 17,
+   "mean_excess_hold": 0.968,
+   "n_sell": 15,
+   "mean_excess_sell": 2.212,
+   "mean_excess_all": 0.464,
+   "ic": -0.2592
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "index_return": 4.74,
+   "n": 49,
+   "n_buy": 18,
+   "mean_excess_buy": -0.252,
+   "n_hold": 12,
+   "mean_excess_hold": -2.56,
+   "n_sell": 19,
+   "mean_excess_sell": 2.808,
+   "mean_excess_all": 0.369,
+   "ic": -0.1657
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "index_return": 0.376,
+   "n": 49,
+   "n_buy": 31,
+   "mean_excess_buy": -0.155,
+   "n_hold": 6,
+   "mean_excess_hold": -4.197,
+   "n_sell": 12,
+   "mean_excess_sell": -2.211,
+   "mean_excess_all": -1.154,
+   "ic": 0.0649
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "index_return": -1.694,
+   "n": 48,
+   "n_buy": 35,
+   "mean_excess_buy": 2.498,
+   "n_hold": 6,
+   "mean_excess_hold": -0.141,
+   "n_sell": 7,
+   "mean_excess_sell": -2.239,
+   "mean_excess_all": 1.477,
+   "ic": 0.102
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "index_return": -1.774,
+   "n": 48,
+   "n_buy": 28,
+   "mean_excess_buy": 2.544,
+   "n_hold": 8,
+   "mean_excess_hold": 2.82,
+   "n_sell": 12,
+   "mean_excess_sell": 1.19,
+   "mean_excess_all": 2.252,
+   "ic": 0.1085
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "index_return": -6.008,
+   "n": 48,
+   "n_buy": 17,
+   "mean_excess_buy": 3.123,
+   "n_hold": 10,
+   "mean_excess_hold": 1.393,
+   "n_sell": 21,
+   "mean_excess_sell": 2.535,
+   "mean_excess_all": 2.505,
+   "ic": 0.1528
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "index_return": -2.014,
+   "n": 48,
+   "n_buy": 17,
+   "mean_excess_buy": 2.347,
+   "n_hold": 6,
+   "mean_excess_hold": -0.518,
+   "n_sell": 25,
+   "mean_excess_sell": 2.08,
+   "mean_excess_all": 1.85,
+   "ic": 0.1185
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "index_return": 4.279,
+   "n": 48,
+   "n_buy": 5,
+   "mean_excess_buy": 7.47,
+   "n_hold": 6,
+   "mean_excess_hold": 0.982,
+   "n_sell": 37,
+   "mean_excess_sell": 3.837,
+   "mean_excess_all": 3.859,
+   "ic": -0.2233
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "index_return": -0.54,
+   "n": 48,
+   "n_buy": 22,
+   "mean_excess_buy": 0.047,
+   "n_hold": 8,
+   "mean_excess_hold": -0.145,
+   "n_sell": 18,
+   "mean_excess_sell": 1.91,
+   "mean_excess_all": 0.714,
+   "ic": -0.0347
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "index_return": 2.863,
+   "n": 48,
+   "n_buy": 15,
+   "mean_excess_buy": -3.805,
+   "n_hold": 5,
+   "mean_excess_hold": -0.714,
+   "n_sell": 28,
+   "mean_excess_sell": 0.859,
+   "mean_excess_all": -0.762,
+   "ic": -0.2953
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "index_return": 1.792,
+   "n": 48,
+   "n_buy": 22,
+   "mean_excess_buy": -1.834,
+   "n_hold": 10,
+   "mean_excess_hold": 5.792,
+   "n_sell": 16,
+   "mean_excess_sell": 2.921,
+   "mean_excess_all": 1.34,
+   "ic": -0.2242
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "index_return": -6.683,
+   "n": 48,
+   "n_buy": 31,
+   "mean_excess_buy": -0.736,
+   "n_hold": 7,
+   "mean_excess_hold": 0.994,
+   "n_sell": 10,
+   "mean_excess_sell": 1.648,
+   "mean_excess_all": 0.013,
+   "ic": -0.1561
+  }
+ ],
+ "spread": {
+  "buy_minus_sell_mean_excess": -1.425,
+  "ci95": [
+   -2.702,
+   -0.021
+  ],
+  "dates_with_both": 12,
+  "dates_buy_beats_sell": 6
+ },
+ "rank_ic": {
+  "mean": -0.0677,
+  "n_dates": 12,
+  "positive_dates": 5
+ },
+ "factor_ic": {
+  "trend": {
+   "mean_ic": -0.0546,
+   "n_dates": 12,
+   "positive_dates": 5
+  },
+  "momentum": {
+   "mean_ic": -0.0715,
+   "n_dates": 12,
+   "positive_dates": 4
+  },
+  "rsi": {
+   "mean_ic": 0.1061,
+   "n_dates": 12,
+   "positive_dates": 10
+  },
+  "returns": {
+   "mean_ic": -0.0968,
+   "n_dates": 12,
+   "positive_dates": 5
+  }
+ },
+ "skipped": [],
+ "excluded": [
+  {
+   "ticker": "TMPV.NS",
+   "date": "2025-09-01",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2025-10-01",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2025-11-03",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2025-12-01",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2025-12-01",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2026-01-01",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2026-01-01",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2026-02-02",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2026-02-02",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2026-03-02",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2026-03-02",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2026-04-01",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2026-04-01",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2026-05-04",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2026-05-04",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2026-06-01",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2026-06-01",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2026-07-01",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2026-07-01",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  },
+  {
+   "ticker": "TMPV.NS",
+   "date": "2026-08-03",
+   "reason": "suspected unadjusted corporate action: -40% on 2025-10-14"
+  },
+  {
+   "ticker": "TRENT.NS",
+   "date": "2026-08-03",
+   "reason": "suspected unadjusted corporate action: -33% on 2026-01-01"
+  }
+ ],
+ "observations": [
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "ADANIENT.NS",
+   "score": -52.5,
+   "verdict": "SELL",
+   "ret": 10.192,
+   "index_ret": 2.113,
+   "excess": 8.078,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.13,
+    "rsi": -0.32,
+    "returns": -0.62
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "ADANIPORTS.NS",
+   "score": -7.4,
+   "verdict": "HOLD",
+   "ret": 7.017,
+   "index_ret": 2.113,
+   "excess": 4.904,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.3,
+    "rsi": -0.06,
+    "returns": -0.57
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "APOLLOHOSP.NS",
+   "score": 27.1,
+   "verdict": "BUY",
+   "ret": 1.141,
+   "index_ret": 2.113,
+   "excess": -0.973,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.34,
+    "rsi": -1.0,
+    "returns": 0.74
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "ASIANPAINT.NS",
+   "score": 50.1,
+   "verdict": "BUY",
+   "ret": -9.809,
+   "index_ret": 2.113,
+   "excess": -11.922,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.06,
+    "rsi": -0.36,
+    "returns": 0.96
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "AXISBANK.NS",
+   "score": -46.8,
+   "verdict": "SELL",
+   "ret": 10.862,
+   "index_ret": 2.113,
+   "excess": 8.748,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.28,
+    "rsi": -0.04,
+    "returns": -0.74
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "BSE.NS",
+   "score": -40.7,
+   "verdict": "SELL",
+   "ret": 12.287,
+   "index_ret": 2.113,
+   "excess": 10.173,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -1.0,
+    "rsi": 0.36,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 53.4,
+   "verdict": "BUY",
+   "ret": 1.511,
+   "index_ret": 2.113,
+   "excess": -0.602,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.99,
+    "rsi": -1.0,
+    "returns": 0.53
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "BAJFINANCE.NS",
+   "score": 4.1,
+   "verdict": "HOLD",
+   "ret": 14.595,
+   "index_ret": 2.113,
+   "excess": 12.481,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.41,
+    "rsi": -0.1,
+    "returns": -0.16
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "BAJAJFINSV.NS",
+   "score": 0.0,
+   "verdict": "HOLD",
+   "ret": 3.905,
+   "index_ret": 2.113,
+   "excess": 1.792,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.37,
+    "rsi": -0.12,
+    "returns": -0.28
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "BEL.NS",
+   "score": -13.8,
+   "verdict": "HOLD",
+   "ret": 7.622,
+   "index_ret": 2.113,
+   "excess": 5.509,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.54,
+    "rsi": 0.23,
+    "returns": -0.22
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "BHARTIARTL.NS",
+   "score": 8.2,
+   "verdict": "HOLD",
+   "ret": 2.42,
+   "index_ret": 2.113,
+   "excess": 0.307,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.37,
+    "rsi": -0.32,
+    "returns": 0.22
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "CIPLA.NS",
+   "score": 46.8,
+   "verdict": "BUY",
+   "ret": -2.199,
+   "index_ret": 2.113,
+   "excess": -4.312,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.63,
+    "rsi": -1.0,
+    "returns": 0.61
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "COALINDIA.NS",
+   "score": -14.2,
+   "verdict": "HOLD",
+   "ret": 0.807,
+   "index_ret": 2.113,
+   "excess": -1.306,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.34,
+    "rsi": -0.11,
+    "returns": -0.18
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "DRREDDY.NS",
+   "score": 37.2,
+   "verdict": "BUY",
+   "ret": -3.328,
+   "index_ret": 2.113,
+   "excess": -5.442,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.61,
+    "rsi": -1.0,
+    "returns": 0.22
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "EICHERMOT.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 9.666,
+   "index_ret": 2.113,
+   "excess": 7.552,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "ETERNAL.NS",
+   "score": 50.5,
+   "verdict": "BUY",
+   "ret": 8.3,
+   "index_ret": 2.113,
+   "excess": 6.186,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.04,
+    "rsi": -0.42,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "GRASIM.NS",
+   "score": 38.8,
+   "verdict": "BUY",
+   "ret": -1.002,
+   "index_ret": 2.113,
+   "excess": -3.116,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.33,
+    "rsi": -0.39,
+    "returns": 0.77
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "HCLTECH.NS",
+   "score": -43.3,
+   "verdict": "SELL",
+   "ret": 1.839,
+   "index_ret": 2.113,
+   "excess": -0.275,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.25,
+    "rsi": 0.04,
+    "returns": -0.62
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "HDFCBANK.NS",
+   "score": -10.4,
+   "verdict": "HOLD",
+   "ret": 2.793,
+   "index_ret": 2.113,
+   "excess": 0.679,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.78,
+    "rsi": 0.48,
+    "returns": -0.02
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "HDFCLIFE.NS",
+   "score": 25.2,
+   "verdict": "BUY",
+   "ret": -4.893,
+   "index_ret": 2.113,
+   "excess": -7.006,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.31,
+    "rsi": -0.36,
+    "returns": 0.15
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "HINDALCO.NS",
+   "score": 68.8,
+   "verdict": "BUY",
+   "ret": 5.628,
+   "index_ret": 2.113,
+   "excess": 3.515,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.77,
+    "rsi": -0.45,
+    "returns": 0.99
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "HINDUNILVR.NS",
+   "score": 64.0,
+   "verdict": "BUY",
+   "ret": -5.556,
+   "index_ret": 2.113,
+   "excess": -7.669,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.69,
+    "rsi": -0.44,
+    "returns": 0.86
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "ICICIBANK.NS",
+   "score": -12.5,
+   "verdict": "HOLD",
+   "ret": -1.906,
+   "index_ret": 2.113,
+   "excess": -4.02,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.53,
+    "rsi": 0.17,
+    "returns": -0.13
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "ITC.NS",
+   "score": -47.2,
+   "verdict": "SELL",
+   "ret": -2.23,
+   "index_ret": 2.113,
+   "excess": -4.343,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.47,
+    "rsi": 0.23,
+    "returns": -0.21
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "INFY.NS",
+   "score": -36.1,
+   "verdict": "SELL",
+   "ret": -0.634,
+   "index_ret": 2.113,
+   "excess": -2.747,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.48,
+    "rsi": -0.38,
+    "returns": -0.23
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "INDIGO.NS",
+   "score": -8.2,
+   "verdict": "HOLD",
+   "ret": 1.57,
+   "index_ret": 2.113,
+   "excess": -0.544,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.86,
+    "rsi": 0.11,
+    "returns": 0.43
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "JSWSTEEL.NS",
+   "score": -1.2,
+   "verdict": "HOLD",
+   "ret": 10.845,
+   "index_ret": 2.113,
+   "excess": 8.732,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.55,
+    "rsi": 0.12,
+    "returns": 0.41
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "JIOFIN.NS",
+   "score": 3.6,
+   "verdict": "HOLD",
+   "ret": -2.691,
+   "index_ret": 2.113,
+   "excess": -4.804,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.64,
+    "rsi": 0.19,
+    "returns": 0.65
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "KOTAKBANK.NS",
+   "score": -38.4,
+   "verdict": "SELL",
+   "ret": 9.306,
+   "index_ret": 2.113,
+   "excess": 7.193,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.23,
+    "rsi": -0.08,
+    "returns": -0.3
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "LT.NS",
+   "score": 24.3,
+   "verdict": "BUY",
+   "ret": 4.055,
+   "index_ret": 2.113,
+   "excess": 1.941,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.4,
+    "rsi": 0.03,
+    "returns": -0.09
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "M&M.NS",
+   "score": 39.4,
+   "verdict": "BUY",
+   "ret": 4.355,
+   "index_ret": 2.113,
+   "excess": 2.242,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.3,
+    "rsi": -0.3,
+    "returns": 0.7
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "MARUTI.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 9.23,
+   "index_ret": 2.113,
+   "excess": 7.116,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "MAXHEALTH.NS",
+   "score": -8.2,
+   "verdict": "HOLD",
+   "ret": -1.668,
+   "index_ret": 2.113,
+   "excess": -3.781,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.77,
+    "rsi": 0.32,
+    "returns": 0.18
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "NTPC.NS",
+   "score": -46.7,
+   "verdict": "SELL",
+   "ret": 2.83,
+   "index_ret": 2.113,
+   "excess": 0.716,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.55,
+    "rsi": 0.14,
+    "returns": -0.04
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "NESTLEIND.NS",
+   "score": 38.8,
+   "verdict": "BUY",
+   "ret": 0.094,
+   "index_ret": 2.113,
+   "excess": -2.02,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.63,
+    "rsi": -0.47,
+    "returns": -0.13
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "ONGC.NS",
+   "score": -29.4,
+   "verdict": "SELL",
+   "ret": 3.04,
+   "index_ret": 2.113,
+   "excess": 0.926,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.49,
+    "rsi": -0.33,
+    "returns": 0.01
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "POWERGRID.NS",
+   "score": -52.1,
+   "verdict": "SELL",
+   "ret": 2.734,
+   "index_ret": 2.113,
+   "excess": 0.62,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.57,
+    "rsi": 0.17,
+    "returns": -0.27
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "RELIANCE.NS",
+   "score": -57.8,
+   "verdict": "SELL",
+   "ret": 1.625,
+   "index_ret": 2.113,
+   "excess": -0.489,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.74,
+    "rsi": 0.06,
+    "returns": -0.26
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "SBILIFE.NS",
+   "score": -9.3,
+   "verdict": "HOLD",
+   "ret": 0.354,
+   "index_ret": 2.113,
+   "excess": -1.76,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.56,
+    "rsi": 0.18,
+    "returns": 0.03
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": -64.3,
+   "verdict": "SELL",
+   "ret": 14.585,
+   "index_ret": 2.113,
+   "excess": 12.472,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.86,
+    "rsi": 0.21,
+    "returns": -0.53
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "SBIN.NS",
+   "score": -13.7,
+   "verdict": "HOLD",
+   "ret": 8.796,
+   "index_ret": 2.113,
+   "excess": 6.682,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.5,
+    "rsi": -0.03,
+    "returns": -0.06
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "SUNPHARMA.NS",
+   "score": -62.7,
+   "verdict": "SELL",
+   "ret": 5.827,
+   "index_ret": 2.113,
+   "excess": 3.714,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.85,
+    "rsi": 0.14,
+    "returns": -0.42
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "TCS.NS",
+   "score": -42.3,
+   "verdict": "SELL",
+   "ret": -4.893,
+   "index_ret": 2.113,
+   "excess": -7.007,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.47,
+    "rsi": -0.25,
+    "returns": -0.58
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "TATACONSUM.NS",
+   "score": 0.1,
+   "verdict": "HOLD",
+   "ret": 4.016,
+   "index_ret": 2.113,
+   "excess": 1.903,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.43,
+    "rsi": -0.21,
+    "returns": -0.27
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "TATASTEEL.NS",
+   "score": -10.6,
+   "verdict": "HOLD",
+   "ret": 9.182,
+   "index_ret": 2.113,
+   "excess": 7.069,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.54,
+    "rsi": 0.08,
+    "returns": 0.03
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "TECHM.NS",
+   "score": -29.4,
+   "verdict": "SELL",
+   "ret": -2.491,
+   "index_ret": 2.113,
+   "excess": -4.604,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.42,
+    "rsi": -0.13,
+    "returns": -0.07
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "TITAN.NS",
+   "score": 37.2,
+   "verdict": "BUY",
+   "ret": -2.244,
+   "index_ret": 2.113,
+   "excess": -4.357,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.63,
+    "rsi": -1.0,
+    "returns": 0.2
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "TRENT.NS",
+   "score": 6.0,
+   "verdict": "HOLD",
+   "ret": -15.281,
+   "index_ret": 2.113,
+   "excess": -17.394,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.59,
+    "rsi": -0.18,
+    "returns": -0.2
+   }
+  },
+  {
+   "date": "2025-09-01",
+   "exit": "2025-10-14",
+   "ticker": "ULTRACEMCO.NS",
+   "score": 65.8,
+   "verdict": "BUY",
+   "ret": -5.894,
+   "index_ret": 2.113,
+   "excess": -8.008,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.67,
+    "rsi": -0.5,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "ADANIENT.NS",
+   "score": 47.5,
+   "verdict": "BUY",
+   "ret": -5.041,
+   "index_ret": 4.74,
+   "excess": -9.781,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.94,
+    "rsi": -0.43,
+    "returns": -0.1
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "ADANIPORTS.NS",
+   "score": 24.5,
+   "verdict": "BUY",
+   "ret": 5.968,
+   "index_ret": 4.74,
+   "excess": 1.228,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.18,
+    "rsi": -0.24,
+    "returns": -0.1
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "APOLLOHOSP.NS",
+   "score": 0.7,
+   "verdict": "HOLD",
+   "ret": 0.625,
+   "index_ret": 4.74,
+   "excess": -4.115,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.73,
+    "rsi": 1.0,
+    "returns": 0.01
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "ASIANPAINT.NS",
+   "score": -44.7,
+   "verdict": "SELL",
+   "ret": 23.636,
+   "index_ret": 4.74,
+   "excess": 18.897,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.92,
+    "rsi": 1.0,
+    "returns": -0.23
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "AXISBANK.NS",
+   "score": 33.9,
+   "verdict": "BUY",
+   "ret": 7.771,
+   "index_ret": 4.74,
+   "excess": 3.031,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.77,
+    "rsi": -1.0,
+    "returns": -0.08
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "BSE.NS",
+   "score": -73.9,
+   "verdict": "SELL",
+   "ret": 35.097,
+   "index_ret": 4.74,
+   "excess": 30.357,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.82,
+    "rsi": 0.24,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": -29.4,
+   "verdict": "SELL",
+   "ret": 3.698,
+   "index_ret": 4.74,
+   "excess": -1.042,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.72,
+    "rsi": 1.0,
+    "returns": 0.22
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "BAJFINANCE.NS",
+   "score": 36.5,
+   "verdict": "BUY",
+   "ret": 3.959,
+   "index_ret": 4.74,
+   "excess": -0.781,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.32,
+    "rsi": -0.13,
+    "returns": 0.47
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "BAJAJFINSV.NS",
+   "score": -9.2,
+   "verdict": "HOLD",
+   "ret": 3.617,
+   "index_ret": 4.74,
+   "excess": -1.122,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.52,
+    "rsi": 0.17,
+    "returns": -0.0
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "BEL.NS",
+   "score": 37.8,
+   "verdict": "BUY",
+   "ret": 4.44,
+   "index_ret": 4.74,
+   "excess": -0.299,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.69,
+    "rsi": -0.38,
+    "returns": -0.3
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "BHARTIARTL.NS",
+   "score": -21.7,
+   "verdict": "SELL",
+   "ret": 13.097,
+   "index_ret": 4.74,
+   "excess": 8.357,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.68,
+    "rsi": 0.33,
+    "returns": -0.49
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "CIPLA.NS",
+   "score": -41.9,
+   "verdict": "SELL",
+   "ret": 1.494,
+   "index_ret": 4.74,
+   "excess": -3.246,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.57,
+    "rsi": 0.29,
+    "returns": 0.07
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "COALINDIA.NS",
+   "score": -0.8,
+   "verdict": "HOLD",
+   "ret": 2.538,
+   "index_ret": 4.74,
+   "excess": -2.202,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.44,
+    "rsi": 0.25,
+    "returns": 0.22
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "DRREDDY.NS",
+   "score": -46.5,
+   "verdict": "SELL",
+   "ret": -0.024,
+   "index_ret": 4.74,
+   "excess": -4.764,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.67,
+    "rsi": 0.39,
+    "returns": -0.1
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "EICHERMOT.NS",
+   "score": 49.8,
+   "verdict": "BUY",
+   "ret": -3.169,
+   "index_ret": 4.74,
+   "excess": -7.908,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.04,
+    "rsi": -0.46,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "ETERNAL.NS",
+   "score": 50.5,
+   "verdict": "BUY",
+   "ret": -5.912,
+   "index_ret": 4.74,
+   "excess": -10.651,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.34,
+    "rsi": -0.02,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "GRASIM.NS",
+   "score": 23.1,
+   "verdict": "BUY",
+   "ret": 0.022,
+   "index_ret": 4.74,
+   "excess": -4.718,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.43,
+    "rsi": 0.04,
+    "returns": -0.12
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "HCLTECH.NS",
+   "score": -59.5,
+   "verdict": "SELL",
+   "ret": 16.533,
+   "index_ret": 4.74,
+   "excess": 11.793,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.78,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "HDFCBANK.NS",
+   "score": 7.5,
+   "verdict": "HOLD",
+   "ret": 3.243,
+   "index_ret": 4.74,
+   "excess": -1.497,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.45,
+    "rsi": 0.05,
+    "returns": -0.17
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "HDFCLIFE.NS",
+   "score": -13.9,
+   "verdict": "HOLD",
+   "ret": 0.818,
+   "index_ret": 4.74,
+   "excess": -3.922,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.49,
+    "rsi": 0.16,
+    "returns": -0.22
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "HINDALCO.NS",
+   "score": 43.4,
+   "verdict": "BUY",
+   "ret": 5.379,
+   "index_ret": 4.74,
+   "excess": 0.639,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.05,
+    "rsi": -0.41,
+    "returns": 0.7
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "HINDUNILVR.NS",
+   "score": 10.4,
+   "verdict": "HOLD",
+   "ret": -3.633,
+   "index_ret": 4.74,
+   "excess": -8.373,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.51,
+    "rsi": 0.39,
+    "returns": 0.66
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "ICICIBANK.NS",
+   "score": -12.6,
+   "verdict": "HOLD",
+   "ret": 0.51,
+   "index_ret": 4.74,
+   "excess": -4.229,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.55,
+    "rsi": 0.3,
+    "returns": -0.21
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "ITC.NS",
+   "score": -42.8,
+   "verdict": "SELL",
+   "ret": 0.37,
+   "index_ret": 4.74,
+   "excess": -4.37,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.44,
+    "rsi": 0.32,
+    "returns": -0.12
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "INFY.NS",
+   "score": -59.5,
+   "verdict": "SELL",
+   "ret": 5.871,
+   "index_ret": 4.74,
+   "excess": 1.131,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.7,
+    "rsi": 0.47,
+    "returns": -0.68
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "INDIGO.NS",
+   "score": -20.9,
+   "verdict": "SELL",
+   "ret": 4.763,
+   "index_ret": 4.74,
+   "excess": 0.023,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.59,
+    "rsi": 0.11,
+    "returns": -0.38
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "JSWSTEEL.NS",
+   "score": 56.8,
+   "verdict": "BUY",
+   "ret": 2.565,
+   "index_ret": 4.74,
+   "excess": -2.174,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.72,
+    "rsi": -0.49,
+    "returns": 0.56
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "JIOFIN.NS",
+   "score": -22.3,
+   "verdict": "SELL",
+   "ret": 3.983,
+   "index_ret": 4.74,
+   "excess": -0.757,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.68,
+    "rsi": 0.35,
+    "returns": -0.53
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "KOTAKBANK.NS",
+   "score": 37.3,
+   "verdict": "BUY",
+   "ret": 1.919,
+   "index_ret": 4.74,
+   "excess": -2.82,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.72,
+    "rsi": -0.42,
+    "returns": -0.32
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "LT.NS",
+   "score": 43.2,
+   "verdict": "BUY",
+   "ret": 9.738,
+   "index_ret": 4.74,
+   "excess": 4.998,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.49,
+    "rsi": -0.39,
+    "returns": 0.14
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "M&M.NS",
+   "score": 44.8,
+   "verdict": "BUY",
+   "ret": 7.839,
+   "index_ret": 4.74,
+   "excess": 3.099,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.51,
+    "rsi": 0.3,
+    "returns": 0.69
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "MARUTI.NS",
+   "score": 38.4,
+   "verdict": "BUY",
+   "ret": -0.545,
+   "index_ret": 4.74,
+   "excess": -5.285,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.12,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "MAXHEALTH.NS",
+   "score": -57.2,
+   "verdict": "SELL",
+   "ret": 0.755,
+   "index_ret": 4.74,
+   "excess": -3.985,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.8,
+    "rsi": 1.0,
+    "returns": -0.88
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "NTPC.NS",
+   "score": 10.2,
+   "verdict": "HOLD",
+   "ret": -2.13,
+   "index_ret": 4.74,
+   "excess": -6.869,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.51,
+    "rsi": -0.37,
+    "returns": 0.2
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "NESTLEIND.NS",
+   "score": -32.9,
+   "verdict": "SELL",
+   "ret": 8.908,
+   "index_ret": 4.74,
+   "excess": 4.168,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.52,
+    "rsi": 1.0,
+    "returns": -0.13
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "ONGC.NS",
+   "score": 0.5,
+   "verdict": "HOLD",
+   "ret": 4.562,
+   "index_ret": 4.74,
+   "excess": -0.177,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.68,
+    "rsi": -1.0,
+    "returns": 0.09
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "POWERGRID.NS",
+   "score": -51.1,
+   "verdict": "SELL",
+   "ret": -0.89,
+   "index_ret": 4.74,
+   "excess": -5.63,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.57,
+    "rsi": 0.25,
+    "returns": -0.29
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "RELIANCE.NS",
+   "score": -59.2,
+   "verdict": "SELL",
+   "ret": 10.93,
+   "index_ret": 4.74,
+   "excess": 6.19,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.53,
+    "rsi": 0.19,
+    "returns": -0.63
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "SBILIFE.NS",
+   "score": -14.4,
+   "verdict": "HOLD",
+   "ret": 10.821,
+   "index_ret": 4.74,
+   "excess": 6.082,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.48,
+    "rsi": 0.09,
+    "returns": -0.2
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": 47.0,
+   "verdict": "BUY",
+   "ret": 26.851,
+   "index_ret": 4.74,
+   "excess": 22.112,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.98,
+    "rsi": -0.31,
+    "returns": -0.25
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "SBIN.NS",
+   "score": 51.4,
+   "verdict": "BUY",
+   "ret": 12.643,
+   "index_ret": 4.74,
+   "excess": 7.904,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.63,
+    "rsi": -0.49,
+    "returns": 0.42
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "SUNPHARMA.NS",
+   "score": 6.6,
+   "verdict": "HOLD",
+   "ret": 7.805,
+   "index_ret": 4.74,
+   "excess": 3.065,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.55,
+    "rsi": -0.17,
+    "returns": -0.14
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "TCS.NS",
+   "score": -60.2,
+   "verdict": "SELL",
+   "ret": 6.848,
+   "index_ret": 4.74,
+   "excess": 2.109,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.84,
+    "rsi": 1.0,
+    "returns": -0.97
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "TATACONSUM.NS",
+   "score": 52.1,
+   "verdict": "BUY",
+   "ret": 2.979,
+   "index_ret": 4.74,
+   "excess": -1.761,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.7,
+    "rsi": -0.38,
+    "returns": 0.3
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "TATASTEEL.NS",
+   "score": 28.4,
+   "verdict": "BUY",
+   "ret": 3.379,
+   "index_ret": 4.74,
+   "excess": -1.361,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.47,
+    "rsi": 0.14,
+    "returns": 0.07
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "TECHM.NS",
+   "score": -59.8,
+   "verdict": "SELL",
+   "ret": 3.673,
+   "index_ret": 4.74,
+   "excess": -1.066,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.85,
+    "rsi": 1.0,
+    "returns": -0.94
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "TITAN.NS",
+   "score": -53.5,
+   "verdict": "SELL",
+   "ret": 13.505,
+   "index_ret": 4.74,
+   "excess": 8.766,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.62,
+    "rsi": 0.49,
+    "returns": -0.52
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "TRENT.NS",
+   "score": -69.4,
+   "verdict": "SELL",
+   "ret": -8.845,
+   "index_ret": 4.74,
+   "excess": -13.585,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.8,
+    "rsi": 0.47,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2025-10-01",
+   "exit": "2025-11-17",
+   "ticker": "ULTRACEMCO.NS",
+   "score": -14.8,
+   "verdict": "HOLD",
+   "ret": -2.621,
+   "index_ret": 4.74,
+   "excess": -7.361,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.66,
+    "rsi": 0.23,
+    "returns": -0.14
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "ADANIENT.NS",
+   "score": -41.9,
+   "verdict": "SELL",
+   "ret": -8.881,
+   "index_ret": 0.376,
+   "excess": -9.257,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.62,
+    "rsi": 0.32,
+    "returns": 0.1
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "ADANIPORTS.NS",
+   "score": 34.8,
+   "verdict": "BUY",
+   "ret": 3.759,
+   "index_ret": 0.376,
+   "excess": 3.383,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.34,
+    "rsi": -0.04,
+    "returns": 0.35
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "APOLLOHOSP.NS",
+   "score": 30.2,
+   "verdict": "BUY",
+   "ret": -9.879,
+   "index_ret": 0.376,
+   "excess": -10.255,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.36,
+    "rsi": -0.21,
+    "returns": 0.3
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "ASIANPAINT.NS",
+   "score": 39.3,
+   "verdict": "BUY",
+   "ret": 11.267,
+   "index_ret": 0.376,
+   "excess": 10.892,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.6,
+    "rsi": -1.0,
+    "returns": 0.32
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "AXISBANK.NS",
+   "score": 48.3,
+   "verdict": "BUY",
+   "ret": -1.143,
+   "index_ret": 0.376,
+   "excess": -1.518,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.2,
+    "rsi": -0.33,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "BSE.NS",
+   "score": 62.5,
+   "verdict": "BUY",
+   "ret": 2.26,
+   "index_ret": 0.376,
+   "excess": 1.885,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -0.23,
+    "returns": 0.33
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 46.5,
+   "verdict": "BUY",
+   "ret": 0.958,
+   "index_ret": 0.376,
+   "excess": 0.583,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.48,
+    "rsi": 0.26,
+    "returns": 0.76
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "BAJFINANCE.NS",
+   "score": 46.9,
+   "verdict": "BUY",
+   "ret": -4.285,
+   "index_ret": 0.376,
+   "excess": -4.661,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.46,
+    "rsi": -0.06,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "BAJAJFINSV.NS",
+   "score": 30.1,
+   "verdict": "BUY",
+   "ret": -2.229,
+   "index_ret": 0.376,
+   "excess": -2.605,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.48,
+    "rsi": -0.27,
+    "returns": 0.46
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "BEL.NS",
+   "score": 63.1,
+   "verdict": "BUY",
+   "ret": -8.122,
+   "index_ret": 0.376,
+   "excess": -8.498,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.67,
+    "rsi": -0.25,
+    "returns": 0.7
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "BHARTIARTL.NS",
+   "score": 57.4,
+   "verdict": "BUY",
+   "ret": 1.35,
+   "index_ret": 0.376,
+   "excess": 0.975,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.73,
+    "rsi": -0.47,
+    "returns": 0.56
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "CIPLA.NS",
+   "score": -53.9,
+   "verdict": "SELL",
+   "ret": -0.787,
+   "index_ret": 0.376,
+   "excess": -1.163,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.76,
+    "rsi": 0.2,
+    "returns": -0.18
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "COALINDIA.NS",
+   "score": 31.5,
+   "verdict": "BUY",
+   "ret": 0.872,
+   "index_ret": 0.376,
+   "excess": 0.497,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.4,
+    "rsi": -0.23,
+    "returns": 0.41
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "DRREDDY.NS",
+   "score": -58.5,
+   "verdict": "SELL",
+   "ret": 6.764,
+   "index_ret": 0.376,
+   "excess": 6.389,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.91,
+    "rsi": 0.42,
+    "returns": -0.39
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "EICHERMOT.NS",
+   "score": 49.9,
+   "verdict": "BUY",
+   "ret": 0.541,
+   "index_ret": 0.376,
+   "excess": 0.166,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.25,
+    "rsi": -0.17,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "ETERNAL.NS",
+   "score": -1.5,
+   "verdict": "HOLD",
+   "ret": -11.826,
+   "index_ret": 0.376,
+   "excess": -12.201,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.76,
+    "rsi": 0.5,
+    "returns": 0.32
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "GRASIM.NS",
+   "score": 51.4,
+   "verdict": "BUY",
+   "ret": -3.476,
+   "index_ret": 0.376,
+   "excess": -3.852,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.53,
+    "rsi": -0.33,
+    "returns": 0.4
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "HCLTECH.NS",
+   "score": 18.4,
+   "verdict": "BUY",
+   "ret": 7.01,
+   "index_ret": 0.376,
+   "excess": 6.635,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.72,
+    "rsi": -0.45,
+    "returns": 0.4
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "HDFCBANK.NS",
+   "score": 19.7,
+   "verdict": "BUY",
+   "ret": 0.166,
+   "index_ret": 0.376,
+   "excess": -0.209,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.38,
+    "rsi": -0.23,
+    "returns": -0.11
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "HDFCLIFE.NS",
+   "score": -50.8,
+   "verdict": "SELL",
+   "ret": 3.852,
+   "index_ret": 0.376,
+   "excess": 3.476,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.58,
+    "rsi": 0.12,
+    "returns": -0.17
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "HINDALCO.NS",
+   "score": 64.0,
+   "verdict": "BUY",
+   "ret": -1.186,
+   "index_ret": 0.376,
+   "excess": -1.562,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.97,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "HINDUNILVR.NS",
+   "score": -17.1,
+   "verdict": "SELL",
+   "ret": -6.543,
+   "index_ret": 0.376,
+   "excess": -6.919,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.68,
+    "rsi": 0.15,
+    "returns": -0.16
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "ICICIBANK.NS",
+   "score": -59.6,
+   "verdict": "SELL",
+   "ret": 1.456,
+   "index_ret": 0.376,
+   "excess": 1.08,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.64,
+    "rsi": 0.22,
+    "returns": -0.56
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "ITC.NS",
+   "score": 3.6,
+   "verdict": "HOLD",
+   "ret": -2.959,
+   "index_ret": 0.376,
+   "excess": -3.335,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.44,
+    "rsi": -0.42,
+    "returns": 0.03
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "INFY.NS",
+   "score": 9.1,
+   "verdict": "HOLD",
+   "ret": 7.23,
+   "index_ret": 0.376,
+   "excess": 6.854,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.46,
+    "rsi": -0.1,
+    "returns": -0.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "INDIGO.NS",
+   "score": -15.5,
+   "verdict": "SELL",
+   "ret": -12.668,
+   "index_ret": 0.376,
+   "excess": -13.043,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.54,
+    "rsi": 0.15,
+    "returns": -0.23
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "JSWSTEEL.NS",
+   "score": 68.9,
+   "verdict": "BUY",
+   "ret": -9.406,
+   "index_ret": 0.376,
+   "excess": -9.781,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.68,
+    "rsi": -0.24,
+    "returns": 0.93
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "JIOFIN.NS",
+   "score": -0.9,
+   "verdict": "HOLD",
+   "ret": -3.765,
+   "index_ret": 0.376,
+   "excess": -4.14,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.35,
+    "rsi": 0.07,
+    "returns": -0.44
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "KOTAKBANK.NS",
+   "score": 36.6,
+   "verdict": "BUY",
+   "ret": 3.26,
+   "index_ret": 0.376,
+   "excess": 2.884,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.53,
+    "rsi": 0.18,
+    "returns": 0.45
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "LT.NS",
+   "score": 49.4,
+   "verdict": "BUY",
+   "ret": 2.093,
+   "index_ret": 0.376,
+   "excess": 1.717,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.72,
+    "rsi": -1.0,
+    "returns": 0.63
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "M&M.NS",
+   "score": 39.3,
+   "verdict": "BUY",
+   "ret": 2.032,
+   "index_ret": 0.376,
+   "excess": 1.656,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.37,
+    "rsi": -0.24,
+    "returns": 0.72
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "MARUTI.NS",
+   "score": 58.8,
+   "verdict": "BUY",
+   "ret": 4.492,
+   "index_ret": 0.376,
+   "excess": 4.116,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.75,
+    "rsi": 1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "MAXHEALTH.NS",
+   "score": -63.4,
+   "verdict": "SELL",
+   "ret": -6.362,
+   "index_ret": 0.376,
+   "excess": -6.737,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.64,
+    "rsi": -0.02,
+    "returns": -0.54
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "NTPC.NS",
+   "score": -43.1,
+   "verdict": "SELL",
+   "ret": -3.423,
+   "index_ret": 0.376,
+   "excess": -3.799,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.57,
+    "rsi": 0.2,
+    "returns": 0.09
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "NESTLEIND.NS",
+   "score": 51.1,
+   "verdict": "BUY",
+   "ret": -2.06,
+   "index_ret": 0.376,
+   "excess": -2.436,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.57,
+    "rsi": -1.0,
+    "returns": 0.85
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "ONGC.NS",
+   "score": 47.5,
+   "verdict": "BUY",
+   "ret": -7.629,
+   "index_ret": 0.376,
+   "excess": -8.005,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.77,
+    "rsi": -1.0,
+    "returns": 0.5
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "POWERGRID.NS",
+   "score": -12.5,
+   "verdict": "HOLD",
+   "ret": -8.08,
+   "index_ret": 0.376,
+   "excess": -8.455,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.44,
+    "rsi": -0.07,
+    "returns": -0.04
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "RELIANCE.NS",
+   "score": 46.1,
+   "verdict": "BUY",
+   "ret": 3.88,
+   "index_ret": 0.376,
+   "excess": 3.504,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.73,
+    "rsi": -1.0,
+    "returns": 0.48
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "SBILIFE.NS",
+   "score": 51.1,
+   "verdict": "BUY",
+   "ret": 3.371,
+   "index_ret": 0.376,
+   "excess": 2.996,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.95,
+    "rsi": -1.0,
+    "returns": 0.47
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 7.172,
+   "index_ret": 0.376,
+   "excess": 6.796,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "SBIN.NS",
+   "score": 64.0,
+   "verdict": "BUY",
+   "ret": 1.206,
+   "index_ret": 0.376,
+   "excess": 0.83,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.97,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "SUNPHARMA.NS",
+   "score": 43.6,
+   "verdict": "BUY",
+   "ret": 4.389,
+   "index_ret": 0.376,
+   "excess": 4.014,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.6,
+    "rsi": -0.33,
+    "returns": -0.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "TCS.NS",
+   "score": -28.5,
+   "verdict": "SELL",
+   "ret": 6.242,
+   "index_ret": 0.376,
+   "excess": 5.866,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.36,
+    "rsi": -0.07,
+    "returns": -0.02
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "TATACONSUM.NS",
+   "score": 55.3,
+   "verdict": "BUY",
+   "ret": -2.305,
+   "index_ret": 0.376,
+   "excess": -2.68,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.83,
+    "rsi": -1.0,
+    "returns": 0.77
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "TATASTEEL.NS",
+   "score": 60.0,
+   "verdict": "BUY",
+   "ret": -7.029,
+   "index_ret": 0.376,
+   "excess": -7.405,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.8,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "TECHM.NS",
+   "score": -49.9,
+   "verdict": "SELL",
+   "ret": 11.156,
+   "index_ret": 0.376,
+   "excess": 10.781,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.59,
+    "rsi": 0.13,
+    "returns": -0.13
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "TITAN.NS",
+   "score": 49.6,
+   "verdict": "BUY",
+   "ret": 5.504,
+   "index_ret": 0.376,
+   "excess": 5.129,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.61,
+    "rsi": -1.0,
+    "returns": 0.75
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "TRENT.NS",
+   "score": -40.1,
+   "verdict": "SELL",
+   "ret": -12.829,
+   "index_ret": 0.376,
+   "excess": -13.205,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.25,
+    "rsi": -0.07,
+    "returns": -0.4
+   }
+  },
+  {
+   "date": "2025-11-03",
+   "exit": "2025-12-16",
+   "ticker": "ULTRACEMCO.NS",
+   "score": -13.3,
+   "verdict": "HOLD",
+   "ret": -3.531,
+   "index_ret": 0.376,
+   "excess": -3.907,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.57,
+    "rsi": 0.22,
+    "returns": -0.16
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "ADANIENT.NS",
+   "score": -55.4,
+   "verdict": "SELL",
+   "ret": -4.576,
+   "index_ret": -1.694,
+   "excess": -2.881,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.97,
+    "rsi": 0.09,
+    "returns": 0.05
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "ADANIPORTS.NS",
+   "score": 68.3,
+   "verdict": "BUY",
+   "ret": -6.658,
+   "index_ret": -1.694,
+   "excess": -4.964,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.74,
+    "rsi": -0.45,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "APOLLOHOSP.NS",
+   "score": -50.6,
+   "verdict": "SELL",
+   "ret": 0.329,
+   "index_ret": -1.694,
+   "excess": 2.023,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.68,
+    "rsi": 0.41,
+    "returns": -0.28
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "ASIANPAINT.NS",
+   "score": 38.4,
+   "verdict": "BUY",
+   "ret": 0.652,
+   "index_ret": -1.694,
+   "excess": 2.346,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.06,
+    "rsi": -1.0,
+    "returns": 0.94
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "AXISBANK.NS",
+   "score": 35.8,
+   "verdict": "BUY",
+   "ret": -1.074,
+   "index_ret": -1.694,
+   "excess": 0.62,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.23,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "BSE.NS",
+   "score": 43.5,
+   "verdict": "BUY",
+   "ret": -1.891,
+   "index_ret": -1.694,
+   "excess": -0.197,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.1,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 51.8,
+   "verdict": "BUY",
+   "ret": 5.035,
+   "index_ret": -1.694,
+   "excess": 6.729,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.55,
+    "rsi": -0.28,
+    "returns": 0.36
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "BAJFINANCE.NS",
+   "score": 65.6,
+   "verdict": "BUY",
+   "ret": -7.061,
+   "index_ret": -1.694,
+   "excess": -5.367,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.37,
+    "rsi": -0.11,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "BAJAJFINSV.NS",
+   "score": 53.4,
+   "verdict": "BUY",
+   "ret": -3.391,
+   "index_ret": -1.694,
+   "excess": -1.697,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.45,
+    "rsi": -0.36,
+    "returns": 0.59
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "BEL.NS",
+   "score": 50.6,
+   "verdict": "BUY",
+   "ret": -0.851,
+   "index_ret": -1.694,
+   "excess": 0.843,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.36,
+    "rsi": 0.2,
+    "returns": 0.86
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "BHARTIARTL.NS",
+   "score": 36.0,
+   "verdict": "BUY",
+   "ret": -3.005,
+   "index_ret": -1.694,
+   "excess": -1.311,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.47,
+    "rsi": -0.28,
+    "returns": 0.71
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "CIPLA.NS",
+   "score": 0.8,
+   "verdict": "HOLD",
+   "ret": -4.911,
+   "index_ret": -1.694,
+   "excess": -3.217,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.38,
+    "rsi": -0.09,
+    "returns": -0.28
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "COALINDIA.NS",
+   "score": 34.5,
+   "verdict": "BUY",
+   "ret": 12.972,
+   "index_ret": -1.694,
+   "excess": 14.667,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.37,
+    "rsi": 0.09,
+    "returns": 0.27
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "DRREDDY.NS",
+   "score": 31.1,
+   "verdict": "BUY",
+   "ret": -5.46,
+   "index_ret": -1.694,
+   "excess": -3.766,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.57,
+    "rsi": -1.0,
+    "returns": 0.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "EICHERMOT.NS",
+   "score": 67.8,
+   "verdict": "BUY",
+   "ret": 3.908,
+   "index_ret": -1.694,
+   "excess": 5.603,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.59,
+    "rsi": -0.28,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "ETERNAL.NS",
+   "score": -0.9,
+   "verdict": "HOLD",
+   "ret": -2.305,
+   "index_ret": -1.694,
+   "excess": -0.611,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.14,
+    "rsi": 0.11,
+    "returns": -0.26
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "GRASIM.NS",
+   "score": -10.5,
+   "verdict": "HOLD",
+   "ret": 1.563,
+   "index_ret": -1.694,
+   "excess": 3.257,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.53,
+    "rsi": 0.26,
+    "returns": -0.11
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "HCLTECH.NS",
+   "score": 49.3,
+   "verdict": "BUY",
+   "ret": 1.345,
+   "index_ret": -1.694,
+   "excess": 3.039,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.04,
+    "rsi": -0.38,
+    "returns": 0.92
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "HDFCBANK.NS",
+   "score": 51.5,
+   "verdict": "BUY",
+   "ret": -6.461,
+   "index_ret": -1.694,
+   "excess": -4.767,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.46,
+    "rsi": -0.16,
+    "returns": 0.35
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "HDFCLIFE.NS",
+   "score": 43.8,
+   "verdict": "BUY",
+   "ret": -2.38,
+   "index_ret": -1.694,
+   "excess": -0.686,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.44,
+    "rsi": -0.04,
+    "returns": -0.05
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "HINDALCO.NS",
+   "score": 50.0,
+   "verdict": "BUY",
+   "ret": 15.479,
+   "index_ret": -1.694,
+   "excess": 17.173,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.24,
+    "rsi": -0.18,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "HINDUNILVR.NS",
+   "score": -2.8,
+   "verdict": "HOLD",
+   "ret": -3.043,
+   "index_ret": -1.694,
+   "excess": -1.349,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.5,
+    "rsi": -0.24,
+    "returns": -0.44
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "ICICIBANK.NS",
+   "score": 41.4,
+   "verdict": "BUY",
+   "ret": 3.374,
+   "index_ret": -1.694,
+   "excess": 5.068,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.54,
+    "rsi": -0.32,
+    "returns": -0.04
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "ITC.NS",
+   "score": -45.5,
+   "verdict": "SELL",
+   "ret": -17.205,
+   "index_ret": -1.694,
+   "excess": -15.511,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.45,
+    "rsi": 0.14,
+    "returns": -0.09
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "INFY.NS",
+   "score": 60.6,
+   "verdict": "BUY",
+   "ret": 2.238,
+   "index_ret": -1.694,
+   "excess": 3.932,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.67,
+    "rsi": -0.18,
+    "returns": 0.54
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "INDIGO.NS",
+   "score": 47.4,
+   "verdict": "BUY",
+   "ret": -17.855,
+   "index_ret": -1.694,
+   "excess": -16.161,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.36,
+    "rsi": -0.02,
+    "returns": 0.17
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "JSWSTEEL.NS",
+   "score": 52.7,
+   "verdict": "BUY",
+   "ret": 0.83,
+   "index_ret": -1.694,
+   "excess": 2.524,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.3,
+    "rsi": 0.16,
+    "returns": 0.92
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "JIOFIN.NS",
+   "score": -13.9,
+   "verdict": "HOLD",
+   "ret": -6.612,
+   "index_ret": -1.694,
+   "excess": -4.918,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.45,
+    "rsi": 0.01,
+    "returns": -0.15
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "KOTAKBANK.NS",
+   "score": 57.6,
+   "verdict": "BUY",
+   "ret": -0.698,
+   "index_ret": -1.694,
+   "excess": 0.996,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.63,
+    "rsi": -0.43,
+    "returns": 0.64
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "LT.NS",
+   "score": 33.6,
+   "verdict": "BUY",
+   "ret": -4.562,
+   "index_ret": -1.694,
+   "excess": -2.867,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.19,
+    "rsi": -1.0,
+    "returns": 0.87
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "M&M.NS",
+   "score": 54.2,
+   "verdict": "BUY",
+   "ret": -2.141,
+   "index_ret": -1.694,
+   "excess": -0.447,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.21,
+    "rsi": 0.02,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "MARUTI.NS",
+   "score": 55.5,
+   "verdict": "BUY",
+   "ret": 2.044,
+   "index_ret": -1.694,
+   "excess": 3.738,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.54,
+    "rsi": -0.36,
+    "returns": 0.59
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "MAXHEALTH.NS",
+   "score": -39.0,
+   "verdict": "SELL",
+   "ret": -8.637,
+   "index_ret": -1.694,
+   "excess": -6.943,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.17,
+    "rsi": -0.21,
+    "returns": -0.17
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "NTPC.NS",
+   "score": -24.5,
+   "verdict": "SELL",
+   "ret": 3.302,
+   "index_ret": -1.694,
+   "excess": 4.996,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.36,
+    "rsi": -0.03,
+    "returns": 0.12
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "NESTLEIND.NS",
+   "score": 40.8,
+   "verdict": "BUY",
+   "ret": 4.609,
+   "index_ret": -1.694,
+   "excess": 6.303,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.45,
+    "rsi": 0.11,
+    "returns": 0.6
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "ONGC.NS",
+   "score": 36.2,
+   "verdict": "BUY",
+   "ret": -0.429,
+   "index_ret": -1.694,
+   "excess": 1.265,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.44,
+    "rsi": -0.07,
+    "returns": 0.53
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "POWERGRID.NS",
+   "score": -52.3,
+   "verdict": "SELL",
+   "ret": -4.024,
+   "index_ret": -1.694,
+   "excess": -2.33,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.61,
+    "rsi": -0.11,
+    "returns": -0.03
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "RELIANCE.NS",
+   "score": 58.1,
+   "verdict": "BUY",
+   "ret": -7.235,
+   "index_ret": -1.694,
+   "excess": -5.54,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.72,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "SBILIFE.NS",
+   "score": 42.1,
+   "verdict": "BUY",
+   "ret": 5.62,
+   "index_ret": -1.694,
+   "excess": 7.314,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.47,
+    "rsi": 0.2,
+    "returns": 0.61
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": 58.2,
+   "verdict": "BUY",
+   "ret": 14.973,
+   "index_ret": -1.694,
+   "excess": 16.667,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.14,
+    "rsi": -0.22,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "SBIN.NS",
+   "score": 47.4,
+   "verdict": "BUY",
+   "ret": 5.688,
+   "index_ret": -1.694,
+   "excess": 7.382,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.27,
+    "rsi": -0.29,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "SUNPHARMA.NS",
+   "score": 55.1,
+   "verdict": "BUY",
+   "ret": -4.354,
+   "index_ret": -1.694,
+   "excess": -2.66,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.7,
+    "rsi": -1.0,
+    "returns": 0.89
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "TCS.NS",
+   "score": 8.9,
+   "verdict": "HOLD",
+   "ret": 4.296,
+   "index_ret": -1.694,
+   "excess": 5.99,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.51,
+    "rsi": -0.35,
+    "returns": 0.13
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "TATACONSUM.NS",
+   "score": 37.8,
+   "verdict": "BUY",
+   "ret": 2.2,
+   "index_ret": -1.694,
+   "excess": 3.894,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.46,
+    "rsi": -0.07,
+    "returns": 0.62
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "TATASTEEL.NS",
+   "score": 17.2,
+   "verdict": "BUY",
+   "ret": 8.267,
+   "index_ret": -1.694,
+   "excess": 9.961,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.63,
+    "rsi": 1.0,
+    "returns": 0.61
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "TECHM.NS",
+   "score": 44.9,
+   "verdict": "BUY",
+   "ret": 5.577,
+   "index_ret": -1.694,
+   "excess": 7.271,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.87,
+    "rsi": -1.0,
+    "returns": 0.29
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "TITAN.NS",
+   "score": 35.4,
+   "verdict": "BUY",
+   "ret": 8.84,
+   "index_ret": -1.694,
+   "excess": 10.534,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.24,
+    "rsi": -0.33,
+    "returns": 0.49
+   }
+  },
+  {
+   "date": "2025-12-01",
+   "exit": "2026-01-13",
+   "ticker": "ULTRACEMCO.NS",
+   "score": -37.2,
+   "verdict": "SELL",
+   "ret": 3.276,
+   "index_ret": -1.694,
+   "excess": 4.97,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.29,
+    "rsi": 0.2,
+    "returns": -0.52
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "ADANIENT.NS",
+   "score": -38.7,
+   "verdict": "SELL",
+   "ret": -3.336,
+   "index_ret": -1.774,
+   "excess": -1.562,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.43,
+    "rsi": 0.1,
+    "returns": -0.65
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "ADANIPORTS.NS",
+   "score": 36.6,
+   "verdict": "BUY",
+   "ret": 3.984,
+   "index_ret": -1.774,
+   "excess": 5.757,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.45,
+    "rsi": 0.18,
+    "returns": 0.37
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "APOLLOHOSP.NS",
+   "score": -34.9,
+   "verdict": "SELL",
+   "ret": 7.264,
+   "index_ret": -1.774,
+   "excess": 9.038,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.4,
+    "rsi": -0.15,
+    "returns": -0.27
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "ASIANPAINT.NS",
+   "score": 47.9,
+   "verdict": "BUY",
+   "ret": -12.892,
+   "index_ret": -1.774,
+   "excess": -11.119,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.56,
+    "rsi": 0.13,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "AXISBANK.NS",
+   "score": 69.5,
+   "verdict": "BUY",
+   "ret": 6.583,
+   "index_ret": -1.774,
+   "excess": 8.357,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.63,
+    "rsi": -0.02,
+    "returns": 0.84
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "BSE.NS",
+   "score": 11.4,
+   "verdict": "HOLD",
+   "ret": 6.72,
+   "index_ret": -1.774,
+   "excess": 8.494,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.63,
+    "rsi": 0.15,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 66.1,
+   "verdict": "BUY",
+   "ret": 1.46,
+   "index_ret": -1.774,
+   "excess": 3.233,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.96,
+    "rsi": -0.44,
+    "returns": 0.68
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "BAJFINANCE.NS",
+   "score": -4.2,
+   "verdict": "HOLD",
+   "ret": 4.075,
+   "index_ret": -1.774,
+   "excess": 5.848,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.76,
+    "rsi": 1.0,
+    "returns": -0.17
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "BAJAJFINSV.NS",
+   "score": -4.3,
+   "verdict": "HOLD",
+   "ret": 0.682,
+   "index_ret": -1.774,
+   "excess": 2.456,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.44,
+    "rsi": 0.21,
+    "returns": 0.1
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "BEL.NS",
+   "score": 2.0,
+   "verdict": "HOLD",
+   "ret": 10.133,
+   "index_ret": -1.774,
+   "excess": 11.907,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.41,
+    "rsi": -0.3,
+    "returns": -0.1
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "BHARTIARTL.NS",
+   "score": 41.4,
+   "verdict": "BUY",
+   "ret": -3.838,
+   "index_ret": -1.774,
+   "excess": -2.064,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.35,
+    "rsi": -0.28,
+    "returns": 0.82
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "CIPLA.NS",
+   "score": -24.9,
+   "verdict": "SELL",
+   "ret": -9.628,
+   "index_ret": -1.774,
+   "excess": -7.854,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.36,
+    "rsi": 0.12,
+    "returns": -0.01
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "COALINDIA.NS",
+   "score": 42.4,
+   "verdict": "BUY",
+   "ret": 5.506,
+   "index_ret": -1.774,
+   "excess": 7.28,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.68,
+    "rsi": -1.0,
+    "returns": 0.37
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "DRREDDY.NS",
+   "score": -38.4,
+   "verdict": "SELL",
+   "ret": 1.277,
+   "index_ret": -1.774,
+   "excess": 3.05,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.53,
+    "rsi": 0.32,
+    "returns": 0.16
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "EICHERMOT.NS",
+   "score": 55.2,
+   "verdict": "BUY",
+   "ret": 9.016,
+   "index_ret": -1.774,
+   "excess": 10.79,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.62,
+    "rsi": -0.14,
+    "returns": 0.33
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "ETERNAL.NS",
+   "score": -45.7,
+   "verdict": "SELL",
+   "ret": 0.987,
+   "index_ret": -1.774,
+   "excess": 2.76,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.25,
+    "rsi": 0.21,
+    "returns": -0.85
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "GRASIM.NS",
+   "score": 48.0,
+   "verdict": "BUY",
+   "ret": 2.139,
+   "index_ret": -1.774,
+   "excess": 3.913,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.58,
+    "rsi": -0.36,
+    "returns": 0.23
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "HCLTECH.NS",
+   "score": 52.0,
+   "verdict": "BUY",
+   "ret": -9.918,
+   "index_ret": -1.774,
+   "excess": -8.144,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.47,
+    "rsi": 0.24,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "HDFCBANK.NS",
+   "score": 0.9,
+   "verdict": "HOLD",
+   "ret": -6.593,
+   "index_ret": -1.774,
+   "excess": -4.82,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.42,
+    "rsi": 0.24,
+    "returns": 0.28
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "HDFCLIFE.NS",
+   "score": -6.0,
+   "verdict": "HOLD",
+   "ret": -6.159,
+   "index_ret": -1.774,
+   "excess": -4.385,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.51,
+    "rsi": 0.42,
+    "returns": -0.06
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "HINDALCO.NS",
+   "score": 63.8,
+   "verdict": "BUY",
+   "ret": 1.397,
+   "index_ret": -1.774,
+   "excess": 3.171,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.96,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "HINDUNILVR.NS",
+   "score": -38.0,
+   "verdict": "SELL",
+   "ret": -0.172,
+   "index_ret": -1.774,
+   "excess": 1.602,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.42,
+    "rsi": -0.1,
+    "returns": -0.46
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "ICICIBANK.NS",
+   "score": -43.4,
+   "verdict": "SELL",
+   "ret": 5.501,
+   "index_ret": -1.774,
+   "excess": 7.275,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.57,
+    "rsi": 0.37,
+    "returns": -0.05
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "ITC.NS",
+   "score": -56.0,
+   "verdict": "SELL",
+   "ret": -10.784,
+   "index_ret": -1.774,
+   "excess": -9.01,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.63
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "INFY.NS",
+   "score": 47.7,
+   "verdict": "BUY",
+   "ret": -16.211,
+   "index_ret": -1.774,
+   "excess": -14.437,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.31,
+    "rsi": -0.19,
+    "returns": 0.98
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "INDIGO.NS",
+   "score": -59.8,
+   "verdict": "SELL",
+   "ret": -3.321,
+   "index_ret": -1.774,
+   "excess": -1.547,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.29,
+    "rsi": -1.0,
+    "returns": -0.58
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "JSWSTEEL.NS",
+   "score": 53.5,
+   "verdict": "BUY",
+   "ret": 6.547,
+   "index_ret": -1.774,
+   "excess": 8.321,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.95,
+    "rsi": -0.46,
+    "returns": 0.17
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "JIOFIN.NS",
+   "score": -23.8,
+   "verdict": "SELL",
+   "ret": -11.211,
+   "index_ret": -1.774,
+   "excess": -9.437,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.33,
+    "rsi": 0.13,
+    "returns": 0.06
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "KOTAKBANK.NS",
+   "score": 63.2,
+   "verdict": "BUY",
+   "ret": -4.049,
+   "index_ret": -1.774,
+   "excess": -2.275,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.7,
+    "rsi": -0.35,
+    "returns": 0.75
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "LT.NS",
+   "score": 53.9,
+   "verdict": "BUY",
+   "ret": 1.476,
+   "index_ret": -1.774,
+   "excess": 3.25,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.66,
+    "rsi": -1.0,
+    "returns": 0.88
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "M&M.NS",
+   "score": 62.7,
+   "verdict": "BUY",
+   "ret": -6.682,
+   "index_ret": -1.774,
+   "excess": -4.908,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.74,
+    "rsi": -0.3,
+    "returns": 0.65
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "MARUTI.NS",
+   "score": 48.5,
+   "verdict": "BUY",
+   "ret": -9.917,
+   "index_ret": -1.774,
+   "excess": -8.144,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.59,
+    "rsi": -0.41,
+    "returns": 0.28
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "MAXHEALTH.NS",
+   "score": -55.5,
+   "verdict": "SELL",
+   "ret": 2.52,
+   "index_ret": -1.774,
+   "excess": 4.294,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.68,
+    "rsi": 0.28,
+    "returns": -0.39
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "NTPC.NS",
+   "score": 36.0,
+   "verdict": "BUY",
+   "ret": 10.582,
+   "index_ret": -1.774,
+   "excess": 12.356,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.81,
+    "rsi": -1.0,
+    "returns": -0.03
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "NESTLEIND.NS",
+   "score": 54.1,
+   "verdict": "BUY",
+   "ret": 0.136,
+   "index_ret": -1.774,
+   "excess": 1.91,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.73,
+    "rsi": -1.0,
+    "returns": 0.82
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "ONGC.NS",
+   "score": 13.7,
+   "verdict": "HOLD",
+   "ret": 14.125,
+   "index_ret": -1.774,
+   "excess": 15.899,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.44,
+    "rsi": 0.03,
+    "returns": 0.12
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "POWERGRID.NS",
+   "score": -30.6,
+   "verdict": "SELL",
+   "ret": 13.896,
+   "index_ret": -1.774,
+   "excess": 15.669,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.47,
+    "rsi": -0.08,
+    "returns": -0.21
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "RELIANCE.NS",
+   "score": 48.5,
+   "verdict": "BUY",
+   "ret": -8.79,
+   "index_ret": -1.774,
+   "excess": -7.016,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.22,
+    "rsi": -0.29,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "SBILIFE.NS",
+   "score": 46.5,
+   "verdict": "BUY",
+   "ret": 0.098,
+   "index_ret": -1.774,
+   "excess": 1.872,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.25,
+    "rsi": -0.27,
+    "returns": 0.93
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 6.443,
+   "index_ret": -1.774,
+   "excess": 8.217,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "SBIN.NS",
+   "score": 61.8,
+   "verdict": "BUY",
+   "ret": 22.681,
+   "index_ret": -1.774,
+   "excess": 24.455,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.58,
+    "rsi": -0.42,
+    "returns": 0.86
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "SUNPHARMA.NS",
+   "score": 15.8,
+   "verdict": "BUY",
+   "ret": -0.555,
+   "index_ret": -1.774,
+   "excess": 1.219,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.61,
+    "rsi": 1.0,
+    "returns": 0.53
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "TCS.NS",
+   "score": 6.9,
+   "verdict": "HOLD",
+   "ret": -14.612,
+   "index_ret": -1.774,
+   "excess": -12.838,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.42,
+    "rsi": -0.13,
+    "returns": 0.81
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "TATACONSUM.NS",
+   "score": 46.7,
+   "verdict": "BUY",
+   "ret": -3.203,
+   "index_ret": -1.774,
+   "excess": -1.429,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.43,
+    "rsi": -0.3,
+    "returns": 0.28
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "TATASTEEL.NS",
+   "score": 53.4,
+   "verdict": "BUY",
+   "ret": 13.151,
+   "index_ret": -1.774,
+   "excess": 14.925,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.52
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "TECHM.NS",
+   "score": 47.5,
+   "verdict": "BUY",
+   "ret": -5.909,
+   "index_ret": -1.774,
+   "excess": -4.135,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.24,
+    "rsi": -0.32,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "TITAN.NS",
+   "score": 58.8,
+   "verdict": "BUY",
+   "ret": 3.255,
+   "index_ret": -1.774,
+   "excess": 5.029,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.75,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-01-01",
+   "exit": "2026-02-16",
+   "ticker": "ULTRACEMCO.NS",
+   "score": 37.5,
+   "verdict": "BUY",
+   "ret": 9.075,
+   "index_ret": -1.774,
+   "excess": 10.849,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.62,
+    "rsi": -0.46,
+    "returns": -0.18
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "ADANIENT.NS",
+   "score": -73.7,
+   "verdict": "SELL",
+   "ret": -1.002,
+   "index_ret": -6.008,
+   "excess": 5.005,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.91,
+    "rsi": 0.37,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "ADANIPORTS.NS",
+   "score": 4.4,
+   "verdict": "HOLD",
+   "ret": -2.68,
+   "index_ret": -6.008,
+   "excess": 3.328,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.3,
+    "rsi": 0.14,
+    "returns": -0.22
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "APOLLOHOSP.NS",
+   "score": -54.9,
+   "verdict": "SELL",
+   "ret": 8.314,
+   "index_ret": -6.008,
+   "excess": 14.322,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.52,
+    "rsi": 0.45,
+    "returns": -0.65
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "ASIANPAINT.NS",
+   "score": -47.8,
+   "verdict": "SELL",
+   "ret": -6.819,
+   "index_ret": -6.008,
+   "excess": -0.812,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.28
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "AXISBANK.NS",
+   "score": 54.3,
+   "verdict": "BUY",
+   "ret": -6.359,
+   "index_ret": -6.008,
+   "excess": -0.351,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.49,
+    "rsi": -0.15,
+    "returns": 0.43
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "BSE.NS",
+   "score": 22.1,
+   "verdict": "BUY",
+   "ret": 10.068,
+   "index_ret": -6.008,
+   "excess": 16.076,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.22,
+    "rsi": 0.16,
+    "returns": 0.6
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 38.2,
+   "verdict": "BUY",
+   "ret": -4.07,
+   "index_ret": -6.008,
+   "excess": 1.938,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.32,
+    "rsi": -0.01,
+    "returns": 0.45
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "BAJFINANCE.NS",
+   "score": -71.2,
+   "verdict": "SELL",
+   "ret": -3.884,
+   "index_ret": -6.008,
+   "excess": 2.124,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.93,
+    "rsi": 0.39,
+    "returns": -0.89
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "BAJAJFINSV.NS",
+   "score": -57.9,
+   "verdict": "SELL",
+   "ret": -8.051,
+   "index_ret": -6.008,
+   "excess": -2.044,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.69,
+    "rsi": 0.32,
+    "returns": -0.51
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "BEL.NS",
+   "score": 56.9,
+   "verdict": "BUY",
+   "ret": 0.483,
+   "index_ret": -6.008,
+   "excess": 6.491,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.89,
+    "rsi": -0.23,
+    "returns": 0.2
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "BHARTIARTL.NS",
+   "score": -4.9,
+   "verdict": "HOLD",
+   "ret": -7.042,
+   "index_ret": -6.008,
+   "excess": -1.034,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.67,
+    "rsi": 1.0,
+    "returns": -0.29
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "CIPLA.NS",
+   "score": -60.9,
+   "verdict": "SELL",
+   "ret": -2.264,
+   "index_ret": -6.008,
+   "excess": 3.743,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.84
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "COALINDIA.NS",
+   "score": 44.8,
+   "verdict": "BUY",
+   "ret": 10.593,
+   "index_ret": -6.008,
+   "excess": 16.601,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.46,
+    "rsi": 0.1,
+    "returns": 0.79
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "DRREDDY.NS",
+   "score": -31.5,
+   "verdict": "SELL",
+   "ret": 8.567,
+   "index_ret": -6.008,
+   "excess": 14.574,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.1,
+    "rsi": 0.19,
+    "returns": -0.08
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "EICHERMOT.NS",
+   "score": -0.2,
+   "verdict": "HOLD",
+   "ret": -1.081,
+   "index_ret": -6.008,
+   "excess": 4.927,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.74,
+    "rsi": 1.0,
+    "returns": -0.02
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "ETERNAL.NS",
+   "score": -69.3,
+   "verdict": "SELL",
+   "ret": -13.945,
+   "index_ret": -6.008,
+   "excess": -7.937,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.6,
+    "rsi": 0.14,
+    "returns": -0.95
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "GRASIM.NS",
+   "score": 2.1,
+   "verdict": "HOLD",
+   "ret": -3.291,
+   "index_ret": -6.008,
+   "excess": 2.717,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.29,
+    "rsi": 0.09,
+    "returns": -0.27
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "HCLTECH.NS",
+   "score": 37.7,
+   "verdict": "BUY",
+   "ret": -21.213,
+   "index_ret": -6.008,
+   "excess": -15.205,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.44,
+    "rsi": -0.13,
+    "returns": 0.64
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "HDFCBANK.NS",
+   "score": -35.6,
+   "verdict": "SELL",
+   "ret": -8.916,
+   "index_ret": -6.008,
+   "excess": -2.908,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.26,
+    "rsi": 0.17,
+    "returns": -0.4
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "HDFCLIFE.NS",
+   "score": -36.9,
+   "verdict": "SELL",
+   "ret": -10.481,
+   "index_ret": -6.008,
+   "excess": -4.473,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.69,
+    "rsi": 1.0,
+    "returns": -0.13
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "HINDALCO.NS",
+   "score": 37.0,
+   "verdict": "BUY",
+   "ret": 0.661,
+   "index_ret": -6.008,
+   "excess": 6.669,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.54,
+    "rsi": -0.05,
+    "returns": 0.65
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "HINDUNILVR.NS",
+   "score": -48.3,
+   "verdict": "SELL",
+   "ret": -8.446,
+   "index_ret": -6.008,
+   "excess": -2.438,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.47,
+    "rsi": 0.21,
+    "returns": -0.24
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "ICICIBANK.NS",
+   "score": -40.9,
+   "verdict": "SELL",
+   "ret": -4.738,
+   "index_ret": -6.008,
+   "excess": 1.269,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.58,
+    "rsi": 0.4,
+    "returns": 0.04
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "ITC.NS",
+   "score": -45.9,
+   "verdict": "SELL",
+   "ret": -1.1,
+   "index_ret": -6.008,
+   "excess": 4.908,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.2,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "INFY.NS",
+   "score": 35.3,
+   "verdict": "BUY",
+   "ret": -24.334,
+   "index_ret": -6.008,
+   "excess": -18.326,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.51,
+    "rsi": -0.2,
+    "returns": 0.66
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "INDIGO.NS",
+   "score": -72.6,
+   "verdict": "SELL",
+   "ret": -8.515,
+   "index_ret": -6.008,
+   "excess": -2.507,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.72,
+    "rsi": 0.18,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "JSWSTEEL.NS",
+   "score": 45.1,
+   "verdict": "BUY",
+   "ret": -2.668,
+   "index_ret": -6.008,
+   "excess": 3.339,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.54,
+    "rsi": -0.11,
+    "returns": -0.04
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "JIOFIN.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": -2.663,
+   "index_ret": -6.008,
+   "excess": 3.345,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "KOTAKBANK.NS",
+   "score": -49.2,
+   "verdict": "SELL",
+   "ret": -8.329,
+   "index_ret": -6.008,
+   "excess": -2.321,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.73,
+    "rsi": 0.44,
+    "returns": -0.19
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "LT.NS",
+   "score": 10.2,
+   "verdict": "HOLD",
+   "ret": -9.652,
+   "index_ret": -6.008,
+   "excess": -3.645,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.45,
+    "rsi": 0.22,
+    "returns": -0.18
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "M&M.NS",
+   "score": -9.1,
+   "verdict": "HOLD",
+   "ret": -9.653,
+   "index_ret": -6.008,
+   "excess": -3.645,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.71,
+    "rsi": 0.5,
+    "returns": -0.05
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "MARUTI.NS",
+   "score": -58.6,
+   "verdict": "SELL",
+   "ret": -9.816,
+   "index_ret": -6.008,
+   "excess": -3.809,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.74
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "MAXHEALTH.NS",
+   "score": -62.8,
+   "verdict": "SELL",
+   "ret": 1.91,
+   "index_ret": -6.008,
+   "excess": 7.918,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.92,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "NTPC.NS",
+   "score": 52.6,
+   "verdict": "BUY",
+   "ret": 10.245,
+   "index_ret": -6.008,
+   "excess": 16.253,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.62,
+    "rsi": -0.27,
+    "returns": 0.32
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "NESTLEIND.NS",
+   "score": 32.8,
+   "verdict": "BUY",
+   "ret": -7.252,
+   "index_ret": -6.008,
+   "excess": -1.245,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.32,
+    "rsi": 0.03,
+    "returns": 0.19
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "ONGC.NS",
+   "score": 46.9,
+   "verdict": "BUY",
+   "ret": 6.706,
+   "index_ret": -6.008,
+   "excess": 12.714,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.59,
+    "rsi": -0.3,
+    "returns": 0.13
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "POWERGRID.NS",
+   "score": 6.6,
+   "verdict": "HOLD",
+   "ret": 11.631,
+   "index_ret": -6.008,
+   "excess": 17.639,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.87,
+    "rsi": -0.37,
+    "returns": -0.31
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "RELIANCE.NS",
+   "score": -46.1,
+   "verdict": "SELL",
+   "ret": 0.518,
+   "index_ret": -6.008,
+   "excess": 6.526,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.78,
+    "rsi": 1.0,
+    "returns": -0.43
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "SBILIFE.NS",
+   "score": -2.2,
+   "verdict": "HOLD",
+   "ret": -3.309,
+   "index_ret": -6.008,
+   "excess": 2.699,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.61,
+    "rsi": 0.49,
+    "returns": 0.15
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": 43.5,
+   "verdict": "BUY",
+   "ret": 4.417,
+   "index_ret": -6.008,
+   "excess": 10.425,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.71,
+    "rsi": 0.08,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "SBIN.NS",
+   "score": 57.3,
+   "verdict": "BUY",
+   "ret": 3.5,
+   "index_ret": -6.008,
+   "excess": 9.507,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.36,
+    "rsi": -0.1,
+    "returns": 0.65
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "SUNPHARMA.NS",
+   "score": -38.6,
+   "verdict": "SELL",
+   "ret": 10.944,
+   "index_ret": -6.008,
+   "excess": 16.952,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.64,
+    "rsi": 1.0,
+    "returns": -0.25
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "TCS.NS",
+   "score": 0.5,
+   "verdict": "HOLD",
+   "ret": -24.543,
+   "index_ret": -6.008,
+   "excess": -18.535,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.37,
+    "rsi": 0.03,
+    "returns": 0.37
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "TATACONSUM.NS",
+   "score": -52.8,
+   "verdict": "SELL",
+   "ret": -4.212,
+   "index_ret": -6.008,
+   "excess": 1.796,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.76,
+    "rsi": 0.33,
+    "returns": -0.23
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "TATASTEEL.NS",
+   "score": 49.2,
+   "verdict": "BUY",
+   "ret": 3.671,
+   "index_ret": -6.008,
+   "excess": 9.679,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.48,
+    "rsi": -0.13,
+    "returns": 0.21
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "TECHM.NS",
+   "score": 67.1,
+   "verdict": "BUY",
+   "ret": -22.169,
+   "index_ret": -6.008,
+   "excess": -16.162,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.71,
+    "rsi": -0.48,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "TITAN.NS",
+   "score": 10.6,
+   "verdict": "HOLD",
+   "ret": 3.473,
+   "index_ret": -6.008,
+   "excess": 9.481,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.67,
+    "rsi": 1.0,
+    "returns": 0.37
+   }
+  },
+  {
+   "date": "2026-02-02",
+   "exit": "2026-03-17",
+   "ticker": "ULTRACEMCO.NS",
+   "score": 51.6,
+   "verdict": "BUY",
+   "ret": -11.32,
+   "index_ret": -6.008,
+   "excess": -5.313,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.61,
+    "rsi": -0.33,
+    "returns": 0.33
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "ADANIENT.NS",
+   "score": -56.1,
+   "verdict": "SELL",
+   "ret": 4.942,
+   "index_ret": -2.014,
+   "excess": 6.956,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.68,
+    "rsi": 0.26,
+    "returns": -0.4
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "ADANIPORTS.NS",
+   "score": -18.2,
+   "verdict": "SELL",
+   "ret": 7.352,
+   "index_ret": -2.014,
+   "excess": 9.366,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.77,
+    "rsi": 0.34,
+    "returns": -0.26
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "APOLLOHOSP.NS",
+   "score": 47.5,
+   "verdict": "BUY",
+   "ret": -1.726,
+   "index_ret": -2.014,
+   "excess": 0.288,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.8,
+    "rsi": -1.0,
+    "returns": 0.47
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "ASIANPAINT.NS",
+   "score": -57.7,
+   "verdict": "SELL",
+   "ret": 9.089,
+   "index_ret": -2.014,
+   "excess": 11.104,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.2,
+    "rsi": 0.33,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "AXISBANK.NS",
+   "score": 37.6,
+   "verdict": "BUY",
+   "ret": -1.283,
+   "index_ret": -2.014,
+   "excess": 0.732,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.31,
+    "rsi": -0.12,
+    "returns": 0.5
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "BSE.NS",
+   "score": -19.1,
+   "verdict": "SELL",
+   "ret": 31.287,
+   "index_ret": -2.014,
+   "excess": 33.301,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.56
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 36.9,
+   "verdict": "BUY",
+   "ret": 0.276,
+   "index_ret": -2.014,
+   "excess": 2.29,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.43,
+    "rsi": -0.0,
+    "returns": 0.5
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "BAJFINANCE.NS",
+   "score": -23.2,
+   "verdict": "SELL",
+   "ret": -6.185,
+   "index_ret": -2.014,
+   "excess": -4.17,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.63,
+    "rsi": -0.1,
+    "returns": -0.28
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "BAJAJFINSV.NS",
+   "score": -58.7,
+   "verdict": "SELL",
+   "ret": -5.732,
+   "index_ret": -2.014,
+   "excess": -3.717,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.86,
+    "rsi": 0.42,
+    "returns": -0.45
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "BEL.NS",
+   "score": 63.4,
+   "verdict": "BUY",
+   "ret": 1.222,
+   "index_ret": -2.014,
+   "excess": 3.236,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.8,
+    "rsi": -0.26,
+    "returns": 0.59
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "BHARTIARTL.NS",
+   "score": -56.7,
+   "verdict": "SELL",
+   "ret": -1.447,
+   "index_ret": -2.014,
+   "excess": 0.567,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.97,
+    "rsi": 1.0,
+    "returns": -0.69
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "CIPLA.NS",
+   "score": -44.1,
+   "verdict": "SELL",
+   "ret": -9.034,
+   "index_ret": -2.014,
+   "excess": -7.02,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.43,
+    "rsi": -0.07,
+    "returns": -0.75
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "COALINDIA.NS",
+   "score": 67.2,
+   "verdict": "BUY",
+   "ret": 3.636,
+   "index_ret": -2.014,
+   "excess": 5.651,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.45,
+    "rsi": -0.02,
+    "returns": 0.92
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "DRREDDY.NS",
+   "score": 47.1,
+   "verdict": "BUY",
+   "ret": -4.774,
+   "index_ret": -2.014,
+   "excess": -2.76,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.57,
+    "rsi": -0.33,
+    "returns": 0.18
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "EICHERMOT.NS",
+   "score": 36.5,
+   "verdict": "BUY",
+   "ret": -7.45,
+   "index_ret": -2.014,
+   "excess": -5.435,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.34,
+    "rsi": -0.36,
+    "returns": 0.66
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "ETERNAL.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 4.945,
+   "index_ret": -2.014,
+   "excess": 6.959,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "GRASIM.NS",
+   "score": 3.1,
+   "verdict": "HOLD",
+   "ret": -0.619,
+   "index_ret": -2.014,
+   "excess": 1.395,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.73,
+    "rsi": 1.0,
+    "returns": 0.11
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "HCLTECH.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 4.179,
+   "index_ret": -2.014,
+   "excess": 6.194,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "HDFCBANK.NS",
+   "score": -57.4,
+   "verdict": "SELL",
+   "ret": -9.546,
+   "index_ret": -2.014,
+   "excess": -7.532,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.87,
+    "rsi": 1.0,
+    "returns": -0.82
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "HDFCLIFE.NS",
+   "score": -44.7,
+   "verdict": "SELL",
+   "ret": -13.792,
+   "index_ret": -2.014,
+   "excess": -11.778,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.15,
+    "rsi": -0.04,
+    "returns": -0.52
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "HINDALCO.NS",
+   "score": 55.2,
+   "verdict": "BUY",
+   "ret": 8.005,
+   "index_ret": -2.014,
+   "excess": 10.02,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.29,
+    "rsi": 0.18,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "HINDUNILVR.NS",
+   "score": -50.6,
+   "verdict": "SELL",
+   "ret": -3.84,
+   "index_ret": -2.014,
+   "excess": -1.825,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.57,
+    "rsi": 0.41,
+    "returns": -0.39
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "ICICIBANK.NS",
+   "score": -10.4,
+   "verdict": "HOLD",
+   "ret": -1.295,
+   "index_ret": -2.014,
+   "excess": 0.719,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.57,
+    "rsi": 0.28,
+    "returns": -0.08
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "ITC.NS",
+   "score": -52.1,
+   "verdict": "SELL",
+   "ret": -3.144,
+   "index_ret": -2.014,
+   "excess": -1.13,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.16,
+    "rsi": 0.17,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "INFY.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 1.839,
+   "index_ret": -2.014,
+   "excess": 3.853,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "INDIGO.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 3.491,
+   "index_ret": -2.014,
+   "excess": 5.505,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "JSWSTEEL.NS",
+   "score": 59.4,
+   "verdict": "BUY",
+   "ret": 0.568,
+   "index_ret": -2.014,
+   "excess": 2.582,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.62,
+    "rsi": -0.21,
+    "returns": 0.56
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "JIOFIN.NS",
+   "score": -63.3,
+   "verdict": "SELL",
+   "ret": -4.759,
+   "index_ret": -2.014,
+   "excess": -2.745,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.94,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "KOTAKBANK.NS",
+   "score": -50.5,
+   "verdict": "SELL",
+   "ret": -8.206,
+   "index_ret": -2.014,
+   "excess": -6.192,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.65,
+    "rsi": 0.34,
+    "returns": -0.25
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "LT.NS",
+   "score": -15.3,
+   "verdict": "SELL",
+   "ret": -0.386,
+   "index_ret": -2.014,
+   "excess": 1.628,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.76,
+    "rsi": 0.16,
+    "returns": -0.01
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "M&M.NS",
+   "score": -56.5,
+   "verdict": "SELL",
+   "ret": -3.38,
+   "index_ret": -2.014,
+   "excess": -1.366,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.92,
+    "rsi": 1.0,
+    "returns": -0.73
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "MARUTI.NS",
+   "score": -67.4,
+   "verdict": "SELL",
+   "ret": -6.519,
+   "index_ret": -2.014,
+   "excess": -4.505,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.94,
+    "rsi": 0.38,
+    "returns": -0.71
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "MAXHEALTH.NS",
+   "score": -9.6,
+   "verdict": "HOLD",
+   "ret": -6.668,
+   "index_ret": -2.014,
+   "excess": -4.653,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.59,
+    "rsi": -1.0,
+    "returns": -0.25
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "NTPC.NS",
+   "score": 69.4,
+   "verdict": "BUY",
+   "ret": 5.417,
+   "index_ret": -2.014,
+   "excess": 7.431,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.66,
+    "rsi": -0.28,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "NESTLEIND.NS",
+   "score": -6.5,
+   "verdict": "HOLD",
+   "ret": 0.524,
+   "index_ret": -2.014,
+   "excess": 2.538,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.58,
+    "rsi": 0.22,
+    "returns": 0.14
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "ONGC.NS",
+   "score": 73.2,
+   "verdict": "BUY",
+   "ret": 0.408,
+   "index_ret": -2.014,
+   "excess": 2.422,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.97,
+    "rsi": -0.48,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "POWERGRID.NS",
+   "score": 46.2,
+   "verdict": "BUY",
+   "ret": 7.716,
+   "index_ret": -2.014,
+   "excess": 9.73,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.24,
+    "rsi": -0.06,
+    "returns": 0.75
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "RELIANCE.NS",
+   "score": -60.2,
+   "verdict": "SELL",
+   "ret": 0.39,
+   "index_ret": -2.014,
+   "excess": 2.405,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.92,
+    "rsi": 1.0,
+    "returns": -0.89
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "SBILIFE.NS",
+   "score": -8.5,
+   "verdict": "HOLD",
+   "ret": -2.31,
+   "index_ret": -2.014,
+   "excess": -0.296,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.51,
+    "rsi": -0.07,
+    "returns": 0.2
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": 48.4,
+   "verdict": "BUY",
+   "ret": -0.698,
+   "index_ret": -2.014,
+   "excess": 1.316,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.43,
+    "rsi": -0.02,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "SBIN.NS",
+   "score": 47.9,
+   "verdict": "BUY",
+   "ret": -6.896,
+   "index_ret": -2.014,
+   "excess": -4.881,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.21,
+    "rsi": -0.34,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "SUNPHARMA.NS",
+   "score": 41.2,
+   "verdict": "BUY",
+   "ret": -4.787,
+   "index_ret": -2.014,
+   "excess": -2.773,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.62,
+    "rsi": -0.28,
+    "returns": -0.16
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "TCS.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": -1.297,
+   "index_ret": -2.014,
+   "excess": 0.717,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "TATACONSUM.NS",
+   "score": -17.8,
+   "verdict": "SELL",
+   "ret": -0.427,
+   "index_ret": -2.014,
+   "excess": 1.588,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.71,
+    "rsi": 0.23,
+    "returns": -0.22
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "TATASTEEL.NS",
+   "score": 55.0,
+   "verdict": "BUY",
+   "ret": 0.336,
+   "index_ret": -2.014,
+   "excess": 2.351,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.08,
+    "rsi": -0.11,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "TECHM.NS",
+   "score": -60.0,
+   "verdict": "SELL",
+   "ret": 11.818,
+   "index_ret": -2.014,
+   "excess": 13.832,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.8
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "TITAN.NS",
+   "score": 62.4,
+   "verdict": "BUY",
+   "ret": 5.683,
+   "index_ret": -2.014,
+   "excess": 7.698,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.51,
+    "rsi": -0.0,
+    "returns": 0.64
+   }
+  },
+  {
+   "date": "2026-03-02",
+   "exit": "2026-04-20",
+   "ticker": "ULTRACEMCO.NS",
+   "score": 3.5,
+   "verdict": "HOLD",
+   "ret": -4.824,
+   "index_ret": -2.014,
+   "excess": -2.81,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.65,
+    "rsi": 0.41,
+    "returns": 0.49
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "ADANIENT.NS",
+   "score": -76.7,
+   "verdict": "SELL",
+   "ret": 45.986,
+   "index_ret": 4.279,
+   "excess": 41.707,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.32,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "ADANIPORTS.NS",
+   "score": -51.2,
+   "verdict": "SELL",
+   "ret": 29.039,
+   "index_ret": 4.279,
+   "excess": 24.759,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.44,
+    "rsi": 0.11,
+    "returns": -0.32
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "APOLLOHOSP.NS",
+   "score": -39.2,
+   "verdict": "SELL",
+   "ret": 9.787,
+   "index_ret": 4.279,
+   "excess": 5.508,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.67,
+    "rsi": 0.38,
+    "returns": 0.22
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "ASIANPAINT.NS",
+   "score": -50.3,
+   "verdict": "SELL",
+   "ret": 17.441,
+   "index_ret": 4.279,
+   "excess": 13.161,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.28,
+    "rsi": 0.11,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "AXISBANK.NS",
+   "score": -53.3,
+   "verdict": "SELL",
+   "ret": 3.755,
+   "index_ret": 4.279,
+   "excess": -0.525,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.84,
+    "rsi": 0.38,
+    "returns": -0.21
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "BSE.NS",
+   "score": 45.0,
+   "verdict": "BUY",
+   "ret": 43.699,
+   "index_ret": 4.279,
+   "excess": 39.419,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.19,
+    "rsi": -0.01,
+    "returns": 0.61
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": -50.0,
+   "verdict": "SELL",
+   "ret": 14.648,
+   "index_ret": 4.279,
+   "excess": 10.368,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.74,
+    "rsi": 0.34,
+    "returns": -0.14
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "BAJFINANCE.NS",
+   "score": -74.9,
+   "verdict": "SELL",
+   "ret": 12.7,
+   "index_ret": 4.279,
+   "excess": 8.421,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.42,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "BAJAJFINSV.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 6.442,
+   "index_ret": 4.279,
+   "excess": 2.163,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "BEL.NS",
+   "score": 3.7,
+   "verdict": "HOLD",
+   "ret": 1.887,
+   "index_ret": 4.279,
+   "excess": -2.393,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.64,
+    "rsi": 0.45,
+    "returns": 0.46
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "BHARTIARTL.NS",
+   "score": -53.2,
+   "verdict": "SELL",
+   "ret": 8.766,
+   "index_ret": 4.279,
+   "excess": 4.486,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.01,
+    "rsi": 0.25,
+    "returns": -0.96
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "CIPLA.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 19.257,
+   "index_ret": 4.279,
+   "excess": 14.978,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "COALINDIA.NS",
+   "score": 47.1,
+   "verdict": "BUY",
+   "ret": 2.826,
+   "index_ret": 4.279,
+   "excess": -1.453,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.35,
+    "rsi": -0.08,
+    "returns": 0.91
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "DRREDDY.NS",
+   "score": -58.5,
+   "verdict": "SELL",
+   "ret": 10.053,
+   "index_ret": 4.279,
+   "excess": 5.773,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.43,
+    "returns": -0.31
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "EICHERMOT.NS",
+   "score": -22.2,
+   "verdict": "SELL",
+   "ret": 1.282,
+   "index_ret": 4.279,
+   "excess": -2.997,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.79,
+    "rsi": 0.34,
+    "returns": -0.41
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "ETERNAL.NS",
+   "score": -52.9,
+   "verdict": "SELL",
+   "ret": 2.063,
+   "index_ret": 4.279,
+   "excess": -2.216,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.35,
+    "rsi": -0.13,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "GRASIM.NS",
+   "score": -61.4,
+   "verdict": "SELL",
+   "ret": 13.537,
+   "index_ret": 4.279,
+   "excess": 9.258,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.7,
+    "rsi": 0.24,
+    "returns": -0.59
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "HCLTECH.NS",
+   "score": -51.9,
+   "verdict": "SELL",
+   "ret": -13.722,
+   "index_ret": 4.279,
+   "excess": -18.001,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.27,
+    "rsi": 0.03,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "HDFCBANK.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 3.557,
+   "index_ret": 4.279,
+   "excess": -0.723,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "HDFCLIFE.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 5.585,
+   "index_ret": 4.279,
+   "excess": 1.306,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "HINDALCO.NS",
+   "score": 2.6,
+   "verdict": "HOLD",
+   "ret": 16.416,
+   "index_ret": 4.279,
+   "excess": 12.137,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.38,
+    "rsi": 0.24,
+    "returns": 0.31
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "HINDUNILVR.NS",
+   "score": -64.4,
+   "verdict": "SELL",
+   "ret": 9.178,
+   "index_ret": 4.279,
+   "excess": 4.899,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.87,
+    "rsi": 0.39,
+    "returns": -0.66
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "ICICIBANK.NS",
+   "score": -65.2,
+   "verdict": "SELL",
+   "ret": 3.166,
+   "index_ret": 4.279,
+   "excess": -1.113,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.98,
+    "rsi": 0.48,
+    "returns": -0.65
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "ITC.NS",
+   "score": -70.2,
+   "verdict": "SELL",
+   "ret": 6.325,
+   "index_ret": 4.279,
+   "excess": 2.046,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.79,
+    "rsi": 0.41,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "INFY.NS",
+   "score": -49.8,
+   "verdict": "SELL",
+   "ret": -10.441,
+   "index_ret": 4.279,
+   "excess": -14.721,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.31,
+    "rsi": 0.1,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "INDIGO.NS",
+   "score": -53.8,
+   "verdict": "SELL",
+   "ret": 2.27,
+   "index_ret": 4.279,
+   "excess": -2.01,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.11,
+    "rsi": 0.14,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "JSWSTEEL.NS",
+   "score": -39.9,
+   "verdict": "SELL",
+   "ret": 13.364,
+   "index_ret": 4.279,
+   "excess": 9.084,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.66,
+    "rsi": 0.23,
+    "returns": 0.29
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "JIOFIN.NS",
+   "score": -56.1,
+   "verdict": "SELL",
+   "ret": 0.302,
+   "index_ret": 4.279,
+   "excess": -3.978,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.07,
+    "rsi": 0.06,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "KOTAKBANK.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 10.041,
+   "index_ret": 4.279,
+   "excess": 5.761,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "LT.NS",
+   "score": -43.5,
+   "verdict": "SELL",
+   "ret": 8.602,
+   "index_ret": 4.279,
+   "excess": 4.322,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.19,
+    "rsi": 0.23,
+    "returns": -0.71
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "M&M.NS",
+   "score": -54.6,
+   "verdict": "SELL",
+   "ret": 1.722,
+   "index_ret": 4.279,
+   "excess": -2.558,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.0,
+    "rsi": 0.24,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "MARUTI.NS",
+   "score": -53.5,
+   "verdict": "SELL",
+   "ret": 4.053,
+   "index_ret": 4.279,
+   "excess": -0.226,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.15,
+    "rsi": 0.5,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "MAXHEALTH.NS",
+   "score": -52.7,
+   "verdict": "SELL",
+   "ret": 10.392,
+   "index_ret": 4.279,
+   "excess": 6.113,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.83,
+    "rsi": 1.0,
+    "returns": -0.66
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "NTPC.NS",
+   "score": 7.3,
+   "verdict": "HOLD",
+   "ret": 6.486,
+   "index_ret": 4.279,
+   "excess": 2.206,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.73,
+    "rsi": 0.24,
+    "returns": 0.86
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "NESTLEIND.NS",
+   "score": -56.3,
+   "verdict": "SELL",
+   "ret": 21.248,
+   "index_ret": 4.279,
+   "excess": 16.969,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.72,
+    "rsi": 0.41,
+    "returns": -0.48
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "ONGC.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 3.177,
+   "index_ret": 4.279,
+   "excess": -1.103,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "POWERGRID.NS",
+   "score": 47.8,
+   "verdict": "BUY",
+   "ret": 1.281,
+   "index_ret": 4.279,
+   "excess": -2.999,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.55,
+    "rsi": 0.23,
+    "returns": 0.91
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "RELIANCE.NS",
+   "score": -63.2,
+   "verdict": "SELL",
+   "ret": -2.432,
+   "index_ret": 4.279,
+   "excess": -6.711,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.6,
+    "rsi": 0.23,
+    "returns": -0.76
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "SBILIFE.NS",
+   "score": -58.1,
+   "verdict": "SELL",
+   "ret": 3.904,
+   "index_ret": 4.279,
+   "excess": -0.375,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.72
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": -24.2,
+   "verdict": "SELL",
+   "ret": 3.681,
+   "index_ret": 4.279,
+   "excess": -0.598,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -1.0,
+    "rsi": 0.47,
+    "returns": -0.38
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "SBIN.NS",
+   "score": -7.2,
+   "verdict": "HOLD",
+   "ret": -6.039,
+   "index_ret": 4.279,
+   "excess": -10.319,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.96,
+    "rsi": 0.39,
+    "returns": 0.36
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "SUNPHARMA.NS",
+   "score": -6.9,
+   "verdict": "HOLD",
+   "ret": 10.257,
+   "index_ret": 4.279,
+   "excess": 5.978,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.66,
+    "rsi": 0.37,
+    "returns": 0.09
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "TCS.NS",
+   "score": -50.5,
+   "verdict": "SELL",
+   "ret": -5.191,
+   "index_ret": 4.279,
+   "excess": -9.47,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.12,
+    "rsi": 0.31,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "TATACONSUM.NS",
+   "score": -72.6,
+   "verdict": "SELL",
+   "ret": 20.238,
+   "index_ret": 4.279,
+   "excess": 15.959,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.92,
+    "rsi": 0.39,
+    "returns": -0.96
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "TATASTEEL.NS",
+   "score": 64.6,
+   "verdict": "BUY",
+   "ret": 7.765,
+   "index_ret": 4.279,
+   "excess": 3.485,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.38,
+    "rsi": 0.01,
+    "returns": 0.86
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "TECHM.NS",
+   "score": -48.9,
+   "verdict": "SELL",
+   "ret": 1.816,
+   "index_ret": 4.279,
+   "excess": -2.464,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.5,
+    "rsi": -0.29,
+    "returns": -0.86
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "TITAN.NS",
+   "score": -3.6,
+   "verdict": "HOLD",
+   "ret": 2.563,
+   "index_ret": 4.279,
+   "excess": -1.716,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.43,
+    "rsi": 0.18,
+    "returns": 0.14
+   }
+  },
+  {
+   "date": "2026-04-01",
+   "exit": "2026-05-18",
+   "ticker": "ULTRACEMCO.NS",
+   "score": -68.2,
+   "verdict": "SELL",
+   "ret": 7.906,
+   "index_ret": 4.279,
+   "excess": 3.626,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.28,
+    "returns": -0.61
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "ADANIENT.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 18.474,
+   "index_ret": -0.54,
+   "excess": 19.014,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "ADANIPORTS.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 4.997,
+   "index_ret": -0.54,
+   "excess": 5.537,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "APOLLOHOSP.NS",
+   "score": 63.6,
+   "verdict": "BUY",
+   "ret": 8.439,
+   "index_ret": -0.54,
+   "excess": 8.979,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.55,
+    "rsi": -0.25,
+    "returns": 0.84
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "ASIANPAINT.NS",
+   "score": -16.5,
+   "verdict": "SELL",
+   "ret": 12.254,
+   "index_ret": -0.54,
+   "excess": 12.794,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.26,
+    "rsi": -0.36,
+    "returns": -0.17
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "AXISBANK.NS",
+   "score": -3.8,
+   "verdict": "HOLD",
+   "ret": 7.105,
+   "index_ret": -0.54,
+   "excess": 7.645,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.68,
+    "rsi": 1.0,
+    "returns": -0.23
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "BSE.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 12.155,
+   "index_ret": -0.54,
+   "excess": 12.694,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 65.0,
+   "verdict": "BUY",
+   "ret": -0.524,
+   "index_ret": -0.54,
+   "excess": 0.015,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.99,
+    "rsi": -0.29,
+    "returns": 0.49
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "BAJFINANCE.NS",
+   "score": 39.5,
+   "verdict": "BUY",
+   "ret": 0.995,
+   "index_ret": -0.54,
+   "excess": 1.534,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.82,
+    "rsi": -1.0,
+    "returns": 0.11
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "BAJAJFINSV.NS",
+   "score": -58.0,
+   "verdict": "SELL",
+   "ret": 0.955,
+   "index_ret": -0.54,
+   "excess": 1.494,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.46,
+    "rsi": 0.1,
+    "returns": -0.58
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "BEL.NS",
+   "score": -16.0,
+   "verdict": "SELL",
+   "ret": -5.997,
+   "index_ret": -0.54,
+   "excess": -5.457,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.54,
+    "rsi": 0.16,
+    "returns": -0.26
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "BHARTIARTL.NS",
+   "score": -35.9,
+   "verdict": "SELL",
+   "ret": 1.418,
+   "index_ret": -0.54,
+   "excess": 1.957,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.25,
+    "rsi": 0.22,
+    "returns": -0.44
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "CIPLA.NS",
+   "score": 4.7,
+   "verdict": "HOLD",
+   "ret": 3.826,
+   "index_ret": -0.54,
+   "excess": 4.366,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.92,
+    "rsi": -1.0,
+    "returns": 0.03
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "COALINDIA.NS",
+   "score": 54.8,
+   "verdict": "BUY",
+   "ret": -6.042,
+   "index_ret": -0.54,
+   "excess": -5.503,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.95,
+    "rsi": -1.0,
+    "returns": 0.63
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "DRREDDY.NS",
+   "score": 49.8,
+   "verdict": "BUY",
+   "ret": -0.8,
+   "index_ret": -0.54,
+   "excess": -0.261,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.43,
+    "rsi": -0.22,
+    "returns": 0.35
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "EICHERMOT.NS",
+   "score": 51.6,
+   "verdict": "BUY",
+   "ret": 3.159,
+   "index_ret": -0.54,
+   "excess": 3.698,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.73,
+    "rsi": -0.37,
+    "returns": 0.24
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "ETERNAL.NS",
+   "score": -21.9,
+   "verdict": "SELL",
+   "ret": 0.675,
+   "index_ret": -0.54,
+   "excess": 1.214,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.28,
+    "rsi": -0.39,
+    "returns": -0.36
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "GRASIM.NS",
+   "score": 38.4,
+   "verdict": "BUY",
+   "ret": 9.954,
+   "index_ret": -0.54,
+   "excess": 10.494,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.84,
+    "rsi": -1.0,
+    "returns": 0.04
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "HCLTECH.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": -3.457,
+   "index_ret": -0.54,
+   "excess": -2.917,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "HDFCBANK.NS",
+   "score": -49.7,
+   "verdict": "SELL",
+   "ret": 0.706,
+   "index_ret": -0.54,
+   "excess": 1.245,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.26,
+    "rsi": 0.17,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "HDFCLIFE.NS",
+   "score": -49.8,
+   "verdict": "SELL",
+   "ret": -2.371,
+   "index_ret": -0.54,
+   "excess": -1.831,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.13,
+    "rsi": 0.34,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "HINDALCO.NS",
+   "score": 32.4,
+   "verdict": "BUY",
+   "ret": -5.783,
+   "index_ret": -0.54,
+   "excess": -5.243,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.1,
+    "rsi": -0.43,
+    "returns": 0.3
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "HINDUNILVR.NS",
+   "score": 4.9,
+   "verdict": "HOLD",
+   "ret": -4.737,
+   "index_ret": -0.54,
+   "excess": -4.198,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.72,
+    "rsi": -0.43,
+    "returns": -0.19
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "ICICIBANK.NS",
+   "score": -44.7,
+   "verdict": "SELL",
+   "ret": 4.997,
+   "index_ret": -0.54,
+   "excess": 5.536,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.68,
+    "rsi": 1.0,
+    "returns": -0.47
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "ITC.NS",
+   "score": 5.2,
+   "verdict": "HOLD",
+   "ret": -3.698,
+   "index_ret": -0.54,
+   "excess": -3.158,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.57,
+    "rsi": -0.37,
+    "returns": -0.07
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "INFY.NS",
+   "score": -74.1,
+   "verdict": "SELL",
+   "ret": -0.005,
+   "index_ret": -0.54,
+   "excess": 0.535,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.47,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "INDIGO.NS",
+   "score": -66.2,
+   "verdict": "SELL",
+   "ret": 13.551,
+   "index_ret": -0.54,
+   "excess": 14.091,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.89,
+    "rsi": 0.38,
+    "returns": -0.71
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "JSWSTEEL.NS",
+   "score": 38.6,
+   "verdict": "BUY",
+   "ret": 0.608,
+   "index_ret": -0.54,
+   "excess": 1.148,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.63,
+    "rsi": -1.0,
+    "returns": 0.26
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "JIOFIN.NS",
+   "score": 11.4,
+   "verdict": "HOLD",
+   "ret": -4.269,
+   "index_ret": -0.54,
+   "excess": -3.73,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.79,
+    "rsi": -0.33,
+    "returns": -0.06
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "KOTAKBANK.NS",
+   "score": -45.2,
+   "verdict": "SELL",
+   "ret": 9.74,
+   "index_ret": -0.54,
+   "excess": 10.28,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.23,
+    "rsi": 0.01,
+    "returns": -0.66
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "LT.NS",
+   "score": 60.7,
+   "verdict": "BUY",
+   "ret": 3.085,
+   "index_ret": -0.54,
+   "excess": 3.624,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.75,
+    "rsi": -0.28,
+    "returns": 0.54
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "M&M.NS",
+   "score": -57.8,
+   "verdict": "SELL",
+   "ret": 1.011,
+   "index_ret": -0.54,
+   "excess": 1.55,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.49,
+    "rsi": 0.26,
+    "returns": -0.66
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "MARUTI.NS",
+   "score": -38.4,
+   "verdict": "SELL",
+   "ret": 0.817,
+   "index_ret": -0.54,
+   "excess": 1.357,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.69,
+    "rsi": -0.32,
+    "returns": -0.58
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "MAXHEALTH.NS",
+   "score": 5.2,
+   "verdict": "HOLD",
+   "ret": 1.241,
+   "index_ret": -0.54,
+   "excess": 1.78,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.6,
+    "rsi": -1.0,
+    "returns": 0.37
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "NTPC.NS",
+   "score": 47.4,
+   "verdict": "BUY",
+   "ret": -11.124,
+   "index_ret": -0.54,
+   "excess": -10.584,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.23,
+    "rsi": -0.34,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "NESTLEIND.NS",
+   "score": 62.1,
+   "verdict": "BUY",
+   "ret": -4.488,
+   "index_ret": -0.54,
+   "excess": -3.949,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.89
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "ONGC.NS",
+   "score": 63.6,
+   "verdict": "BUY",
+   "ret": -15.261,
+   "index_ret": -0.54,
+   "excess": -14.722,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.57,
+    "rsi": -0.18,
+    "returns": 0.77
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "POWERGRID.NS",
+   "score": 36.9,
+   "verdict": "BUY",
+   "ret": -10.625,
+   "index_ret": -0.54,
+   "excess": -10.086,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.18,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "RELIANCE.NS",
+   "score": 48.7,
+   "verdict": "BUY",
+   "ret": -8.759,
+   "index_ret": -0.54,
+   "excess": -8.22,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.32
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "SBILIFE.NS",
+   "score": -62.4,
+   "verdict": "SELL",
+   "ret": -2.884,
+   "index_ret": -0.54,
+   "excess": -2.345,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.65,
+    "rsi": 0.33,
+    "returns": -0.75
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": -18.7,
+   "verdict": "SELL",
+   "ret": 4.717,
+   "index_ret": -0.54,
+   "excess": 5.256,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.64,
+    "rsi": 0.3,
+    "returns": -0.38
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "SBIN.NS",
+   "score": -12.2,
+   "verdict": "HOLD",
+   "ret": -3.257,
+   "index_ret": -0.54,
+   "excess": -2.718,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.52,
+    "rsi": -0.04,
+    "returns": 0.03
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "SUNPHARMA.NS",
+   "score": 63.1,
+   "verdict": "BUY",
+   "ret": -1.25,
+   "index_ret": -0.54,
+   "excess": -0.711,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.93
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "TCS.NS",
+   "score": -72.9,
+   "verdict": "SELL",
+   "ret": -8.328,
+   "index_ret": -0.54,
+   "excess": -7.789,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.68,
+    "rsi": 0.11,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "TATACONSUM.NS",
+   "score": 47.9,
+   "verdict": "BUY",
+   "ret": -1.718,
+   "index_ret": -0.54,
+   "excess": -1.178,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.71,
+    "rsi": -0.46,
+    "returns": 0.17
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "TATASTEEL.NS",
+   "score": 39.2,
+   "verdict": "BUY",
+   "ret": -5.747,
+   "index_ret": -0.54,
+   "excess": -5.208,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.21,
+    "rsi": -0.34,
+    "returns": 0.63
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "TECHM.NS",
+   "score": -11.5,
+   "verdict": "HOLD",
+   "ret": -1.685,
+   "index_ret": -0.54,
+   "excess": -1.146,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.61,
+    "rsi": -0.13,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "TITAN.NS",
+   "score": 43.8,
+   "verdict": "BUY",
+   "ret": -0.573,
+   "index_ret": -0.54,
+   "excess": -0.033,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.44,
+    "rsi": 0.2,
+    "returns": 0.65
+   }
+  },
+  {
+   "date": "2026-05-04",
+   "exit": "2026-06-16",
+   "ticker": "ULTRACEMCO.NS",
+   "score": -24.4,
+   "verdict": "SELL",
+   "ret": -3.121,
+   "index_ret": -0.54,
+   "excess": -2.582,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.35,
+    "rsi": -0.21,
+    "returns": -0.53
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "ADANIENT.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 9.656,
+   "index_ret": 2.863,
+   "excess": 6.793,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "ADANIPORTS.NS",
+   "score": 44.9,
+   "verdict": "BUY",
+   "ret": 2.584,
+   "index_ret": 2.863,
+   "excess": -0.279,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.24,
+    "rsi": -0.47,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "APOLLOHOSP.NS",
+   "score": 30.8,
+   "verdict": "BUY",
+   "ret": 9.768,
+   "index_ret": 2.863,
+   "excess": 6.904,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.38,
+    "rsi": -0.12,
+    "returns": 0.28
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "ASIANPAINT.NS",
+   "score": 26.1,
+   "verdict": "BUY",
+   "ret": 1.197,
+   "index_ret": 2.863,
+   "excess": -1.666,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.24,
+    "rsi": -1.0,
+    "returns": 0.6
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "AXISBANK.NS",
+   "score": -8.4,
+   "verdict": "HOLD",
+   "ret": 3.348,
+   "index_ret": 2.863,
+   "excess": 0.485,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.35,
+    "rsi": -0.14,
+    "returns": -0.6
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "BSE.NS",
+   "score": 46.2,
+   "verdict": "BUY",
+   "ret": -6.49,
+   "index_ret": 2.863,
+   "excess": -9.353,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.34,
+    "rsi": -0.26,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 33.9,
+   "verdict": "BUY",
+   "ret": -2.024,
+   "index_ret": 2.863,
+   "excess": -4.887,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.28,
+    "rsi": -0.08,
+    "returns": 0.28
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "BAJFINANCE.NS",
+   "score": -72.3,
+   "verdict": "SELL",
+   "ret": 13.918,
+   "index_ret": 2.863,
+   "excess": 11.055,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.81,
+    "rsi": 0.13,
+    "returns": -0.86
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "BAJAJFINSV.NS",
+   "score": -52.5,
+   "verdict": "SELL",
+   "ret": 6.362,
+   "index_ret": 2.863,
+   "excess": 3.499,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.27,
+    "rsi": -0.08,
+    "returns": -0.94
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "BEL.NS",
+   "score": -62.5,
+   "verdict": "SELL",
+   "ret": 0.712,
+   "index_ret": 2.863,
+   "excess": -2.151,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.83,
+    "rsi": 0.18,
+    "returns": -0.46
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "BHARTIARTL.NS",
+   "score": -63.2,
+   "verdict": "SELL",
+   "ret": 6.954,
+   "index_ret": 2.863,
+   "excess": 4.09,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.67,
+    "rsi": -0.21,
+    "returns": -0.36
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "CIPLA.NS",
+   "score": -20.0,
+   "verdict": "SELL",
+   "ret": 4.409,
+   "index_ret": 2.863,
+   "excess": 1.545,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.32,
+    "rsi": -1.0,
+    "returns": 0.22
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "COALINDIA.NS",
+   "score": 59.9,
+   "verdict": "BUY",
+   "ret": -8.887,
+   "index_ret": 2.863,
+   "excess": -11.75,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.69,
+    "rsi": -0.22,
+    "returns": 0.52
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "DRREDDY.NS",
+   "score": -17.3,
+   "verdict": "SELL",
+   "ret": -2.813,
+   "index_ret": 2.863,
+   "excess": -5.676,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.55,
+    "rsi": -0.14,
+    "returns": -0.08
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "EICHERMOT.NS",
+   "score": -10.5,
+   "verdict": "HOLD",
+   "ret": 2.521,
+   "index_ret": 2.863,
+   "excess": -0.342,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.3,
+    "rsi": 0.02,
+    "returns": -0.76
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "ETERNAL.NS",
+   "score": -31.5,
+   "verdict": "SELL",
+   "ret": 15.337,
+   "index_ret": 2.863,
+   "excess": 12.474,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.38,
+    "rsi": -0.21,
+    "returns": -0.06
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "GRASIM.NS",
+   "score": 46.1,
+   "verdict": "BUY",
+   "ret": 0.345,
+   "index_ret": 2.863,
+   "excess": -2.518,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.69,
+    "rsi": -1.0,
+    "returns": 0.52
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "HCLTECH.NS",
+   "score": -50.2,
+   "verdict": "SELL",
+   "ret": -2.376,
+   "index_ret": 2.863,
+   "excess": -5.239,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.5,
+    "rsi": -0.47,
+    "returns": -0.78
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "HDFCBANK.NS",
+   "score": -75.4,
+   "verdict": "SELL",
+   "ret": 10.783,
+   "index_ret": 2.863,
+   "excess": 7.92,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.77,
+    "rsi": 0.09,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "HDFCLIFE.NS",
+   "score": -73.4,
+   "verdict": "SELL",
+   "ret": -5.007,
+   "index_ret": 2.863,
+   "excess": -7.87,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.8,
+    "rsi": 0.24,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "HINDALCO.NS",
+   "score": 73.1,
+   "verdict": "BUY",
+   "ret": -14.187,
+   "index_ret": 2.863,
+   "excess": -17.05,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.95,
+    "rsi": -0.46,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "HINDUNILVR.NS",
+   "score": -60.5,
+   "verdict": "SELL",
+   "ret": 2.757,
+   "index_ret": 2.863,
+   "excess": -0.106,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.82
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "ICICIBANK.NS",
+   "score": -49.5,
+   "verdict": "SELL",
+   "ret": 13.552,
+   "index_ret": 2.863,
+   "excess": 10.689,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.16,
+    "rsi": 0.01,
+    "returns": -0.77
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "ITC.NS",
+   "score": -67.1,
+   "verdict": "SELL",
+   "ret": -1.466,
+   "index_ret": 2.863,
+   "excess": -4.329,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.44,
+    "returns": -0.68
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "INFY.NS",
+   "score": -35.9,
+   "verdict": "SELL",
+   "ret": -7.148,
+   "index_ret": 2.863,
+   "excess": -10.011,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.68,
+    "rsi": -0.34,
+    "returns": -0.45
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "INDIGO.NS",
+   "score": -8.5,
+   "verdict": "HOLD",
+   "ret": 14.701,
+   "index_ret": 2.863,
+   "excess": 11.838,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.49,
+    "rsi": -0.4,
+    "returns": -0.55
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "JSWSTEEL.NS",
+   "score": 26.5,
+   "verdict": "BUY",
+   "ret": -3.427,
+   "index_ret": 2.863,
+   "excess": -6.29,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.24,
+    "rsi": -0.35,
+    "returns": 0.13
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "JIOFIN.NS",
+   "score": -48.6,
+   "verdict": "SELL",
+   "ret": 0.434,
+   "index_ret": 2.863,
+   "excess": -2.429,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.17,
+    "rsi": -0.22,
+    "returns": -0.57
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "KOTAKBANK.NS",
+   "score": -67.1,
+   "verdict": "SELL",
+   "ret": 0.331,
+   "index_ret": 2.863,
+   "excess": -2.532,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.58,
+    "rsi": -0.03,
+    "returns": -0.75
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "LT.NS",
+   "score": 20.7,
+   "verdict": "BUY",
+   "ret": -4.042,
+   "index_ret": 2.863,
+   "excess": -6.905,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.52,
+    "rsi": -1.0,
+    "returns": -0.39
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "M&M.NS",
+   "score": -72.9,
+   "verdict": "SELL",
+   "ret": 5.238,
+   "index_ret": 2.863,
+   "excess": 2.375,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.95,
+    "rsi": 0.47,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "MARUTI.NS",
+   "score": -68.3,
+   "verdict": "SELL",
+   "ret": 4.194,
+   "index_ret": 2.863,
+   "excess": 1.331,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.62,
+    "rsi": 0.21,
+    "returns": -0.94
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "MAXHEALTH.NS",
+   "score": -72.7,
+   "verdict": "SELL",
+   "ret": 16.665,
+   "index_ret": 2.863,
+   "excess": 13.802,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.44,
+    "returns": -0.92
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "NTPC.NS",
+   "score": -15.4,
+   "verdict": "SELL",
+   "ret": -8.067,
+   "index_ret": 2.863,
+   "excess": -10.93,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.79,
+    "rsi": 0.33,
+    "returns": -0.11
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "NESTLEIND.NS",
+   "score": 45.9,
+   "verdict": "BUY",
+   "ret": 3.029,
+   "index_ret": 2.863,
+   "excess": 0.166,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.64,
+    "rsi": 1.0,
+    "returns": 0.34
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "ONGC.NS",
+   "score": -13.4,
+   "verdict": "HOLD",
+   "ret": -5.827,
+   "index_ret": 2.863,
+   "excess": -8.69,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -0.32
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "POWERGRID.NS",
+   "score": -60.2,
+   "verdict": "SELL",
+   "ret": 0.0,
+   "index_ret": 2.863,
+   "excess": -2.863,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.96,
+    "rsi": 0.48,
+    "returns": -0.46
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "RELIANCE.NS",
+   "score": -55.0,
+   "verdict": "SELL",
+   "ret": -1.593,
+   "index_ret": 2.863,
+   "excess": -4.456,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.73,
+    "rsi": 0.35,
+    "returns": -0.37
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "SBILIFE.NS",
+   "score": -69.2,
+   "verdict": "SELL",
+   "ret": 1.534,
+   "index_ret": 2.863,
+   "excess": -1.329,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.7,
+    "rsi": 0.12,
+    "returns": -0.83
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": -21.9,
+   "verdict": "SELL",
+   "ret": 10.944,
+   "index_ret": 2.863,
+   "excess": 8.081,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.0,
+    "rsi": 0.09,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "SBIN.NS",
+   "score": -55.6,
+   "verdict": "SELL",
+   "ret": 6.425,
+   "index_ret": 2.863,
+   "excess": 3.562,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.1,
+    "rsi": 0.05,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "SUNPHARMA.NS",
+   "score": 28.1,
+   "verdict": "BUY",
+   "ret": 8.416,
+   "index_ret": 2.863,
+   "excess": 5.553,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.62,
+    "rsi": 0.26,
+    "returns": 0.12
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "TCS.NS",
+   "score": -47.7,
+   "verdict": "SELL",
+   "ret": -4.213,
+   "index_ret": 2.863,
+   "excess": -7.076,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.33,
+    "rsi": -0.13,
+    "returns": -0.76
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "TATACONSUM.NS",
+   "score": -3.5,
+   "verdict": "HOLD",
+   "ret": -3.997,
+   "index_ret": 2.863,
+   "excess": -6.86,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.79,
+    "rsi": 1.0,
+    "returns": -0.11
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "TATASTEEL.NS",
+   "score": 22.4,
+   "verdict": "BUY",
+   "ret": -8.746,
+   "index_ret": 2.863,
+   "excess": -11.609,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.45,
+    "rsi": 0.04,
+    "returns": -0.13
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "TECHM.NS",
+   "score": 62.1,
+   "verdict": "BUY",
+   "ret": -1.317,
+   "index_ret": 2.863,
+   "excess": -4.18,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.89
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "TITAN.NS",
+   "score": -28.2,
+   "verdict": "SELL",
+   "ret": 14.016,
+   "index_ret": 2.863,
+   "excess": 11.153,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.8,
+    "rsi": 0.08,
+    "returns": -0.46
+   }
+  },
+  {
+   "date": "2026-06-01",
+   "exit": "2026-07-14",
+   "ticker": "ULTRACEMCO.NS",
+   "score": -71.4,
+   "verdict": "SELL",
+   "ret": 2.35,
+   "index_ret": 2.863,
+   "excess": -0.513,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.78,
+    "rsi": 0.22,
+    "returns": -0.92
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "ADANIENT.NS",
+   "score": 55.4,
+   "verdict": "BUY",
+   "ret": -5.023,
+   "index_ret": 1.792,
+   "excess": -6.815,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.2,
+    "rsi": -0.46,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "ADANIPORTS.NS",
+   "score": 50.8,
+   "verdict": "BUY",
+   "ret": -9.912,
+   "index_ret": 1.792,
+   "excess": -11.704,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.11,
+    "rsi": -0.31,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "APOLLOHOSP.NS",
+   "score": 67.6,
+   "verdict": "BUY",
+   "ret": -0.249,
+   "index_ret": 1.792,
+   "excess": -2.041,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.59,
+    "rsi": -0.29,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "ASIANPAINT.NS",
+   "score": 51.9,
+   "verdict": "BUY",
+   "ret": 0.869,
+   "index_ret": 1.792,
+   "excess": -0.923,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.16,
+    "rsi": -0.18,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "AXISBANK.NS",
+   "score": 47.4,
+   "verdict": "BUY",
+   "ret": -10.064,
+   "index_ret": 1.792,
+   "excess": -11.856,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.18,
+    "rsi": -0.38,
+    "returns": 0.98
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "BSE.NS",
+   "score": 47.1,
+   "verdict": "BUY",
+   "ret": -10.34,
+   "index_ret": 1.792,
+   "excess": -12.131,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.43,
+    "rsi": -0.09,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 10.1,
+   "verdict": "HOLD",
+   "ret": 18.878,
+   "index_ret": 1.792,
+   "excess": 17.087,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.56,
+    "rsi": 0.24,
+    "returns": 0.81
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "BAJFINANCE.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 7.814,
+   "index_ret": 1.792,
+   "excess": 6.022,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "BAJAJFINSV.NS",
+   "score": 12.5,
+   "verdict": "HOLD",
+   "ret": 12.4,
+   "index_ret": 1.792,
+   "excess": 10.608,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.66,
+    "rsi": -1.0,
+    "returns": 0.62
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "BEL.NS",
+   "score": -30.3,
+   "verdict": "SELL",
+   "ret": -2.535,
+   "index_ret": 1.792,
+   "excess": -4.326,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.44,
+    "rsi": -0.25,
+    "returns": -0.04
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "BHARTIARTL.NS",
+   "score": -7.4,
+   "verdict": "HOLD",
+   "ret": 5.263,
+   "index_ret": 1.792,
+   "excess": 3.472,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.3,
+    "rsi": -0.46,
+    "returns": 0.33
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "CIPLA.NS",
+   "score": 59.5,
+   "verdict": "BUY",
+   "ret": 0.432,
+   "index_ret": 1.792,
+   "excess": -1.359,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.78,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "COALINDIA.NS",
+   "score": -18.0,
+   "verdict": "SELL",
+   "ret": -4.596,
+   "index_ret": 1.792,
+   "excess": -6.388,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.74,
+    "rsi": 0.26,
+    "returns": -0.22
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "DRREDDY.NS",
+   "score": 58.2,
+   "verdict": "BUY",
+   "ret": -9.873,
+   "index_ret": 1.792,
+   "excess": -11.665,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.63,
+    "rsi": -0.5,
+    "returns": 0.72
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "EICHERMOT.NS",
+   "score": -10.4,
+   "verdict": "HOLD",
+   "ret": 13.928,
+   "index_ret": 1.792,
+   "excess": 12.136,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.78,
+    "rsi": 0.04,
+    "returns": 0.31
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "ETERNAL.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 12.281,
+   "index_ret": 1.792,
+   "excess": 10.489,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "GRASIM.NS",
+   "score": 48.3,
+   "verdict": "BUY",
+   "ret": 5.659,
+   "index_ret": 1.792,
+   "excess": 3.867,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.29,
+    "rsi": -0.21,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "HCLTECH.NS",
+   "score": -74.1,
+   "verdict": "SELL",
+   "ret": 33.373,
+   "index_ret": 1.792,
+   "excess": 31.581,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.47,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "HDFCBANK.NS",
+   "score": 12.7,
+   "verdict": "HOLD",
+   "ret": -8.434,
+   "index_ret": 1.792,
+   "excess": -10.226,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.69,
+    "rsi": -1.0,
+    "returns": 0.6
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "HDFCLIFE.NS",
+   "score": -38.2,
+   "verdict": "SELL",
+   "ret": -5.781,
+   "index_ret": 1.792,
+   "excess": -7.573,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.15,
+    "rsi": -0.35,
+    "returns": -0.01
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "HINDALCO.NS",
+   "score": 0.2,
+   "verdict": "HOLD",
+   "ret": 15.369,
+   "index_ret": 1.792,
+   "excess": 13.578,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": 0.26
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "HINDUNILVR.NS",
+   "score": 18.4,
+   "verdict": "BUY",
+   "ret": -5.454,
+   "index_ret": 1.792,
+   "excess": -7.245,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.54,
+    "rsi": -0.28,
+    "returns": 0.45
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "ICICIBANK.NS",
+   "score": 56.7,
+   "verdict": "BUY",
+   "ret": 4.636,
+   "index_ret": 1.792,
+   "excess": 2.845,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.74,
+    "rsi": -1.0,
+    "returns": 0.92
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "ITC.NS",
+   "score": -29.0,
+   "verdict": "SELL",
+   "ret": -4.874,
+   "index_ret": 1.792,
+   "excess": -6.666,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.44,
+    "rsi": -0.43,
+    "returns": 0.15
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "INFY.NS",
+   "score": -64.7,
+   "verdict": "SELL",
+   "ret": 19.365,
+   "index_ret": 1.792,
+   "excess": 17.573,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "INDIGO.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": -1.222,
+   "index_ret": 1.792,
+   "excess": -3.014,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "JSWSTEEL.NS",
+   "score": 9.4,
+   "verdict": "HOLD",
+   "ret": 4.949,
+   "index_ret": 1.792,
+   "excess": 3.157,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.79,
+    "rsi": 1.0,
+    "returns": 0.44
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "JIOFIN.NS",
+   "score": -46.1,
+   "verdict": "SELL",
+   "ret": 6.933,
+   "index_ret": 1.792,
+   "excess": 5.141,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.33,
+    "rsi": -0.48,
+    "returns": 0.23
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "KOTAKBANK.NS",
+   "score": 9.6,
+   "verdict": "HOLD",
+   "ret": -2.316,
+   "index_ret": 1.792,
+   "excess": -4.108,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.31,
+    "rsi": -0.15,
+    "returns": 0.83
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "LT.NS",
+   "score": 29.6,
+   "verdict": "BUY",
+   "ret": -1.774,
+   "index_ret": 1.792,
+   "excess": -3.566,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.46,
+    "rsi": -1.0,
+    "returns": 0.97
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "M&M.NS",
+   "score": 12.9,
+   "verdict": "HOLD",
+   "ret": 9.883,
+   "index_ret": 1.792,
+   "excess": 8.092,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.54,
+    "rsi": -0.28,
+    "returns": 0.22
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "MARUTI.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": -2.644,
+   "index_ret": 1.792,
+   "excess": -4.436,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "MAXHEALTH.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": -11.458,
+   "index_ret": 1.792,
+   "excess": -13.25,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "NTPC.NS",
+   "score": -34.4,
+   "verdict": "SELL",
+   "ret": -5.155,
+   "index_ret": 1.792,
+   "excess": -6.947,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.28,
+    "rsi": -0.16,
+    "returns": -0.12
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "NESTLEIND.NS",
+   "score": 74.9,
+   "verdict": "BUY",
+   "ret": 4.158,
+   "index_ret": 1.792,
+   "excess": 2.366,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.81,
+    "rsi": -0.17,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "ONGC.NS",
+   "score": -64.2,
+   "verdict": "SELL",
+   "ret": 1.728,
+   "index_ret": 1.792,
+   "excess": -0.064,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.98,
+    "rsi": 1.0,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "POWERGRID.NS",
+   "score": -30.4,
+   "verdict": "SELL",
+   "ret": -6.295,
+   "index_ret": 1.792,
+   "excess": -8.086,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.36,
+    "rsi": -0.04,
+    "returns": -0.12
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "RELIANCE.NS",
+   "score": -38.6,
+   "verdict": "SELL",
+   "ret": 1.606,
+   "index_ret": 1.792,
+   "excess": -0.186,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.37,
+    "rsi": -0.32,
+    "returns": -0.27
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "SBILIFE.NS",
+   "score": -30.7,
+   "verdict": "SELL",
+   "ret": 2.183,
+   "index_ret": 1.792,
+   "excess": 0.392,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.48,
+    "rsi": -0.38,
+    "returns": 0.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": 7.196,
+   "index_ret": 1.792,
+   "excess": 5.404,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "SBIN.NS",
+   "score": 51.8,
+   "verdict": "BUY",
+   "ret": 3.303,
+   "index_ret": 1.792,
+   "excess": 1.512,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.69,
+    "rsi": -0.41,
+    "returns": 0.32
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "SUNPHARMA.NS",
+   "score": 43.3,
+   "verdict": "BUY",
+   "ret": 4.442,
+   "index_ret": 1.792,
+   "excess": 2.65,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.56,
+    "rsi": -1.0,
+    "returns": 0.53
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "TCS.NS",
+   "score": -74.8,
+   "verdict": "SELL",
+   "ret": 19.166,
+   "index_ret": 1.792,
+   "excess": 17.374,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.43,
+    "returns": -1.0
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "TATACONSUM.NS",
+   "score": -37.6,
+   "verdict": "SELL",
+   "ret": -2.658,
+   "index_ret": 1.792,
+   "excess": -4.45,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.69,
+    "rsi": 0.12,
+    "returns": 0.5
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "TATASTEEL.NS",
+   "score": -56.0,
+   "verdict": "SELL",
+   "ret": 0.556,
+   "index_ret": 1.792,
+   "excess": -1.235,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.99,
+    "rsi": 0.4,
+    "returns": -0.19
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "TECHM.NS",
+   "score": -56.5,
+   "verdict": "SELL",
+   "ret": 22.392,
+   "index_ret": 1.792,
+   "excess": 20.601,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -1.0,
+    "rsi": 0.4,
+    "returns": -0.2
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "TITAN.NS",
+   "score": 47.1,
+   "verdict": "BUY",
+   "ret": 16.304,
+   "index_ret": 1.792,
+   "excess": 14.512,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.7,
+    "rsi": -1.0,
+    "returns": 0.55
+   }
+  },
+  {
+   "date": "2026-07-01",
+   "exit": "2026-08-12",
+   "ticker": "ULTRACEMCO.NS",
+   "score": 14.4,
+   "verdict": "HOLD",
+   "ret": 5.916,
+   "index_ret": 1.792,
+   "excess": 4.124,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.52,
+    "rsi": -0.49,
+    "returns": 0.46
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "ADANIENT.NS",
+   "score": 55.0,
+   "verdict": "BUY",
+   "ret": -4.544,
+   "index_ret": -6.683,
+   "excess": 2.139,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.41,
+    "rsi": 0.33,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "ADANIPORTS.NS",
+   "score": -6.4,
+   "verdict": "HOLD",
+   "ret": 0.753,
+   "index_ret": -6.683,
+   "excess": 7.436,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.87,
+    "rsi": 1.0,
+    "returns": -0.15
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "APOLLOHOSP.NS",
+   "score": 49.1,
+   "verdict": "BUY",
+   "ret": -1.087,
+   "index_ret": -6.683,
+   "excess": 5.596,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.43,
+    "rsi": 0.14,
+    "returns": 0.91
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "ASIANPAINT.NS",
+   "score": 56.7,
+   "verdict": "BUY",
+   "ret": -14.491,
+   "index_ret": -6.683,
+   "excess": -7.808,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.83,
+    "rsi": -1.0,
+    "returns": 0.83
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "AXISBANK.NS",
+   "score": -6.3,
+   "verdict": "HOLD",
+   "ret": -3.86,
+   "index_ret": -6.683,
+   "excess": 2.823,
+   "factors": {
+    "trend": 0.0,
+    "momentum": -0.36,
+    "rsi": 0.27,
+    "returns": -0.11
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "BSE.NS",
+   "score": -0.9,
+   "verdict": "HOLD",
+   "ret": -7.413,
+   "index_ret": -6.683,
+   "excess": -0.729,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.16,
+    "rsi": 0.35,
+    "returns": -0.46
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "BAJAJ-AUTO.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": -3.644,
+   "index_ret": -6.683,
+   "excess": 3.039,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "BAJFINANCE.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": -12.472,
+   "index_ret": -6.683,
+   "excess": -5.789,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "BAJAJFINSV.NS",
+   "score": 63.5,
+   "verdict": "BUY",
+   "ret": -11.474,
+   "index_ret": -6.683,
+   "excess": -4.791,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.95
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "BEL.NS",
+   "score": -59.3,
+   "verdict": "SELL",
+   "ret": -2.226,
+   "index_ret": -6.683,
+   "excess": 4.457,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.68,
+    "rsi": 0.48,
+    "returns": -0.7
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "BHARTIARTL.NS",
+   "score": 59.8,
+   "verdict": "BUY",
+   "ret": -7.11,
+   "index_ret": -6.683,
+   "excess": -0.427,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.75,
+    "rsi": -0.4,
+    "returns": 0.59
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "CIPLA.NS",
+   "score": 61.4,
+   "verdict": "BUY",
+   "ret": -8.37,
+   "index_ret": -6.683,
+   "excess": -1.686,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.68,
+    "rsi": -0.24,
+    "returns": 0.61
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "COALINDIA.NS",
+   "score": -40.0,
+   "verdict": "SELL",
+   "ret": 2.057,
+   "index_ret": -6.683,
+   "excess": 8.74,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.28,
+    "rsi": 0.28,
+    "returns": -0.69
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "DRREDDY.NS",
+   "score": -56.1,
+   "verdict": "SELL",
+   "ret": -2.966,
+   "index_ret": -6.683,
+   "excess": 3.717,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.6,
+    "rsi": 0.46,
+    "returns": -0.63
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "EICHERMOT.NS",
+   "score": 58.8,
+   "verdict": "BUY",
+   "ret": -7.422,
+   "index_ret": -6.683,
+   "excess": -0.739,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.75
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "ETERNAL.NS",
+   "score": 75.5,
+   "verdict": "BUY",
+   "ret": 1.53,
+   "index_ret": -6.683,
+   "excess": 8.213,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -0.39,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "GRASIM.NS",
+   "score": 66.9,
+   "verdict": "BUY",
+   "ret": -2.427,
+   "index_ret": -6.683,
+   "excess": 4.256,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.87,
+    "rsi": -0.42,
+    "returns": 0.79
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "HCLTECH.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": -8.954,
+   "index_ret": -6.683,
+   "excess": -2.271,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "HDFCBANK.NS",
+   "score": -38.6,
+   "verdict": "SELL",
+   "ret": -4.841,
+   "index_ret": -6.683,
+   "excess": 1.843,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.63,
+    "rsi": 1.0,
+    "returns": -0.26
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "HDFCLIFE.NS",
+   "score": -60.2,
+   "verdict": "SELL",
+   "ret": -6.69,
+   "index_ret": -6.683,
+   "excess": -0.006,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.53,
+    "rsi": 0.04,
+    "returns": -0.56
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "HINDALCO.NS",
+   "score": 43.5,
+   "verdict": "BUY",
+   "ret": -3.639,
+   "index_ret": -6.683,
+   "excess": 3.045,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.78,
+    "rsi": -0.19,
+    "returns": -0.29
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "HINDUNILVR.NS",
+   "score": -55.2,
+   "verdict": "SELL",
+   "ret": -9.35,
+   "index_ret": -6.683,
+   "excess": -2.667,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.36,
+    "rsi": -0.05,
+    "returns": -0.45
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "ICICIBANK.NS",
+   "score": 49.9,
+   "verdict": "BUY",
+   "ret": -7.507,
+   "index_ret": -6.683,
+   "excess": -0.824,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.01,
+    "rsi": -0.49,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "ITC.NS",
+   "score": -13.2,
+   "verdict": "HOLD",
+   "ret": -10.105,
+   "index_ret": -6.683,
+   "excess": -3.421,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.53,
+    "rsi": -1.0,
+    "returns": -0.34
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "INFY.NS",
+   "score": 21.8,
+   "verdict": "BUY",
+   "ret": -8.729,
+   "index_ret": -6.683,
+   "excess": -2.046,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 1.0,
+    "rsi": -0.39,
+    "returns": 0.22
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "INDIGO.NS",
+   "score": 54.5,
+   "verdict": "BUY",
+   "ret": -11.556,
+   "index_ret": -6.683,
+   "excess": -4.872,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.04,
+    "rsi": -0.3,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "JSWSTEEL.NS",
+   "score": 50.2,
+   "verdict": "BUY",
+   "ret": -4.883,
+   "index_ret": -6.683,
+   "excess": 1.8,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.75,
+    "rsi": -0.34,
+    "returns": 0.14
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "JIOFIN.NS",
+   "score": 47.8,
+   "verdict": "BUY",
+   "ret": -14.02,
+   "index_ret": -6.683,
+   "excess": -7.337,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.28
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "KOTAKBANK.NS",
+   "score": 52.3,
+   "verdict": "BUY",
+   "ret": 3.094,
+   "index_ret": -6.683,
+   "excess": 9.777,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.71,
+    "rsi": -0.49,
+    "returns": 0.38
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "LT.NS",
+   "score": 46.4,
+   "verdict": "BUY",
+   "ret": -4.33,
+   "index_ret": -6.683,
+   "excess": 2.353,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.75,
+    "rsi": -0.49,
+    "returns": 0.09
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "M&M.NS",
+   "score": 48.9,
+   "verdict": "BUY",
+   "ret": -11.64,
+   "index_ret": -6.683,
+   "excess": -4.957,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.33
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "MARUTI.NS",
+   "score": 47.9,
+   "verdict": "BUY",
+   "ret": -12.694,
+   "index_ret": -6.683,
+   "excess": -6.011,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.67,
+    "rsi": -0.46,
+    "returns": 0.21
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "MAXHEALTH.NS",
+   "score": 38.5,
+   "verdict": "BUY",
+   "ret": -6.398,
+   "index_ret": -6.683,
+   "excess": 0.285,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.39,
+    "rsi": -0.06,
+    "returns": 0.57
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "NTPC.NS",
+   "score": -43.2,
+   "verdict": "SELL",
+   "ret": -5.084,
+   "index_ret": -6.683,
+   "excess": 1.599,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.47,
+    "rsi": -0.09,
+    "returns": -0.74
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "NESTLEIND.NS",
+   "score": 44.5,
+   "verdict": "BUY",
+   "ret": -10.98,
+   "index_ret": -6.683,
+   "excess": -4.297,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.91,
+    "rsi": -1.0,
+    "returns": 0.23
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "ONGC.NS",
+   "score": -63.5,
+   "verdict": "SELL",
+   "ret": -2.085,
+   "index_ret": -6.683,
+   "excess": 4.598,
+   "factors": {
+    "trend": -1.0,
+    "momentum": -0.52,
+    "rsi": 0.32,
+    "returns": -0.92
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "POWERGRID.NS",
+   "score": -39.8,
+   "verdict": "SELL",
+   "ret": -8.005,
+   "index_ret": -6.683,
+   "excess": -1.322,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.44,
+    "rsi": -0.03,
+    "returns": -0.61
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "RELIANCE.NS",
+   "score": -1.4,
+   "verdict": "HOLD",
+   "ret": -6.346,
+   "index_ret": -6.683,
+   "excess": 0.337,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.61,
+    "rsi": -0.2,
+    "returns": -0.52
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "SBILIFE.NS",
+   "score": 52.3,
+   "verdict": "BUY",
+   "ret": -13.624,
+   "index_ret": -6.683,
+   "excess": -6.941,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.8,
+    "rsi": -0.37,
+    "returns": 0.2
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "SHRIRAMFIN.NS",
+   "score": 66.3,
+   "verdict": "BUY",
+   "ret": -10.127,
+   "index_ret": -6.683,
+   "excess": -3.443,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -0.39,
+    "returns": 0.61
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "SBIN.NS",
+   "score": 21.1,
+   "verdict": "BUY",
+   "ret": -7.368,
+   "index_ret": -6.683,
+   "excess": -0.685,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.2,
+    "rsi": -0.27,
+    "returns": -0.2
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "SUNPHARMA.NS",
+   "score": 35.8,
+   "verdict": "BUY",
+   "ret": -6.544,
+   "index_ret": -6.683,
+   "excess": 0.139,
+   "factors": {
+    "trend": 1.0,
+    "momentum": -0.31,
+    "rsi": -0.13,
+    "returns": 0.43
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "TCS.NS",
+   "score": 11.3,
+   "verdict": "HOLD",
+   "ret": -9.003,
+   "index_ret": -6.683,
+   "excess": -2.32,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 0.23
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "TATACONSUM.NS",
+   "score": -28.9,
+   "verdict": "SELL",
+   "ret": -11.162,
+   "index_ret": -6.683,
+   "excess": -4.479,
+   "factors": {
+    "trend": -1.0,
+    "momentum": 0.53,
+    "rsi": -0.09,
+    "returns": -0.19
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "TATASTEEL.NS",
+   "score": -3.5,
+   "verdict": "HOLD",
+   "ret": -3.848,
+   "index_ret": -6.683,
+   "excess": 2.835,
+   "factors": {
+    "trend": 0.0,
+    "momentum": 0.61,
+    "rsi": -0.16,
+    "returns": -0.64
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "TECHM.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": -4.433,
+   "index_ret": -6.683,
+   "excess": 2.25,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "TITAN.NS",
+   "score": 64.7,
+   "verdict": "BUY",
+   "ret": -2.88,
+   "index_ret": -6.683,
+   "excess": 3.803,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 1.0,
+    "rsi": -1.0,
+    "returns": 1.0
+   }
+  },
+  {
+   "date": "2026-08-03",
+   "exit": "2026-09-15",
+   "ticker": "ULTRACEMCO.NS",
+   "score": 39.8,
+   "verdict": "BUY",
+   "ret": -11.258,
+   "index_ret": -6.683,
+   "excess": -4.575,
+   "factors": {
+    "trend": 1.0,
+    "momentum": 0.83,
+    "rsi": -1.0,
+    "returns": 0.11
+   }
+  }
+ ],
+ "caveats": [
+  "Price-based factors only (trend, momentum, RSI, 3-month return). Fundamentals, news sentiment, Prophet and XGBoost are excluded because no point-in-time history exists for them; the live scorecard blends all of them, so this does not validate the full verdict.",
+  "Survivorship bias: the universe is TODAY's NIFTY 50 list applied to the past 12 months. Stocks that left the index (often after underperforming) are missing and recent entrants are included, which flatters long signals.",
+  "Overlapping windows: 30-trading-day holds (~6 weeks) from monthly rebalances overlap, and stocks in the same month share market moves, so observations are not independent. The confidence interval resamples whole rebalance dates.",
+  "One 12-month window is a single market regime; results are not evidence of a durable edge.",
+  "Close-to-close returns on auto-adjusted Yahoo Finance prices; no transaction costs, slippage or dividends beyond the adjustment.",
+  "Data breaks: observations whose lookback or holding window contains a one-day move beyond +/-25% are excluded as suspected unadjusted corporate actions (the Tata Motors demerger in Oct 2025 shows as -40% in TMPV.NS; TRENT.NS shows -33% on 2026-01-01 on normal volume). See `excluded`.",
+  "Thresholds (+/-15) are the production thresholds, applied to the score normalised over the price factors only."
+ ]
+}

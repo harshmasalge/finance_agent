@@ -1,0 +1,227 @@
+# FinSight AI evaluation dataset.
+#
+# Each case is one user turn (optionally preceded by `history`, earlier user turns in the same chat).
+# Expectations are written from the product spec (orchestrator prompt + ANSWER_FORMATS in
+# backend/agent/synthesis.py), NOT from what the recorded answers happen to contain.
+#
+#   expected_intent       research | comparison | sentiment | portfolio | ideas | clarify | direct_answer
+#   expected_tickers      NSE tickers the orchestrator must extract (order-insensitive)
+#   expected_answer_type  FinalAnswer.answer_type
+#   must_include          phrases the answer must contain (case-insensitive; "a|b" = either)
+#   must_not_include      phrases the answer must not contain (foreign tickers are always checked)
+#
+# Cases whose question matches a recorded answer in backend/tests/fixtures/answers.json are scored in
+# replay mode; the rest are scored only in live mode.
+version: 1
+cases:
+  # ---- research (single stock) ----
+  - id: research-techm
+    question: how is tech mahindra
+    expected_intent: research
+    expected_tickers: [TECHM.NS]
+    expected_answer_type: stock_analysis
+    must_include: ["Why this verdict", "BUY|SELL|HOLD"]
+    must_not_include: ["guaranteed"]
+    notes: Company name -> ticker. Recorded before the scorecard existed (verdict chosen by the LLM).
+  - id: research-policybazaar
+    question: how is policy bazaar looking
+    expected_intent: research
+    expected_tickers: [POLICYBZR.NS]
+    expected_answer_type: stock_analysis
+    must_include: ["Why this verdict", "BUY|SELL|HOLD"]
+    must_not_include: ["guaranteed"]
+    notes: Brand name differs from the listed entity (PB Fintech) and the NSE symbol.
+  - id: research-lt
+    question: should I buy L&T?
+    expected_intent: research
+    expected_tickers: [LT.NS]
+    expected_answer_type: stock_analysis
+    must_include: ["Why this verdict", "BUY|SELL|HOLD"]
+    must_not_include: ["guaranteed"]
+    notes: Ampersand abbreviation -> LT.NS.
+  - id: research-sbi
+    question: sbi share price outlook
+    expected_intent: research
+    expected_tickers: [SBIN.NS]
+    expected_answer_type: stock_analysis
+    must_include: ["Why this verdict"]
+    must_not_include: ["guaranteed"]
+    notes: Abbreviation -> SBIN.NS (not SBI.NS).
+  - id: research-bajaj-auto
+    question: what do you think about bajaj auto
+    expected_intent: research
+    expected_tickers: [BAJAJ-AUTO.NS]
+    expected_answer_type: stock_analysis
+    must_include: ["Why this verdict"]
+    must_not_include: ["Bajaj Finance"]
+    notes: Hyphenated NSE symbol; must not be confused with Bajaj Finance / Finserv.
+  - id: research-tatasteel
+    question: how is tata steel doing
+    expected_intent: research
+    expected_tickers: [TATASTEEL.NS]
+    expected_answer_type: stock_analysis
+    must_include: ["Why this verdict"]
+    must_not_include: []
+    notes: Tata group has many listed companies; only Tata Steel is meant.
+  - id: research-zomato
+    question: is zomato a buy right now
+    expected_intent: research
+    expected_tickers: [ETERNAL.NS]
+    expected_answer_type: stock_analysis
+    must_include: ["Why this verdict"]
+    must_not_include: []
+    notes: Zomato Ltd was renamed Eternal Ltd (NSE ETERNAL) in 2025; ZOMATO.NS is a stale symbol.
+  # ---- follow-ups (need conversation context) ----
+  - id: followup-infy
+    history: ["how is TCS doing"]
+    question: what about Infosys?
+    expected_intent: research
+    expected_tickers: [INFY.NS]
+    expected_answer_type: stock_analysis
+    must_include: ["Why this verdict"]
+    must_not_include: []
+    notes: Follow-up; intent carried over from the previous turn, ticker replaced.
+  - id: followup-sentiment-hdfc
+    history: ["analyse HDFC Bank"]
+    question: and what is the news sentiment on it?
+    expected_intent: sentiment
+    expected_tickers: [HDFCBANK.NS]
+    expected_answer_type: sentiment
+    must_include: ["sentiment"]
+    must_not_include: []
+    notes: Pronoun resolution ("it" = HDFC Bank).
+  - id: followup-compare-icici
+    history: ["how is SBI"]
+    question: compare it with ICICI Bank
+    expected_intent: comparison
+    expected_tickers: [SBIN.NS, ICICIBANK.NS]
+    expected_answer_type: comparison
+    must_include: ["Head to head"]
+    must_not_include: []
+    notes: Comparison where one side comes from context.
+  # ---- comparison ----
+  - id: compare-tcs-infy
+    question: Compare TCS and Infosys
+    expected_intent: comparison
+    expected_tickers: [TCS.NS, INFY.NS]
+    expected_answer_type: comparison
+    must_include: ["Head to head", "TCS", "INFY|Infosys"]
+    must_not_include: ["guaranteed"]
+    notes: Two-stock comparison; one section per stock plus head to head.
+  - id: compare-mm-maruti
+    question: M&M vs Maruti, which is better?
+    expected_intent: comparison
+    expected_tickers: [M&M.NS, MARUTI.NS]
+    expected_answer_type: comparison
+    must_include: ["Head to head"]
+    must_not_include: []
+    notes: Symbol containing '&'.
+  - id: compare-three-fmcg
+    question: HUL vs ITC vs Nestle India
+    expected_intent: comparison
+    expected_tickers: [HINDUNILVR.NS, ITC.NS, NESTLEIND.NS]
+    expected_answer_type: comparison
+    must_include: ["Head to head"]
+    must_not_include: []
+    notes: Three-way comparison; HUL -> HINDUNILVR.
+  # ---- sentiment ----
+  - id: sentiment-reliance
+    question: what is the latest news on Reliance?
+    expected_intent: sentiment
+    expected_tickers: [RELIANCE.NS]
+    expected_answer_type: sentiment
+    must_include: ["sentiment|news"]
+    must_not_include: ["Verdict:"]
+    notes: News-only request; no verdict should be given.
+  - id: sentiment-tcs
+    question: what are people saying about TCS
+    expected_intent: sentiment
+    expected_tickers: [TCS.NS]
+    expected_answer_type: sentiment
+    must_include: ["sentiment|news"]
+    must_not_include: []
+    notes: Colloquial sentiment phrasing.
+  # ---- portfolio ----
+  - id: portfolio-health
+    question: check health of my portfolio
+    expected_intent: portfolio
+    expected_tickers: []
+    expected_answer_type: portfolio_health
+    must_include: ["Allocation|concentration", "Suggested actions"]
+    must_not_include: ["Verdict:"]
+    notes: Portfolio answers must not carry a BUY/SELL/HOLD verdict.
+  - id: portfolio-risk
+    question: how risky is my portfolio right now?
+    expected_intent: portfolio
+    expected_tickers: []
+    expected_answer_type: portfolio_health
+    must_include: ["Allocation|concentration"]
+    must_not_include: ["Verdict:"]
+    notes: Risk framing of a portfolio question.
+  - id: portfolio-pnl
+    question: what's my P&L?
+    expected_intent: portfolio
+    expected_tickers: []
+    expected_answer_type: portfolio_health
+    must_include: ["Performance|P&L|unrealised|unrealized"]
+    must_not_include: ["Verdict:"]
+    notes: Short form; P&L must not be read as a ticker.
+  # ---- ideas ----
+  - id: ideas-add
+    question: what should i add to my portfolio
+    expected_intent: ideas
+    expected_tickers: []
+    expected_answer_type: ideas
+    must_include: ["Candidates", "Caveats"]
+    must_not_include: ["Verdict:"]
+    notes: Ideas must come from the screener evidence.
+  - id: ideas-diversify
+    question: suggest a few stocks to diversify into
+    expected_intent: ideas
+    expected_tickers: []
+    expected_answer_type: ideas
+    must_include: ["Candidates"]
+    must_not_include: ["Verdict:"]
+    notes: Synonym phrasing of ideas.
+  # ---- clarify ----
+  - id: clarify-buy-it
+    question: should I buy it?
+    expected_intent: clarify
+    expected_tickers: []
+    expected_answer_type: general
+    must_include: []
+    must_not_include: []
+    notes: No stock in the message or context.
+  - id: clarify-good-stock
+    question: is this stock good for the long term?
+    expected_intent: clarify
+    expected_tickers: []
+    expected_answer_type: general
+    must_include: []
+    must_not_include: []
+    notes: Stock-specific question naming no stock.
+  # ---- direct answer / out of scope ----
+  - id: direct-hi
+    question: hi
+    expected_intent: direct_answer
+    expected_tickers: []
+    expected_answer_type: general
+    must_include: []
+    must_not_include: []
+    notes: Greeting; no tools should run.
+  - id: direct-pe
+    question: what is a P/E ratio?
+    expected_intent: direct_answer
+    expected_tickers: []
+    expected_answer_type: general
+    must_include: ["earnings"]
+    must_not_include: []
+    notes: General finance question, no data needed.
+  - id: out-of-scope-apple
+    question: should I buy Apple stock?
+    expected_intent: direct_answer
+    expected_tickers: []
+    expected_answer_type: general
+    must_include: []
+    must_not_include: ["AAPL"]
+    notes: Foreign stock - must not be mapped to a ticker or analysed (orchestrator rule "never output non-Indian tickers").
