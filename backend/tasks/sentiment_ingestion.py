@@ -44,6 +44,38 @@ def get_newsapi_articles(tickers):
     return articles
 
 
+def fetch_newsapi_headlines(query: str, limit: int = 6):
+    """Structured headlines (title, source, url, published_at) for a free-text query, newest first."""
+    keys_env = os.getenv("NEWSAPI_KEYS") or os.getenv("NEWSAPI_KEY")
+    keys = [k.strip() for k in (keys_env or "").split(",") if k.strip()]
+    if not keys:
+        return []
+    for key in keys:
+        try:
+            resp = requests.get(
+                "https://newsapi.org/v2/everything",
+                params={"q": f'"{query}"', "language": "en", "sortBy": "publishedAt", "pageSize": limit, "apiKey": key},
+                timeout=10,
+            )
+            if resp.status_code != 200:
+                continue
+            out = []
+            for a in resp.json().get("articles", [])[:limit]:
+                if not a.get("title"):
+                    continue
+                out.append({
+                    "title": a.get("title"),
+                    "description": (a.get("description") or "")[:300],
+                    "source": (a.get("source") or {}).get("name"),
+                    "url": a.get("url"),
+                    "published_at": a.get("publishedAt"),
+                })
+            return out
+        except Exception as e:
+            logger.error("Error fetching NewsAPI headlines", query=query, error=str(e))
+    return []
+
+
 
 def get_rss_feeds():
     articles = []

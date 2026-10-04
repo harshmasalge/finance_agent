@@ -1,145 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { Bell, ThumbsUp, ThumbsDown, AlertCircle, TrendingUp, CheckCircle, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Activity, Bell, CheckCheck, ThumbsDown, ThumbsUp, TrendingDown, TrendingUp, Zap } from 'lucide-react';
+import { api, type AlertItem } from '../lib/api';
+import { cn, fmtINR, tickerLabel, timeAgo } from '../lib/format';
+import { useApp } from '../lib/user';
+import { useToast } from './toast';
+import { Badge, Button, Card, EmptyState, PageHeader, Segmented, Skeleton } from './ui';
 
-interface Alert {
-  id: number;
-  ticker: string;
-  alert_type: string;
-  message: string;
-  signal: string;
-  is_read: boolean;
-  created_at: string;
-}
+const TYPE_META: Record<string, { label: string; icon: typeof Bell; tone: 'up' | 'down' | 'warn' | 'primary' }> = {
+  STOP_LOSS_BREACH: { label: 'Stop-loss hit', icon: TrendingDown, tone: 'down' },
+  TARGET_HIT: { label: 'Target hit', icon: TrendingUp, tone: 'up' },
+  SENTIMENT_CRASH: { label: 'Sentiment drop', icon: Activity, tone: 'warn' },
+  RSI_OVERBOUGHT: { label: 'RSI overbought', icon: Activity, tone: 'warn' },
+  RSI_OVERSOLD: { label: 'RSI oversold', icon: Activity, tone: 'primary' },
+  VOLUME_SPIKE: { label: 'Volume spike', icon: Zap, tone: 'warn' },
+};
 
 export default function Alerts() {
-  const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [voted, setVoted] = useState<Set<number>>(new Set());
+  const { refreshUnread } = useApp();
+  const toast = useToast();
+  const [alerts, setAlerts] = useState<AlertItem[] | null>(null);
+  const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [voted, setVoted] = useState<Record<number, boolean>>({});
 
-  const fetchAlerts = async () => {
-    try {
-      const res = await fetch('http://localhost:8001/alerts', { credentials: 'include' });
-      if (res.ok) {
-        setAlerts(await res.json());
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchAlerts();
-    const interval = setInterval(fetchAlerts, 30000); // refresh every 30s
-    return () => clearInterval(interval);
-  }, []);
+  const load = () => api<AlertItem[]>('/alerts').then(setAlerts).catch(() => setAlerts([]));
+  useEffect(() => { load(); const iv = setInterval(load, 30000); return () => clearInterval(iv); }, []);
 
   const markRead = async (id: number) => {
+    setAlerts(a => a?.map(x => (x.id === id ? { ...x, is_read: true } : x)) ?? a);
+    await api(`/alerts/${id}/read`, { method: 'PATCH' }).catch(() => {});
+    refreshUnread();
+  };
+  const markAll = async () => {
+    const unread = (alerts ?? []).filter(a => !a.is_read);
+    await Promise.all(unread.map(a => markRead(a.id)));
+    toast('success', `Marked ${unread.length} alert${unread.length === 1 ? '' : 's'} as read`);
+  };
+  const vote = async (id: number, positive: boolean) => {
+    setVoted(v => ({ ...v, [id]: positive }));
     try {
-      await fetch(`http://localhost:8001/alerts/${id}/read`, {
-        method: 'PATCH',
-        credentials: 'include'
-      });
-      setAlerts(prev => prev.map(a => a.id === id ? { ...a, is_read: true } : a));
-    } catch (e) {
-      console.error(e);
-    }
+      await api(`/alerts/${id}/feedback`, { method: 'POST', body: JSON.stringify({ is_positive: positive }) });
+      toast('success', 'Thanks for the feedback', 'It helps tune future alerts.');
+    } catch { toast('error', 'Could not save feedback'); }
   };
 
-  const submitFeedback = async (id: number, isPositive: boolean) => {
-    try {
-      await fetch(`http://localhost:8001/alerts/${id}/feedback`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ is_positive: isPositive })
-      });
-      setVoted(prev => new Set(prev).add(id));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const getAlertIcon = (type: string) => {
-    if (type.includes('STOP_LOSS') || type.includes('CRASH')) return <AlertCircle className="text-red-500" />;
-    if (type.includes('TARGET') || type.includes('BUY')) return <CheckCircle className="text-green-500" />;
-    return <TrendingUp className="text-amber-500" />;
-  };
-
-  const getSignalBadge = (signal: string) => {
-    const colors: Record<string, string> = {
-      'BUY': 'bg-green-500/20 text-green-500',
-      'SELL': 'bg-red-500/20 text-red-500',
-      'HOLD': 'bg-amber-500/20 text-amber-500',
-      'CAUTION': 'bg-amber-500/20 text-amber-500'
-    };
-    return <span className={`px-2 py-1 text-xs font-bold rounded ${colors[signal] || 'bg-gray-500/20 text-gray-500'}`}>{signal}</span>;
-  };
-
-  if (loading) return <div className="p-6">Loading alerts...</div>;
+  const shown = (alerts ?? []).filter(a => filter === 'all' || !a.is_read);
+  const unreadCount = (alerts ?? []).filter(a => !a.is_read).length;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center space-x-3 mb-6">
-        <Bell className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold tracking-tight">Alert Center</h1>
-      </div>
+    <div className="mx-auto max-w-[900px] px-6 py-8 lg:px-10">
+      <PageHeader title="Alerts" subtitle="Generated by the portfolio monitor every 15 minutes during market hours"
+        actions={<>
+          <Segmented value={filter} onChange={setFilter} options={[{ value: 'all', label: 'All' }, { value: 'unread', label: `Unread${unreadCount ? ` (${unreadCount})` : ''}` }]} />
+          <Button variant="outline" onClick={markAll} disabled={!unreadCount}><CheckCheck className="h-4 w-4" />Mark all read</Button>
+        </>} />
 
-      <div className="space-y-4">
-        {alerts.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground border rounded-xl bg-card">
-            No recent alerts
-          </div>
-        )}
-        
-        {alerts.map((alert) => (
-          <div 
-            key={alert.id}
-            onClick={() => { if (!alert.is_read) markRead(alert.id); }}
-            className={`p-4 rounded-xl border flex flex-col md:flex-row gap-4 justify-between transition-colors cursor-pointer ${
-              alert.is_read ? 'bg-card opacity-80' : 'bg-primary/5 border-primary/20'
-            }`}
-          >
-            <div className="flex space-x-4">
-              <div className="mt-1">{getAlertIcon(alert.alert_type)}</div>
-              <div>
-                <div className="flex items-center space-x-3 mb-1">
-                  <span className="font-bold text-lg">{alert.ticker}</span>
-                  {getSignalBadge(alert.signal)}
-                  <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
-                    {alert.alert_type}
-                  </span>
+      {alerts === null ? <div className="space-y-3">{[0, 1, 2].map(i => <Skeleton key={i} className="h-24" />)}</div> : shown.length === 0 ? (
+        <Card><EmptyState icon={<Bell className="h-5 w-5" />} title={filter === 'unread' ? 'No unread alerts' : 'No alerts yet'}
+          body="Set stop-loss and target levels on your holdings to get notified." /></Card>
+      ) : (
+        <div className="space-y-3">
+          {shown.map((a, i) => {
+            const meta = TYPE_META[a.alert_type] ?? { label: a.alert_type.replace(/_/g, ' ').toLowerCase(), icon: Bell, tone: 'primary' as const };
+            const Icon = meta.icon;
+            return (
+              <Card key={a.id} onClick={() => !a.is_read && markRead(a.id)} style={{ animationDelay: `${Math.min(i, 8) * 30}ms` }}
+                className={cn('group flex gap-4 p-4 animate-fade-in-up transition-colors hover:border-border-strong', !a.is_read && 'cursor-pointer border-l-[3px] border-l-primary')}>
+                <div className={cn('grid h-10 w-10 shrink-0 place-items-center rounded-xl',
+                  { up: 'bg-up/10 text-up', down: 'bg-down/10 text-down', warn: 'bg-warn/10 text-warn', primary: 'bg-primary/10 text-primary' }[meta.tone])}>
+                  <Icon className="h-5 w-5" />
                 </div>
-                <p className="text-sm md:text-base">{alert.message}</p>
-                <div className="flex items-center space-x-2 mt-2 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  <span>{new Date(alert.created_at).toLocaleString()}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold">{tickerLabel(a.ticker)}</span>
+                    <span className="text-[13px] capitalize text-muted">{meta.label}</span>
+                    <Badge tone={a.signal === 'SELL' ? 'down' : a.signal === 'BUY' ? 'up' : 'warn'}>{a.signal}</Badge>
+                    <span className="ml-auto text-[12px] text-muted">{timeAgo(a.created_at)}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-fg-2">{a.message}</p>
+                  <div className="mt-2 flex items-center gap-3">
+                    {a.price_at_alert != null && <span className="text-[12px] text-muted tabular">Price at alert {fmtINR(a.price_at_alert)}</span>}
+                    <div className="ml-auto flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                      <span className="mr-1 text-[12px] text-muted">Useful?</span>
+                      <Button variant="ghost" size="icon-sm" disabled={a.id in voted} onClick={() => vote(a.id, true)} aria-label="Useful"
+                        className={cn(voted[a.id] === true && '!text-up !opacity-100')}><ThumbsUp className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon-sm" disabled={a.id in voted} onClick={() => vote(a.id, false)} aria-label="Not useful"
+                        className={cn(voted[a.id] === false && '!text-down !opacity-100')}><ThumbsDown className="h-3.5 w-3.5" /></Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2 shrink-0 self-start md:self-center">
-              <button 
-                disabled={voted.has(alert.id)}
-                onClick={(e) => { e.stopPropagation(); submitFeedback(alert.id, true); }}
-                className={`p-2 rounded-full border hover:bg-green-500/20 transition-colors ${voted.has(alert.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                title="Helpful"
-              >
-                <ThumbsUp className="h-4 w-4" />
-              </button>
-              <button 
-                disabled={voted.has(alert.id)}
-                onClick={(e) => { e.stopPropagation(); submitFeedback(alert.id, false); }}
-                className={`p-2 rounded-full border hover:bg-red-500/20 transition-colors ${voted.has(alert.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                title="Not Helpful"
-              >
-                <ThumbsDown className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

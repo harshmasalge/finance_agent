@@ -1,224 +1,138 @@
-import { useState, useEffect } from 'react';
+import { useState, type ReactNode } from 'react';
+import { Bell, Briefcase, LayoutDashboard, Moon, PanelLeftClose, PanelLeftOpen, Sparkles, Sun, WifiOff } from 'lucide-react';
 import Dashboard from './components/Dashboard';
-import AIChat from './components/AIChat';
 import Portfolio from './components/Portfolio';
 import Alerts from './components/Alerts';
-import { LayoutDashboard, MessageSquare, Briefcase, Settings, LogIn, LogOut, Bell } from 'lucide-react';
+import Advisor from './components/AIChat';
+import { Button, Skeleton } from './components/ui';
+import { ToastProvider } from './components/toast';
+import { ThemeProvider, useTheme } from './lib/theme';
+import { AppDataProvider, useApp } from './lib/user';
+import { cn, fmtINR } from './lib/format';
 
-export interface User {
-  id: number;
-  email: string;
-  name: string;
-  picture: string;
-  balance: number;
+type Tab = 'dashboard' | 'portfolio' | 'advisor' | 'alerts';
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <ToastProvider>
+        <AppDataProvider>
+          <Shell />
+        </AppDataProvider>
+      </ToastProvider>
+    </ThemeProvider>
+  );
 }
 
-function App() {
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Check if logged in
-  useEffect(() => {
-    fetch('http://localhost:8001/auth/me', { credentials: 'include' })
-      .then(res => {
-        if (res.ok) return res.json();
-        throw new Error('Not authenticated');
-      })
-      .then(data => setUser(data))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const [unreadCount, setUnreadCount] = useState(0);
-
-  useEffect(() => {
-    if (!user) return;
-    const fetchUnread = () => {
-      fetch('http://localhost:8001/alerts/unread-count', { credentials: 'include' })
-        .then(res => res.json())
-        .then(data => setUnreadCount(data.count))
-        .catch(console.error);
-    };
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 30000);
-    return () => clearInterval(interval);
-  }, [user]);
-
-  // Global WebSocket listener for real-time balance updates
-  useEffect(() => {
-    if (!user) return;
-    
-    const ws = new WebSocket(`ws://localhost:8001/ws/${user.id}`);
-    
-    ws.onmessage = (event) => {
-      try {
-        const msg = JSON.parse(event.data);
-        if (msg.event === 'alert' && msg.data.type === 'balance_update') {
-          setUser(prev => prev ? { ...prev, balance: msg.data.balance } : prev);
-        }
-      } catch (err) {
-        console.error("WS parse error", err);
-      }
-    };
-
-    return () => ws.close();
-  }, [user?.id]);
-
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-  const handleMockLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoggingIn(true);
-    try {
-      const formData = new FormData(e.currentTarget);
-      const email = formData.get('email');
-      const name = formData.get('name');
-      
-      const res = await fetch('http://localhost:8001/auth/mock-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name }),
-        credentials: 'include'
-      });
-      
-      if (res.ok) {
-        // Fetch full profile to get balance
-        const meRes = await fetch('http://localhost:8001/auth/me', { credentials: 'include' });
-        if (meRes.ok) setUser(await meRes.json());
-      } else {
-        const errorText = await res.text();
-        alert(`Login failed: ${res.status} - ${errorText}`);
-      }
-    } catch (err) {
-      alert(`Network error connecting to backend: ${err}`);
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    await fetch('http://localhost:8001/auth/logout', { method: 'POST', credentials: 'include' });
-    setUser(null);
-  };
-
-  if (loading) {
-    return <div className="flex h-screen items-center justify-center bg-background text-primary">Loading...</div>;
-  }
+function Shell() {
+  const { user, loading, error, reload, unreadAlerts, wsConnected } = useApp();
+  const { theme, toggle } = useTheme();
+  const [tab, setTab] = useState<Tab>(() => (localStorage.getItem('finsight-tab') as Tab) || 'dashboard');
+  const [collapsed, setCollapsed] = useState(false);
+  const go = (t: Tab) => { setTab(t); try { localStorage.setItem('finsight-tab', t); } catch { /* ignore */ } };
 
   if (!user) {
     return (
-      <div className="flex h-screen items-center justify-center bg-background text-foreground">
-        <div className="w-full max-w-md p-8 bg-card border rounded-2xl shadow-xl">
-          <h2 className="text-2xl font-bold mb-6 text-center">Developer Login</h2>
-          <form onSubmit={handleMockLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Name</label>
-              <input name="name" required defaultValue="Harsh Masalge" className="w-full bg-background border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Email</label>
-              <input name="email" type="email" required defaultValue="harsh@finsight.ai" className="w-full bg-background border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-            </div>
-            <button type="submit" disabled={isLoggingIn} className="w-full py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
-              <LogIn className="w-5 h-5 mr-2" />
-              {isLoggingIn ? "Signing In..." : "Sign In (Mock OAuth)"}
-            </button>
-          </form>
-        </div>
+      <div className="grid h-full place-items-center bg-bg p-6">
+        {loading ? (
+          <div className="w-full max-w-sm space-y-3"><Skeleton className="h-6 w-40" /><Skeleton className="h-24 w-full" /></div>
+        ) : (
+          <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-8 text-center shadow-[var(--shadow-pop)] animate-fade-in-up">
+            <div className="mx-auto mb-4 grid h-11 w-11 place-items-center rounded-xl bg-down/10 text-down"><WifiOff className="h-5 w-5" /></div>
+            <h2 className="text-lg font-semibold">Can't reach the FinSight API</h2>
+            <p className="mt-2 text-sm text-muted">Start the backend with <code className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[12px]">start_app.ps1</code>, then retry.</p>
+            {error && <p className="mt-3 break-words text-xs text-down">{error}</p>}
+            <Button className="mt-6 w-full" onClick={reload}>Retry</Button>
+          </div>
+        )}
       </div>
     );
   }
 
-  return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
-      {/* Sidebar Navigation */}
-      <nav className="w-64 border-r border-gray-800 bg-card flex flex-col">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-            FinSight AI
-          </h2>
-        </div>
-        <div className="flex-1 px-4 space-y-2">
-          <NavItem 
-            icon={<LayoutDashboard />} 
-            label="Dashboard" 
-            isActive={activeTab === 'dashboard'} 
-            onClick={() => setActiveTab('dashboard')} 
-          />
-          <NavItem 
-            icon={<Briefcase />} 
-            label="Portfolio" 
-            isActive={activeTab === 'portfolio'} 
-            onClick={() => setActiveTab('portfolio')} 
-          />
-          <NavItem 
-            icon={<MessageSquare />} 
-            label="AI Advisor" 
-            isActive={activeTab === 'ai'} 
-            onClick={() => setActiveTab('ai')} 
-          />
-          <NavItem 
-            icon={
-              <div className="relative">
-                <Bell />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </span>
-                )}
-              </div>
-            }
-            label="Alerts" 
-            isActive={activeTab === 'alerts'} 
-            onClick={() => setActiveTab('alerts')} 
-          />
-        </div>
-        <div className="p-4 border-t border-gray-800 space-y-4">
-          <div className="flex items-center space-x-3 px-4 py-2">
-            <img src={user.picture} alt="Profile" className="w-8 h-8 rounded-full bg-gray-800" />
-            <div className="flex flex-col">
-              <span className="text-sm font-medium truncate">{user.name}</span>
-              <span className="text-xs text-muted-foreground truncate">{user.email}</span>
-            </div>
-          </div>
-          <button 
-            onClick={handleLogout}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors"
-          >
-            <LogOut size={20} />
-            <span>Logout</span>
-          </button>
-        </div>
-      </nav>
+  const nav: { id: Tab; label: string; icon: ReactNode; badge?: number }[] = [
+    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
+    { id: 'portfolio', label: 'Portfolio', icon: <Briefcase className="h-[18px] w-[18px]" /> },
+    { id: 'advisor', label: 'AI Advisor', icon: <Sparkles className="h-[18px] w-[18px]" /> },
+    { id: 'alerts', label: 'Alerts', icon: <Bell className="h-[18px] w-[18px]" />, badge: unreadAlerts },
+  ];
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto">
-        {activeTab === 'dashboard' && <Dashboard user={user} />}
-        {activeTab === 'portfolio' && <Portfolio />}
-        {activeTab === 'alerts' && <Alerts />}
-        {activeTab === 'ai' && <AIChat />}
+  return (
+    <div className="flex h-full bg-bg text-fg">
+      <aside className={cn('flex shrink-0 flex-col border-r border-border bg-surface transition-[width] duration-200 ease-out', collapsed ? 'w-[68px]' : 'w-[232px]')}>
+        <div className="flex h-16 items-center gap-2.5 px-4">
+          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-fg shadow-sm">
+            <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l6-6 4 4 8-8" /><path d="M14 7h7v7" /></svg>
+          </div>
+          {!collapsed && <div className="min-w-0"><div className="text-[15px] font-semibold tracking-tight">FinSight</div><div className="-mt-0.5 text-[11px] text-muted">Agentic research · NSE</div></div>}
+        </div>
+
+        <nav className="flex-1 space-y-0.5 px-3 pt-2">
+          {nav.map(n => (
+            <button
+              key={n.id}
+              onClick={() => go(n.id)}
+              title={collapsed ? n.label : undefined}
+              className={cn(
+                'group relative flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150',
+                tab === n.id ? 'bg-primary/10 text-primary' : 'text-fg-2 hover:bg-surface-2 hover:text-fg')}
+            >
+              {tab === n.id && <span className="absolute -left-3 top-2 bottom-2 w-[3px] rounded-r bg-primary" />}
+              <span className="shrink-0">{n.icon}</span>
+              {!collapsed && <span className="truncate">{n.label}</span>}
+              {!!n.badge && (
+                <span className={cn('grid min-w-[18px] h-[18px] place-items-center rounded-full bg-down px-1 text-[10px] font-bold text-white', collapsed ? 'absolute right-1.5 top-1' : 'ml-auto')}>
+                  {n.badge > 99 ? '99+' : n.badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </nav>
+
+        <div className="space-y-2 border-t border-border p-3">
+          {!collapsed && (
+            <div className="rounded-xl bg-surface-2 px-3 py-2.5">
+              <div className="flex items-center justify-between text-[11px] font-medium text-muted">
+                <span>Paper cash</span>
+                <span className="flex items-center gap-1.5">
+                  <span className={cn('h-1.5 w-1.5 rounded-full', wsConnected ? 'bg-up animate-pulse-dot' : 'bg-muted')} />
+                  {wsConnected ? 'Live' : 'Offline'}
+                </span>
+              </div>
+              <div className="mt-0.5 text-[15px] font-semibold tabular">{fmtINR(user.balance)}</div>
+            </div>
+          )}
+          {collapsed ? (
+            <div className="flex flex-col items-center gap-1">
+              <Button variant="ghost" size="icon" onClick={toggle} title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'} aria-label="Toggle theme">
+                {theme === 'dark' ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => setCollapsed(false)} title="Expand sidebar" aria-label="Expand sidebar"><PanelLeftOpen className="h-[18px] w-[18px]" /></Button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="flex flex-1 rounded-lg border border-border bg-surface-2 p-0.5" role="radiogroup" aria-label="Theme">
+                {(['light', 'dark'] as const).map(t => (
+                  <button key={t} role="radio" aria-checked={theme === t} onClick={() => theme !== t && toggle()}
+                    className={cn('flex flex-1 items-center justify-center gap-1.5 rounded-md py-1.5 text-[12.5px] font-medium transition-all duration-150',
+                      theme === t ? 'bg-surface text-fg shadow-sm' : 'text-muted hover:text-fg')}>
+                    {t === 'light' ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}{t === 'light' ? 'Light' : 'Dark'}
+                  </button>
+                ))}
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setCollapsed(true)} title="Collapse sidebar" aria-label="Collapse sidebar"><PanelLeftClose className="h-[18px] w-[18px]" /></Button>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      <main className={cn('min-w-0 flex-1', tab === 'advisor' ? 'overflow-hidden' : 'overflow-y-auto')}>
+        <div key={tab} className="h-full animate-fade-in">
+          {tab === 'dashboard' && <Dashboard onNavigate={go} />}
+          {tab === 'portfolio' && <Portfolio />}
+          {tab === 'alerts' && <Alerts />}
+          {tab === 'advisor' && <Advisor />}
+        </div>
       </main>
     </div>
   );
 }
-
-function NavItem({ icon, label, isActive, onClick }: { icon: React.ReactNode, label: string, isActive: boolean, onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-        isActive 
-          ? 'bg-primary/10 text-primary font-medium' 
-          : 'text-muted-foreground hover:bg-gray-800/50 hover:text-foreground'
-      }`}
-    >
-      <div className={`${isActive ? 'text-primary' : 'text-gray-400'}`}>
-        {icon}
-      </div>
-      <span>{label}</span>
-    </button>
-  );
-}
-
-export default App;

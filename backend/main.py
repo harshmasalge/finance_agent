@@ -7,13 +7,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from backend.websockets.manager import manager
 from backend.websockets.redis_listener import redis_listener
-from backend.services.auth import AuthService
-from backend.db.database import get_db
+from backend.services.auth import get_or_create_default_user
+from backend.db.database import get_db, engine, Base
 from backend.db.models import User
 from sqlalchemy.orm import Session
 from backend.routers.portfolio import portfolio_router
 from backend.routers.alerts import alerts_router
 from backend.routers.agent import agent_router
+from backend.routers.chats import chats_router
 
 # Configure structlog
 structlog.configure(
@@ -37,6 +38,8 @@ logger = structlog.get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting up FastAPI and background tasks...")
+    # Create any missing tables so the app works even if init_db.py wasn't run
+    Base.metadata.create_all(bind=engine)
     task = asyncio.create_task(redis_listener())
     yield
     task.cancel()
@@ -51,6 +54,7 @@ app = FastAPI(
 app.include_router(portfolio_router)
 app.include_router(alerts_router)
 app.include_router(agent_router)
+app.include_router(chats_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -78,51 +82,17 @@ async def health_check():
 async def root():
     return {"message": "Welcome to FinSight AI"}
 
-class MockLoginRequest(BaseModel):
-    email: str
-    name: str
-
-@app.post("/auth/mock-login")
-def mock_login(req: MockLoginRequest, response: Response, db: Session = Depends(get_db)):
-    """Developer mock login endpoint."""
-    user = db.query(User).filter(User.email == req.email).first()
-    if not user:
-        user = User(email=req.email, name=req.name, picture="https://api.dicebear.com/7.x/avataaars/svg?seed=" + req.name)
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-        
-    AuthService.create_session(response, user.id)
-    return {"message": "Logged in successfully", "user": {"id": user.id, "email": user.email, "name": user.name}}
-
-@app.get("/auth/me")
-def get_current_user(request: Request, db: Session = Depends(get_db)):
-    """Returns the currently logged-in user based on the HTTPOnly cookie."""
-    user_id = AuthService.get_current_user_id(request)
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-        
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-        
+@app.get("/me")
+def get_me(db: Session = Depends(get_db)):
+    """Returns the (single) default user. There is no login in FinSight."""
+    user = get_or_create_default_user(db)
     return {"id": user.id, "email": user.email, "name": user.name, "picture": user.picture, "balance": user.virtual_balance}
-
-@app.post("/auth/logout")
-def logout(request: Request, response: Response):
-    AuthService.delete_session(request, response)
-    return {"message": "Logged out successfully"}
 
 @app.websocket("/ws/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: str):
     """
     WebSocket endpoint for real-time updates.
     """
-    session_user_id = AuthService.get_current_user_id(websocket)
-    if str(session_user_id) != user_id:
-        await websocket.close(code=1008, reason="Unauthorized")
-        return
-        
     await manager.connect(websocket, user_id)
     try:
         while True:

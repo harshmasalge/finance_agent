@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.db.database import get_db, redis_client
 from backend.db.models import Portfolio, TradeLog, TradeSide
-from backend.services.auth import AuthService
+from backend.services.auth import get_current_user_id
 from backend.services.trading_engine import TradingEngine, TradeException
 from pydantic import BaseModel
 from typing import Optional, List
@@ -26,7 +26,7 @@ class LimitUpdateRequest(BaseModel):
     tg_pct: Optional[float] = None
 
 @portfolio_router.get("/holdings")
-def get_holdings(user_id: int = Depends(AuthService.get_current_user_id), db: Session = Depends(get_db)):
+def get_holdings(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     holdings = db.query(Portfolio).filter(Portfolio.user_id == user_id, Portfolio.quantity > 0).all()
     
     result = []
@@ -36,8 +36,16 @@ def get_holdings(user_id: int = Depends(AuthService.get_current_user_id), db: Se
         if cached_price:
             current_price = float(cached_price)
         else:
-            # yfinance fallback or assume avg_cost for now
-            current_price = h.avg_cost
+            # yfinance fallback if cache is empty
+            try:
+                stock = yf.Ticker(h.ticker)
+                if hasattr(stock, 'fast_info') and 'lastPrice' in stock.fast_info:
+                    current_price = float(stock.fast_info['lastPrice'])
+                else:
+                    data = stock.history(period="1d", interval="1m")
+                    current_price = float(data['Close'].iloc[-1]) if not data.empty else h.avg_cost
+            except Exception:
+                current_price = h.avg_cost
             
         current_value = current_price * h.quantity
         invested_value = h.avg_cost * h.quantity
@@ -58,7 +66,7 @@ def get_holdings(user_id: int = Depends(AuthService.get_current_user_id), db: Se
     return result
 
 @portfolio_router.post("/trade")
-def execute_trade(request: TradeRequest, user_id: int = Depends(AuthService.get_current_user_id), db: Session = Depends(get_db)):
+def execute_trade(request: TradeRequest, user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     try:
         side_enum = TradeSide[request.side]
     except KeyError:
@@ -80,7 +88,7 @@ def execute_trade(request: TradeRequest, user_id: int = Depends(AuthService.get_
         raise HTTPException(status_code=400, detail=str(e))
 
 @portfolio_router.patch("/holdings/{ticker}/limits")
-def update_limits(ticker: str, request: LimitUpdateRequest, user_id: int = Depends(AuthService.get_current_user_id), db: Session = Depends(get_db)):
+def update_limits(ticker: str, request: LimitUpdateRequest, user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     holding = db.query(Portfolio).filter(Portfolio.user_id == user_id, Portfolio.ticker == ticker).first()
     if not holding:
         raise HTTPException(status_code=404, detail="Holding not found")
@@ -95,7 +103,7 @@ def update_limits(ticker: str, request: LimitUpdateRequest, user_id: int = Depen
     return holding
 
 @portfolio_router.delete("/holdings/{ticker}")
-def delete_holding(ticker: str, user_id: int = Depends(AuthService.get_current_user_id), db: Session = Depends(get_db)):
+def delete_holding(ticker: str, user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     holding = db.query(Portfolio).filter(Portfolio.user_id == user_id, Portfolio.ticker == ticker).first()
     if not holding:
         raise HTTPException(status_code=404, detail="Holding not found")
@@ -107,12 +115,12 @@ def delete_holding(ticker: str, user_id: int = Depends(AuthService.get_current_u
     return {"message": "Holding removed"}
 
 @portfolio_router.get("/trades")
-def get_trades(user_id: int = Depends(AuthService.get_current_user_id), db: Session = Depends(get_db)):
+def get_trades(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     trades = db.query(TradeLog).filter(TradeLog.user_id == user_id).order_by(TradeLog.timestamp.desc()).limit(50).all()
     return trades
 
 @portfolio_router.get("/history")
-def get_portfolio_history(user_id: int = Depends(AuthService.get_current_user_id), db: Session = Depends(get_db)):
+def get_portfolio_history(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     trades = db.query(TradeLog).filter(TradeLog.user_id == user_id).order_by(TradeLog.timestamp.asc()).all()
     if not trades:
         return []

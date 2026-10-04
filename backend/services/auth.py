@@ -1,56 +1,34 @@
-import os
-import uuid
-import json
-import structlog
-from typing import Optional
-from fastapi import Request, Response
-from backend.db.database import redis_client
+"""
+No-login mode: FinSight runs as a single-user app.
 
-logger = structlog.get_logger(__name__)
+Every request is treated as the default user, who is created automatically
+on first use. Routes keep a `user_id` dependency so multi-user auth can be
+added back later without touching the routers.
+"""
+from fastapi import Depends
+from sqlalchemy.orm import Session
 
-SESSION_COOKIE_NAME = "finsight_session"
-SESSION_EXPIRY = 60 * 60 * 24 * 7 # 7 days
+from backend.db.database import get_db
+from backend.db.models import User
 
-class AuthService:
-    
-    @staticmethod
-    def create_session(response: Response, user_id: int):
-        """Creates a secure Redis-backed session and sets the HTTPOnly cookie."""
-        session_id = str(uuid.uuid4())
-        
-        # Store in Redis
-        redis_client.setex(f"session:{session_id}", SESSION_EXPIRY, user_id)
-        
-        # Set secure HTTPOnly cookie
-        response.set_cookie(
-            key=SESSION_COOKIE_NAME,
-            value=session_id,
-            max_age=SESSION_EXPIRY,
-            httponly=True,
-            samesite="lax",
-            secure=os.getenv("ENVIRONMENT", "development") != "development"
+DEFAULT_USER_EMAIL = "demo@finsight.ai"
+DEFAULT_USER_NAME = "Demo User"
+
+
+def get_or_create_default_user(db: Session) -> User:
+    user = db.query(User).filter(User.email == DEFAULT_USER_EMAIL).first()
+    if not user:
+        user = User(
+            email=DEFAULT_USER_EMAIL,
+            name=DEFAULT_USER_NAME,
+            picture="https://api.dicebear.com/7.x/avataaars/svg?seed=FinSight",
         )
-        logger.info("Session created", user_id=user_id)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    return user
 
-    @staticmethod
-    def get_current_user_id(request: Request) -> Optional[int]:
-        """Retrieves the currently logged-in user_id from the session cookie."""
-        session_id = request.cookies.get(SESSION_COOKIE_NAME)
-        if not session_id:
-            return None
-            
-        user_id_str = redis_client.get(f"session:{session_id}")
-        if not user_id_str:
-            return None
-            
-        return int(user_id_str)
 
-    @staticmethod
-    def delete_session(request: Request, response: Response):
-        """Logs out the user by deleting the Redis key and cookie."""
-        session_id = request.cookies.get(SESSION_COOKIE_NAME)
-        if session_id:
-            redis_client.delete(f"session:{session_id}")
-        
-        response.delete_cookie(SESSION_COOKIE_NAME)
-        logger.info("Session deleted")
+def get_current_user_id(db: Session = Depends(get_db)) -> int:
+    """FastAPI dependency: always returns the default user's id."""
+    return get_or_create_default_user(db).id

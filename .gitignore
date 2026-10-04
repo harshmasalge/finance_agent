@@ -24,8 +24,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -64,3 +64,12 @@ id_rsa
 id_dsa
 *.sqlite3
 *.db
+
+# FinSight local data
+data/
+.worktrees/
+backend.zip
+*.db
+frontend/dist/
+celerybeat-schedule*
+start_local.ps1

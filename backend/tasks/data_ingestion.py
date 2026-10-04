@@ -51,8 +51,8 @@ def fetch_live_prices():
     for ticker in tracked_tickers:
         price = market_data.get_latest_price(ticker)
         if price is not None:
-            # Cache the latest price with a 60s TTL
-            redis_client.setex(f"live_price:{ticker}", 60, price)
+            # Cache the latest price permanently (don't expire so it stays available after market close)
+            redis_client.set(f"live_price:{ticker}", price)
             # Publish to pub/sub for websockets
             payload = json.dumps({"ticker": ticker, "price": price})
             redis_client.publish("live_prices", payload)
