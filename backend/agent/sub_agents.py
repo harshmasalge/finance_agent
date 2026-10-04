@@ -1,6 +1,6 @@
 """Research, sentiment and risk sub-agents. Each is a ReAct agent whose tool calls are
 recorded as evidence and whose final output is a structured AgentReport."""
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional, Tuple
 
 from langgraph.prebuilt import create_react_agent
 
@@ -14,6 +14,7 @@ from backend.agent.tools.screener import screen_nifty_stocks
 from backend.agent.tools.sentiment_tools import get_recent_headlines, get_sentiment_score
 from backend.agent.tools.technical import get_technical_indicators
 from backend.agent.utils import get_llm
+from backend.rag.tool import search_filings
 
 COMMON_RULES = """
 Rules:
@@ -25,9 +26,13 @@ Rules:
 - Be specific: quote the actual numbers."""
 
 
-def _run_agent(name: str, prefix: str, funcs: List[Callable], prompt: str, state: AgentState) -> Dict:
+def _run_agent(name: str, prefix: str, funcs: List[Callable], prompt: str, state: AgentState,
+               extra: Optional[List[Tuple[str, List[Callable]]]] = None) -> Dict:
+    """Run one ReAct agent. `extra` adds tool groups with their own evidence prefix (e.g. F for filings)."""
     evidence: List[Dict] = []
     tools = track_tools(funcs, prefix=prefix, agent=name, sink=evidence)
+    for extra_prefix, extra_funcs in extra or []:
+        tools += track_tools(extra_funcs, prefix=extra_prefix, agent=name, sink=evidence)
     agent = create_react_agent(get_llm(), tools=tools, prompt=prompt + COMMON_RULES, response_format=AgentReport)
     try:
         result = agent.invoke({"messages": state["messages"][-6:]}, config={"recursion_limit": 16})
@@ -54,11 +59,15 @@ def research_node(state: AgentState) -> dict:
     else:
         task = (f"Analyse these stocks: {', '.join(tickers)}.\n"
                 "For EACH ticker call get_technical_indicators, get_fundamentals, get_xgboost_signal and extract_prophet_features.\n"
-                "Weigh the XGBoost signal by its holdout_accuracy. Point out conflicting signals explicitly.")
+                "Weigh the XGBoost signal by its holdout_accuracy. Point out conflicting signals explicitly.\n"
+                "Also call search_filings(ticker, query) 1-2 times per ticker for what the company itself reports in its "
+                "annual report / earnings calls (e.g. 'management guidance and outlook', 'asset quality GNPA NNPA' for banks, "
+                "'deal wins TCV and margin' for IT). Quote figures exactly as written in a passage and cite its F-id. "
+                "If it returns available=false, note 'no filings indexed' as a data gap - do not guess.")
     prompt = f"You are the Research Agent of FinSight AI (Indian equities).\n{task}"
     out = _run_agent("Research Agent", "R",
                      [get_technical_indicators, get_fundamentals, get_xgboost_signal, extract_prophet_features, screen_nifty_stocks],
-                     prompt, state)
+                     prompt, state, extra=[("F", [search_filings])] if intent != "ideas" else None)
     return {"research_output": out["report"], "evidence": out["evidence"]}
 
 

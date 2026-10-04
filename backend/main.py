@@ -16,6 +16,8 @@ from backend.routers.alerts import alerts_router
 from backend.routers.agent import agent_router
 from backend.routers.chats import chats_router
 from backend.review.router import router as review_router
+from backend.rag.router import router as kb_router
+from evals.router import router as evals_router
 import backend.review.models  # noqa: F401  registers answer_status, answer_revisions, feedback, research_notes
 
 # Configure structlog
@@ -58,6 +60,8 @@ app.include_router(alerts_router)
 app.include_router(agent_router)
 app.include_router(chats_router)
 app.include_router(review_router)
+app.include_router(kb_router)
+app.include_router(evals_router)
 
 app.add_middleware(
     CORSMiddleware,

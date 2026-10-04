@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AlertTriangle, Braces, ExternalLink, X } from 'lucide-react';
 import type { AnswerPayload, Evidence, Scorecard } from '../../lib/api';
 import ScorecardView from './ScorecardView';
+import FilingPassages, { isFilingsOutput } from '../kb/FilingPassages';
 import { cn, timeAgo } from '../../lib/format';
 import { Badge, Button } from '../ui';
 import { citationNumbers, SOURCE_LABELS, toolLabel } from './evidence';
@@ -31,6 +32,8 @@ function OutputView({ output }: { output: unknown }) {
       </div>
     );
   }
+
+  if (isFilingsOutput(output)) return <FilingPassages output={output} />;
 
   if (Array.isArray(o.headlines)) {
     return (

@@ -1,17 +1,19 @@
 import { useState, type ReactNode } from 'react';
-import { Bell, Briefcase, FileCheck2, LayoutDashboard, Moon, PanelLeftClose, PanelLeftOpen, Sparkles, Sun, WifiOff } from 'lucide-react';
+import { Bell, Briefcase, FileCheck2, FlaskConical, LayoutDashboard, Library, Moon, PanelLeftClose, PanelLeftOpen, Sparkles, Sun, WifiOff } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Portfolio from './components/Portfolio';
 import Alerts from './components/Alerts';
 import Advisor from './components/AIChat';
 import ResearchNotes from './components/ResearchNotes';
+import KnowledgeBase from './components/KnowledgeBase';
+import Evaluation from './components/Evaluation';
 import { Button, Skeleton } from './components/ui';
 import { ToastProvider } from './components/toast';
 import { ThemeProvider, useTheme } from './lib/theme';
 import { AppDataProvider, useApp } from './lib/user';
 import { cn, fmtINR } from './lib/format';
 
-type Tab = 'dashboard' | 'portfolio' | 'advisor' | 'notes' | 'alerts';
+type Tab = 'dashboard' | 'portfolio' | 'advisor' | 'notes' | 'kb' | 'evals' | 'alerts';
 
 export default function App() {
   return (
@@ -55,6 +57,8 @@ function Shell() {
     { id: 'portfolio', label: 'Portfolio', icon: <Briefcase className="h-[18px] w-[18px]" /> },
     { id: 'advisor', label: 'AI Advisor', icon: <Sparkles className="h-[18px] w-[18px]" /> },
     { id: 'notes', label: 'Research Notes', icon: <FileCheck2 className="h-[18px] w-[18px]" /> },
+    { id: 'kb', label: 'Knowledge Base', icon: <Library className="h-[18px] w-[18px]" /> },
+    { id: 'evals', label: 'Evaluation', icon: <FlaskConical className="h-[18px] w-[18px]" /> },
     { id: 'alerts', label: 'Alerts', icon: <Bell className="h-[18px] w-[18px]" />, badge: unreadAlerts },
   ];
 
@@ -133,6 +137,8 @@ function Shell() {
           {tab === 'portfolio' && <Portfolio />}
           {tab === 'alerts' && <Alerts />}
           {tab === 'notes' && <ResearchNotes />}
+          {tab === 'kb' && <KnowledgeBase />}
+          {tab === 'evals' && <Evaluation />}
           {tab === 'advisor' && <Advisor />}
         </div>
       </main>
