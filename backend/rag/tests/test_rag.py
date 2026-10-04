@@ -154,3 +154,7 @@ def test_kb_router(ingested):
     assert f.status_code == 200 and f.content[:4] == b"%PDF"
     assert c.get("/kb/files/../../etc").status_code == 404
     assert c.get("/kb/benchmark").json()["available"] is False
+
+
+def test_clean_table_md_unescapes_cells():
+    assert ingest.clean_table_md("|a&lt;br&gt;b|&amp;#45;15,528|") == "|a / b|-15,528|"

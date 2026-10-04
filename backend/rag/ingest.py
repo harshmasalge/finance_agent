@@ -20,6 +20,7 @@ Usage:  python -m backend.rag.ingest [--budget SECONDS] [--only DOC_ID ...] [--f
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import time
@@ -34,7 +35,8 @@ from backend.rag.manifest import load_manifest, save_manifest, sha256_file
 EDGE_BAND = 0.08          # top/bottom fraction of the page treated as header/footer zone
 MIN_CHUNK_TOKENS = 40     # trailing fragments smaller than this merge into the previous chunk
 HEADING_RATIO = 1.2       # font size vs body size to count as a heading
-CHUNKER_VERSION = 2       # bump when chunking changes: docs are re-chunked from cached pages
+CHUNKER_VERSION = 3       # bump when chunking changes: docs are re-chunked from cached pages
+                          # (only chunks whose text changed are re-embedded)
 DOC_TYPE_LABEL = {"annual_report": "Annual Report", "earnings_call": "Earnings Call Transcript"}
 
 _TOKEN_RE = re.compile(r"\w+|[^\w\s]")
@@ -144,6 +146,18 @@ def extract_document(pdf: Path, out: Path, deadline: float) -> Tuple[bool, int, 
 
 
 # ----------------------------------------------------------------------------- clean + chunk
+_BR_RE = re.compile(r"<br\s*/?>", re.I)
+
+
+def clean_table_md(md: str) -> str:
+    """Undo HTML escaping that PyMuPDF's markdown export applies to cell text
+    (`&amp;#45;` -> `-`, `&lt;br&gt;` line breaks -> ' / ') so numbers index as plain tokens."""
+    prev = None
+    while prev != md:  # entities can be escaped twice ("&amp;#45;")
+        prev, md = md, html.unescape(md)
+    return _BR_RE.sub(" / ", md)
+
+
 def _norm(text: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"\d+", "#", text.lower())).strip()
 
@@ -206,7 +220,7 @@ def page_units(pg: Dict, body: float, repeated: Set[str], section: str) -> Tuple
     units: List[Tuple[str, str, str]] = []
     for kind, _, it in items:
         if kind == "table":
-            units.append(("table", it["md"], section))
+            units.append(("table", clean_table_md(it["md"]), section))
             continue
         para: List[str] = []
         head: List[str] = []
@@ -367,14 +381,19 @@ def delete_doc_vectors(doc_id: str) -> None:
 
 
 def index_chunks(chunks: List[Dict], deadline: float, batch_size: int = 64) -> Tuple[bool, int, float]:
-    """Embed + upsert chunks not yet in Chroma. Returns (finished, n_embedded_now, seconds)."""
+    """Embed + upsert chunks whose id is missing from Chroma or whose stored text differs, and delete
+    vectors of the document's chunks that no longer exist. Returns (finished, n_embedded_now, seconds)."""
     from backend.rag.store import embed_passages, get_collection
     col = get_collection()
     ids = [c["chunk_id"] for c in chunks]
-    present: Set[str] = set()
-    for i in range(0, len(ids), 500):
-        present |= set(col.get(ids=ids[i:i + 500], include=[])["ids"])
-    todo = [c for c in chunks if c["chunk_id"] not in present]
+    stored: Dict[str, str] = {}
+    for d_id in {c["doc_id"] for c in chunks}:
+        got = col.get(where={"doc_id": d_id}, include=["documents"])
+        stored.update(zip(got["ids"], got["documents"] or [""] * len(got["ids"])))
+    gone = [i for i in stored if i not in set(ids)]
+    for i in range(0, len(gone), 500):
+        col.delete(ids=gone[i:i + 500])
+    todo = [c for c in chunks if stored.get(c["chunk_id"]) != index_text(c)]
     t0, n = time.time(), 0
     for i in range(0, len(todo), batch_size):
         if time.time() > deadline:
@@ -415,9 +434,7 @@ def process_document(doc: Dict, deadline: float, embed: bool = True, force: bool
         out = pages_path(doc["doc_id"], sha)
         stale_chunks = doc.get("chunker_version") != CHUNKER_VERSION and doc.get("ingested_sha256") == sha
         if doc.get("ingested_sha256") != sha or not chunks_path(doc["doc_id"]).exists() or stale_chunks:
-            if stale_chunks and out.exists():
-                delete_doc_vectors(doc["doc_id"])  # pages are still valid; only re-chunk + re-embed
-            else:
+            if not (stale_chunks and out.exists()):  # else: pages still valid -> only re-chunk
                 finished, n_pages, secs = extract_document(pdf, out, deadline)
                 doc["extract_seconds"] = round((doc.get("extract_seconds") or 0) + secs, 2)
                 doc["pages"] = n_pages
