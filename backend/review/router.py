@@ -85,20 +85,20 @@ def reject(message_id: int, req: RejectRequest = Body(default_factory=RejectRequ
 
 
 @router.get("/research-notes")
-def list_notes(db: Session = Depends(get_db)):
+def list_notes(db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
     """Published research notes, newest first."""
     rows = db.query(ResearchNote).order_by(ResearchNote.id.desc()).limit(200).all()
     return [service.note_summary(n) for n in rows]
 
 
 @router.post("/research-notes")
-def receive_note(body: dict = Body(...), db: Session = Depends(get_db)):
+def receive_note(body: dict = Body(...), db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
     """The 'platform' endpoint the connector pushes to (idempotent on message_id + version)."""
     return _guard(service.platform_receive, db, body)
 
 
 @router.get("/research-notes/{note_id}")
-def get_note(note_id: int, db: Session = Depends(get_db)):
+def get_note(note_id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
     """One research note with its body, connector outcome and a Markdown rendering."""
     n = db.get(ResearchNote, note_id)
     if not n:

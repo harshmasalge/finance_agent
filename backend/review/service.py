@@ -239,11 +239,16 @@ def approve(db: Session, msg: ChatMessage, version: Optional[int], connector) ->
         raise ReviewError(404, f"Version {version} does not exist")
     st.status, st.approved_version, st.updated_at = "approved", version, _now()
     note = db.query(ResearchNote).filter(ResearchNote.message_id == msg.id, ResearchNote.version == version).first()
-    if not note:
+    if not note or note.connector_status != "published":
+        # Always (re)build an unpublished note from the approved revision: a row with the same (message_id, version)
+        # may have been POSTed to /research-notes directly, and its body must never be published as if approved.
         body = build_note(db, msg, rev)
-        note = ResearchNote(message_id=msg.id, version=version, ticker=body["ticker"], title=body["title"],
-                            verdict=body["verdict"], body=body, connector_status="pending")
-        db.add(note)
+        if not note:
+            note = ResearchNote(message_id=msg.id, version=version, connector_status="pending")
+            db.add(note)
+        note.ticker, note.title, note.verdict, note.body = body["ticker"], body["title"], body["verdict"], body
+        if note.connector_status == "received":
+            note.connector_status, note.connector_response, note.published_at = "pending", None, None
     _sync_chat_payload(msg, get_revision(db, msg.id, st.current_version), st)
     db.commit()
     db.refresh(note)
@@ -258,6 +263,14 @@ def platform_receive(db: Session, body: dict) -> dict:
         mid, ver = int(body["message_id"]), int(body["version"])
     except (KeyError, TypeError, ValueError):
         raise ReviewError(422, "A note needs integer message_id and version")
+    if mid < 1 or ver < 1:
+        raise ReviewError(422, "message_id and version must be positive")
+    if body.get("verdict") not in (None, "BUY", "SELL", "HOLD"):
+        raise ReviewError(422, "verdict must be BUY, SELL, HOLD or null")
+    if body.get("ticker") is not None and (not isinstance(body["ticker"], str) or len(body["ticker"]) > 50):
+        raise ReviewError(422, "ticker must be a string of at most 50 characters")
+    if len(json.dumps(body, default=str)) > 200_000:
+        raise ReviewError(413, "Note body is too large")
     note = db.query(ResearchNote).filter(ResearchNote.message_id == mid, ResearchNote.version == ver).first()
     if note:
         return {"status": "published", "id": note.id, "url": f"/research-notes/{note.id}", "duplicate": True}

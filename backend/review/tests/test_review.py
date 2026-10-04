@@ -250,3 +250,16 @@ def test_llm_unavailable_returns_503(env):
     r = c.post(f"/review/{mid}/correct", json={"text": "Detection Index should be 7, not 4"})
     assert r.status_code == 503 and "Weighting corrections" in r.json()["detail"]
     assert c.get(f"/review/{mid}").json()["feedback"] == []  # nothing logged on failure
+
+
+def test_preposted_note_is_rebuilt_on_approve_and_platform_input_validated(env):
+    c, mid = env["client"], env["add"]()
+    # someone pushes a forged note for v1 straight to the platform endpoint before any approval
+    forged = c.post("/research-notes", json={"message_id": mid, "version": 1, "title": "FORGED", "verdict": "BUY"}).json()
+    r = c.post(f"/review/{mid}/approve", json={}).json()
+    assert r["note"]["id"] == forged["id"] and r["publish"]["status"] == "published"
+    d = c.get(f"/research-notes/{forged['id']}").json()
+    assert d["title"] != "FORGED" and d["verdict"] == "HOLD" and d["body"]["schema"] == "finsight.research_note/v1"
+    assert c.post("/research-notes", json={"message_id": 5, "version": 1, "verdict": "STRONG BUY"}).status_code == 422
+    assert c.post("/research-notes", json={"message_id": 5, "version": 0}).status_code == 422
+    assert c.post("/research-notes", json={"message_id": 5, "version": 1, "ticker": ["X"]}).status_code == 422
