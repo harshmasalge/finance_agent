@@ -1,12 +1,12 @@
 # FinSight v2 — Build contracts for the three feature agents
 
-Base: branch `finsight-v2` @ 96461c3. Each agent works ONLY in its own local clone + branch (clones live in the git-ignored `.worktrees/` folder; the lead merges from them with `git fetch .worktrees/<name> <branch>`):
+Base: branch `finsight-v2` @ 96461c3. Each agent works ONLY in its own clone + branch on the device shell's fast local disk (`$HOME/work/<name>`, NOT the mounted project folder, which is very slow for many small writes). The lead regularly fetches each branch into the project repo as `feat/*` (backup + review) and merges from there:
 
 | Agent | Branch | Clone |
 |---|---|---|
-| RAG (knowledge backbone) | `feat/rag` | `.worktrees/rag` |
-| Review (expert review + approve) | `feat/review` | `.worktrees/review` |
-| Eval (evaluation harness) | `feat/evals` | `.worktrees/evals` |
+| RAG (knowledge backbone) | `feat/rag` | `$HOME/work/rag` |
+| Review (expert review + approve) | `feat/review` | `$HOME/work/review` |
+| Eval (evaluation harness) | `feat/evals` | `$HOME/work/evals` |
 
 The lead (boss) reviews and merges in order RAG → Review → Eval and does all wiring in shared files.
 
