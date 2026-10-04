@@ -26,7 +26,10 @@ def get_embedder():
     global _embedder, _embedder_name
     with _lock:
         if _embedder is None:
+            import torch
             from sentence_transformers import SentenceTransformer
+            # torch often defaults to 1 intra-op thread in containers; use every core we have
+            torch.set_num_threads(int(os.getenv("RAG_TORCH_THREADS", os.cpu_count() or 1)))
             try:
                 _embedder = SentenceTransformer(config.EMBED_MODEL, device="cpu")
                 _embedder_name = config.EMBED_MODEL

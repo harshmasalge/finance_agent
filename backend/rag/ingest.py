@@ -366,7 +366,7 @@ def delete_doc_vectors(doc_id: str) -> None:
         pass
 
 
-def index_chunks(chunks: List[Dict], deadline: float, batch_size: int = 32) -> Tuple[bool, int, float]:
+def index_chunks(chunks: List[Dict], deadline: float, batch_size: int = 64) -> Tuple[bool, int, float]:
     """Embed + upsert chunks not yet in Chroma. Returns (finished, n_embedded_now, seconds)."""
     from backend.rag.store import embed_passages, get_collection
     col = get_collection()
