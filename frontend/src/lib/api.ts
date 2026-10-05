@@ -1,4 +1,7 @@
-export const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:8001';
+// Local dev: the backend runs on :8001. Production build: VITE_API_URL="/api", i.e. the
+// same server as the page (Caddy forwards /api/* to the backend).
+const RAW_API_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:8001';
+export const API_URL = RAW_API_URL.startsWith('/') ? `${window.location.origin}${RAW_API_URL}` : RAW_API_URL;
 export const WS_URL = API_URL.replace(/^http/, 'ws');
 
 export class ApiError extends Error {

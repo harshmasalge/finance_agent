@@ -1,0 +1,105 @@
+# FinSight - production stack (one server, e.g. AWS EC2).
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Local development is unchanged: docker-compose.yml / start_app.ps1.
+# Settings come from .env (see .env.production.example).
+# Only Caddy is reachable from outside (ports 80/443); the database, Redis and
+# the backend are on the internal Docker network.
+
+x-backend: &backend
+  build:
+    context: .
+    dockerfile: deploy/backend.Dockerfile
+  image: finsight-backend:latest
+  env_file: .env
+  environment: &backend-env
+    POSTGRES_URL: postgresql+psycopg2://finsight:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/finsight
+    REDIS_URL: redis://redis:6379/0
+    RAG_CHROMA_MODE: embedded
+    ENVIRONMENT: production
+  volumes:
+    - ./data:/app/data          # RAG corpus + Chroma index (copy your local data/ folder here)
+    - hf_cache:/cache           # downloaded HuggingFace models (FinBERT, embeddings)
+  depends_on:
+    db:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  restart: unless-stopped
+  logging: &logging
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  db:
+    image: timescale/timescaledb-ha:pg15
+    environment:
+      POSTGRES_USER: finsight
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: finsight
+    volumes:
+      - pgdata:/home/postgres/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finsight -d finsight"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    logging: *logging
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    logging: *logging
+
+  backend:
+    <<: *backend
+
+  celery_worker:
+    <<: *backend
+    command: celery -A backend.celery_app worker --loglevel=info --concurrency=${CELERY_CONCURRENCY:-2}
+    healthcheck:
+      disable: true
+
+  celery_beat:
+    <<: *backend
+    command: celery -A backend.celery_app beat --loglevel=info --schedule=/tmp/celerybeat-schedule
+    healthcheck:
+      disable: true
+
+  web:
+    build:
+      context: .
+      dockerfile: deploy/web.Dockerfile
+    image: finsight-web:latest
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+      AUTH: ${AUTH:-on}
+      BASIC_AUTH_USER: ${BASIC_AUTH_USER:-finsight}
+      BASIC_AUTH_HASH: ${BASIC_AUTH_HASH:-}
+    volumes:
+      - caddy_data:/data        # HTTPS certificates
+      - caddy_config:/config
+    depends_on:
+      - backend
+    restart: unless-stopped
+    logging: *logging
+
+volumes:
+  pgdata:
+  redisdata:
+  hf_cache:
+  caddy_data:
+  caddy_config:

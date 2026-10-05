@@ -1,0 +1,42 @@
+# FinSight production web server.
+#
+# SITE_ADDRESS  - your domain (e.g. 13.233.10.20.sslip.io). Caddy then gets a free
+#                 HTTPS certificate automatically. Leave empty for plain http on :80
+#                 (local testing).
+# AUTH          - "on" (default) asks for a username/password before the app loads,
+#                 so strangers can't use up your LLM keys. "off" disables it.
+# BASIC_AUTH_USER / BASIC_AUTH_HASH - login; make the hash with deploy/make-password.sh
+
+(auth_on) {
+	@protected not path /api/health /api/ws/*
+	basic_auth @protected {
+		{$BASIC_AUTH_USER:finsight} {$BASIC_AUTH_HASH}
+	}
+}
+(auth_off) {
+}
+
+{$SITE_ADDRESS::80} {
+	encode zstd gzip
+	import auth_{$AUTH:on}
+
+	# API + websocket -> FastAPI (the /api prefix is stripped)
+	handle_path /api/* {
+		reverse_proxy backend:8001 {
+			# stream Server-Sent Events (live agent steps) immediately
+			flush_interval -1
+		}
+	}
+
+	# React single-page app
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

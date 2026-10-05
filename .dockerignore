@@ -1,0 +1,18 @@
+# Keep the production build context small (context = repo root)
+.git
+.venv
+venv
+**/__pycache__
+**/*.pyc
+**/node_modules
+frontend/dist
+data
+scratch
+backend.zip
+celerybeat-schedule*
+.env
+.env.*
+*.md
+!frontend/README.md
+evals/cache
+evals/results

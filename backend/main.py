@@ -1,4 +1,5 @@
 import logging
+import os
 import structlog
 import asyncio
 from contextlib import asynccontextmanager
@@ -65,7 +66,9 @@ app.include_router(evals_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    # Comma-separated in .env; defaults to the local Vite dev server. In production the
+    # app and API share one origin behind Caddy, so CORS isn't needed there.
+    allow_origins=[o.strip() for o in (os.getenv("CORS_ORIGINS") or "http://localhost:5173").split(",") if o.strip()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
