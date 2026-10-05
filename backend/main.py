@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from backend.websockets.manager import manager
 from backend.websockets.redis_listener import redis_listener
 from backend.services.auth import get_or_create_default_user
+from backend.app_mode import public_config
 from backend.db.database import get_db, engine, Base
 from backend.db.models import User
 from sqlalchemy.orm import Session
@@ -91,6 +92,12 @@ async def health_check():
 @app.get("/")
 async def root():
     return {"message": "Welcome to FinSight AI"}
+
+@app.get("/app-config")
+def app_config():
+    """Site mode (demo | inspect) and the contact shown to visitors in inspect mode."""
+    return public_config()
+
 
 @app.get("/me")
 def get_me(db: Session = Depends(get_db)):

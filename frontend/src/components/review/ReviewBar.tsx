@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
+import { InspectNotice, useInspectMode } from '../../lib/appConfig';
 import { Bot, Check, CheckCircle2, ChevronDown, Download, FileCheck2, History, Send, ShieldQuestion, UserRound, X, XCircle } from 'lucide-react';
 import { api, API_URL, type AnswerPayload } from '../../lib/api';
 import { cn, timeAgo } from '../../lib/format';
@@ -36,6 +37,7 @@ export interface ReviewBarProps {
  */
 export default function ReviewBar({ messageId, payload, onPayloadChange, className }: ReviewBarProps) {
   const toast = useToast();
+  const inspect = useInspectMode();
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<ReviewState | null>(null);
   const [loading, setLoading] = useState(false);
@@ -228,6 +230,7 @@ export default function ReviewBar({ messageId, payload, onPayloadChange, classNa
               {busy === 'correct' && <p className="pl-8 text-[12.5px] text-muted animate-pulse">Correction Agent is checking the evidence…</p>}
               <div ref={threadEnd} />
 
+              {inspect ? <InspectNotice>Corrections are handled by the Correction Agent, an LLM, so they're paused in inspect mode. The version history above shows how earlier corrections changed this answer.</InspectNotice> : <>
               {suggestions.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {suggestions.map(s => (
@@ -241,6 +244,7 @@ export default function ReviewBar({ messageId, payload, onPayloadChange, classNa
                   placeholder='Correct the answer, e.g. "Ignore the XGBoost signal" or "RSI should be 45"' aria-label="Correction" />
                 <Button type="submit" loading={busy === 'correct'} disabled={!text.trim()}><Send className="h-3.5 w-3.5" />Send</Button>
               </form>
+              </>}
               <div className="flex flex-wrap items-center gap-3 text-[12px] text-muted">
                 {state.notes.filter(n => n.connector_status === 'published').map(n => (
                   <span key={n.id} className="inline-flex items-center gap-1 text-up"><FileCheck2 className="h-3.5 w-3.5" />v{n.version} published · note #{n.id}</span>

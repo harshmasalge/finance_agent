@@ -9,6 +9,7 @@ import EvidencePanel from './advisor/EvidencePanel';
 import { LiveSteps } from './advisor/AgentSteps';
 import ResizeHandle from './ResizeHandle';
 import ReviewBar from './review/ReviewBar';
+import { InspectNotice, useInspectMode } from '../lib/appConfig';
 
 const SUGGESTIONS = [
   { icon: Briefcase, title: 'Check my portfolio health', prompt: 'Check the health of my portfolio' },
@@ -34,6 +35,7 @@ interface Pending { sessionId: number | null; question: string; steps: Step[]; e
 
 export default function Advisor() {
   const toast = useToast();
+  const inspect = useInspectMode();
   const [chats, setChats] = useState<ChatSummary[] | null>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -84,7 +86,7 @@ export default function Advisor() {
 
   const send = async (text?: string) => {
     const question = (text ?? input).trim();
-    if (!question || pending) return;
+    if (!question || pending || inspect) return;
     setInput('');
     const startSession = activeId;
     setMessages(m => [...m, { id: `u-${Date.now()}`, role: 'user', content: question }]);
@@ -181,10 +183,10 @@ export default function Advisor() {
                     <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />
                     <span className="truncate">{c.title}</span>
                   </button>
-                  <button onClick={() => deleteChat(c.id)} aria-label="Delete chat"
+                  {!inspect && <button onClick={() => deleteChat(c.id)} aria-label="Delete chat"
                     className="mr-1 rounded-md p-1.5 text-muted opacity-0 transition-all hover:bg-down/10 hover:text-down group-hover:opacity-100 focus:opacity-100">
                     <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                  </button>}
                 </div>
               ))}
             </div>
@@ -212,6 +214,11 @@ export default function Advisor() {
                 <div className="mx-auto mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary"><Sparkles className="h-6 w-6" /></div>
                 <h2 className="text-2xl font-semibold tracking-tight">What would you like to research?</h2>
                 <p className="mx-auto mt-2 max-w-md text-sm text-muted">Research, Sentiment and Risk agents gather live data, a Synthesis agent writes the answer, and a Validation agent checks every claim against its source.</p>
+                {inspect ? (
+                  <InspectNotice className="mx-auto mt-8 max-w-xl">
+                    To save LLM credits, new questions can't be sent on this public deployment. Open a saved conversation from the list on the left to see a full multi-agent answer, its agent trace and every cited source.
+                  </InspectNotice>
+                ) : (
                 <div className="mx-auto mt-8 grid max-w-xl gap-2.5 sm:grid-cols-2">
                   {SUGGESTIONS.map(s => (
                     <button key={s.title} onClick={() => send(s.prompt)}
@@ -221,6 +228,7 @@ export default function Advisor() {
                     </button>
                   ))}
                 </div>
+                )}
               </div>
             )}
 
@@ -268,6 +276,7 @@ export default function Advisor() {
         {/* Composer */}
         <div className="shrink-0 px-5 pb-5">
           <div className="mx-auto max-w-3xl">
+            {inspect ? (!empty && <InspectNotice />) : (<>
             <div className={cn('flex items-end gap-2 rounded-2xl border bg-surface p-2 pl-4 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-150',
               'border-border focus-within:border-primary focus-within:shadow-[0_0_0_3px_color-mix(in_oklab,var(--primary)_14%,transparent)]')}>
               <textarea ref={inputRef} rows={1} value={input} onChange={e => setInput(e.target.value)} onKeyDown={onKeyDown}
@@ -278,6 +287,7 @@ export default function Advisor() {
               </Button>
             </div>
             <p className="mt-2 text-center text-[11px] text-muted">Paper-trading research tool. Not investment advice. Enter to send · Shift+Enter for a new line</p>
+            </>)}
           </div>
         </div>
       </section>

@@ -17,6 +17,8 @@ x-backend: &backend
     POSTGRES_URL: postgresql+psycopg2://finsight:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/finsight
     REDIS_URL: redis://redis:6379/0
     RAG_CHROMA_MODE: embedded
+    # inspect = public browse-only mode (no LLM calls); demo = everything works
+    APP_MODE: ${APP_MODE:-inspect}
     ENVIRONMENT: production
   volumes:
     - ./data:/app/data          # RAG corpus + Chroma index (copy your local data/ folder here)
@@ -86,9 +88,6 @@ services:
       - "443:443/udp"
     environment:
       SITE_ADDRESS: ${SITE_ADDRESS:-:80}
-      AUTH: ${AUTH:-on}
-      BASIC_AUTH_USER: ${BASIC_AUTH_USER:-finsight}
-      BASIC_AUTH_HASH: ${BASIC_AUTH_HASH:-}
     volumes:
       - caddy_data:/data        # HTTPS certificates
       - caddy_config:/config

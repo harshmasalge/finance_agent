@@ -13,6 +13,8 @@ from typing import Dict, List, Optional
 
 from langchain_openai import ChatOpenAI
 
+from backend.app_mode import InspectModeError, inspect_message, is_inspect
+
 PROVIDERS: Dict[str, dict] = {
     "groq": {
         "label": "Groq",
@@ -104,6 +106,8 @@ def current_selection() -> dict:
 
 
 def get_llm(temperature: float = 0.1, model: Optional[str] = None) -> ChatOpenAI:
+    if is_inspect():  # backstop: no LLM call can spend credits in inspect mode
+        raise InspectModeError(inspect_message())
     sel = current_selection()
     p = PROVIDERS[sel["provider"]]
     kwargs = dict(

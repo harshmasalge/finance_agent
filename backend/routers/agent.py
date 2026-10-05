@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from backend.agent.graph import app as langgraph_app
 from backend.agent.utils import list_providers, use_llm
+from backend.app_mode import require_demo_mode
 from backend.db.database import SessionLocal
 from backend.db.models import ChatMessage, ChatSession
 from backend.services.auth import get_current_user_id
@@ -63,7 +64,7 @@ def _sse(event: dict) -> str:
     return f"data: {json.dumps(event, default=str)}\n\n"
 
 
-@agent_router.post("/chat")
+@agent_router.post("/chat", dependencies=[Depends(require_demo_mode)])
 async def chat_with_agent(request: ChatRequest, user_id: int = Depends(get_current_user_id)):
     db = SessionLocal()
     try:

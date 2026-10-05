@@ -4,6 +4,7 @@ import { api, API_URL } from '../lib/api';
 import { cn, tickerLabel } from '../lib/format';
 import { useToast } from './toast';
 import { Badge, Button, Card, CardHeader, EmptyState, Input, PageHeader, Segmented, Select, Skeleton, Stat } from './ui';
+import { useInspectMode } from '../lib/appConfig';
 import type { KbBenchmark, KbDoc, KbHit, KbSearchResponse, KbStats } from './kb/types';
 
 const TYPE_LABEL: Record<string, string> = { annual_report: 'Annual report', earnings_call: 'Earnings call' };
@@ -136,6 +137,7 @@ export default function KnowledgeBase() {
   const [hits, setHits] = useState<KbHit[] | null>(null);
   const [searching, setSearching] = useState(false);
   const [ingesting, setIngesting] = useState(false);
+  const inspect = useInspectMode();
 
   const load = useCallback(async () => {
     try {
@@ -188,7 +190,8 @@ export default function KnowledgeBase() {
         subtitle="Annual reports and earnings-call transcripts the agents cite as filings evidence"
         actions={<>
           <Button variant="outline" size="sm" onClick={() => void load()}><RefreshCw className="h-3.5 w-3.5" />Refresh</Button>
-          <Button size="sm" onClick={() => void startIngest()} loading={ingesting}>{ingesting ? 'Ingesting…' : 'Sync corpus'}</Button>
+          <Button size="sm" onClick={() => void startIngest()} loading={ingesting} disabled={inspect}
+            title={inspect ? 'Disabled in inspect mode' : undefined}>{ingesting ? 'Ingesting…' : 'Sync corpus'}</Button>
         </>} />
 
       {error && (

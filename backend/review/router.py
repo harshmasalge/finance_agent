@@ -1,6 +1,7 @@
 """FastAPI routes for expert review (`/review`) and the research-notes platform (`/research-notes`)."""
 from typing import Optional
 
+from backend.app_mode import require_demo_mode
 from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -63,7 +64,7 @@ def get_review(message_id: int, db: Session = Depends(get_db), user_id: int = De
     return _guard(lambda: service.review_state(db, service.get_message(db, message_id, user_id)))
 
 
-@router.post("/review/{message_id}/correct")
+@router.post("/review/{message_id}/correct", dependencies=[Depends(require_demo_mode)])
 def correct(message_id: int, req: CorrectRequest, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id),
             agent: CorrectionAgent = Depends(get_correction_agent)):
     """Apply a natural-language correction; returns the agent's explanation/pushback and the new review state."""

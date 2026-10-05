@@ -11,6 +11,7 @@ import { Button, Skeleton } from './components/ui';
 import { ToastProvider } from './components/toast';
 import { ThemeProvider, useTheme } from './lib/theme';
 import { AppDataProvider, useApp } from './lib/user';
+import { AppConfigProvider, InspectBanner } from './lib/appConfig';
 import { cn, fmtINR } from './lib/format';
 
 type Tab = 'dashboard' | 'portfolio' | 'advisor' | 'notes' | 'kb' | 'evals' | 'alerts';
@@ -19,9 +20,11 @@ export default function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <AppDataProvider>
-          <Shell />
-        </AppDataProvider>
+        <AppConfigProvider>
+          <AppDataProvider>
+            <Shell />
+          </AppDataProvider>
+        </AppConfigProvider>
       </ToastProvider>
     </ThemeProvider>
   );
@@ -131,7 +134,9 @@ function Shell() {
         </div>
       </aside>
 
-      <main className={cn('min-w-0 flex-1', tab === 'advisor' ? 'overflow-hidden' : 'overflow-y-auto')}>
+      <div className="flex min-w-0 flex-1 flex-col">
+      <InspectBanner />
+      <main className={cn('min-h-0 min-w-0 flex-1', tab === 'advisor' ? 'overflow-hidden' : 'overflow-y-auto')}>
         <div key={tab} className="h-full animate-fade-in">
           {tab === 'dashboard' && <Dashboard onNavigate={go} />}
           {tab === 'portfolio' && <Portfolio />}
@@ -142,6 +147,7 @@ function Shell() {
           {tab === 'advisor' && <Advisor />}
         </div>
       </main>
+      </div>
     </div>
   );
 }

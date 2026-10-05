@@ -11,7 +11,7 @@ FinSight runs three ways. Pick one:
 The production stack is 6 containers on one machine:
 
 ```
-Internet ──► web (Caddy: HTTPS + login + React app) ──/api/*──► backend (FastAPI)
+Internet ──► web (Caddy: HTTPS + React app) ──/api/*──► backend (FastAPI)
                                                                    │
                          celery_worker, celery_beat ──► redis, db (Postgres/TimescaleDB)
 ```
@@ -19,7 +19,7 @@ Internet ──► web (Caddy: HTTPS + login + React app) ──/api/*──► 
 Only `web` is reachable from outside (ports 80/443). Postgres, Redis and the API are
 on Docker's private network.
 
-Files: `docker-compose.prod.yml`, `deploy/` (Dockerfiles, Caddyfile, password helper),
+Files: `docker-compose.prod.yml`, `deploy/` (Dockerfiles, Caddyfile),
 `.env.production.example`.
 
 ---
@@ -32,7 +32,7 @@ On your laptop with Docker Desktop running, from the repo root:
 copy .env .env.backup                          # keep your dev .env safe
 # add these lines to .env:
 #   POSTGRES_PASSWORD=localtest123
-#   AUTH=off
+#   APP_MODE=demo
 docker compose -f docker-compose.prod.yml up -d --build
 ```
 
@@ -110,13 +110,12 @@ cd ~/finance_agent
 cp .env.production.example .env
 openssl rand -hex 24                     # -> use as POSTGRES_PASSWORD
 openssl rand -hex 32                     # -> use as SESSION_SECRET
-sh deploy/make-password.sh 'pick-a-login-password'   # prints BASIC_AUTH_HASH='...'
 nano .env
 ```
 Fill in:
 - `SITE_ADDRESS=13.233.10.20.sslip.io` (your IP + `.sslip.io` - a free domain that points to
   your IP, so Caddy can get a real HTTPS certificate)
-- `BASIC_AUTH_HASH='...'` (paste the whole line from the helper, **with** the single quotes)
+- `APP_MODE=inspect` (public, browse-only) or `APP_MODE=demo` (everything works) - see below
 - `POSTGRES_PASSWORD`, `SESSION_SECRET`
 - Your LLM keys (`GROQ_API_KEYS`, etc.) and `NEWSAPI_KEYS` - same values as your local `.env`
 
@@ -127,7 +126,30 @@ Save: `Ctrl+O`, `Enter`, `Ctrl+X`.
 docker compose -f docker-compose.prod.yml up -d --build    # first build ~10 min
 docker compose -f docker-compose.prod.yml ps               # all "Up", backend "healthy"
 ```
-Open **https://13.233.10.20.sslip.io**, log in as `finsight` + your password. Done!
+Open **https://13.233.10.20.sslip.io**. Done!
+
+---
+
+## Site modes: inspect vs demo
+
+There is no login. Instead the server decides what visitors can do:
+
+| `APP_MODE` | What visitors can do |
+|---|---|
+| `inspect` (default on the server) | Browse every page and open the **saved** AI Advisor conversations. New questions, answer corrections, chat deletion and knowledge-base re-sync are blocked, and a banner explains that live AI is off to save LLM credits, with `DEMO_CONTACT_EMAIL` for a live demo. |
+| `demo` | Everything works, including live LLM calls. Use it while you present. |
+
+Switch (on the server, takes ~10 s):
+```bash
+sed -i 's/^APP_MODE=.*/APP_MODE=demo/' .env      # or APP_MODE=inspect
+docker compose -f docker-compose.prod.yml up -d
+```
+Visitors can't change the mode: it is read from `.env` on the server, and the backend itself
+refuses the blocked requests (HTTP 403), so it can't be bypassed from the browser.
+
+**Tip:** switch to `demo`, ask 3-4 good questions (stock analysis, comparison, portfolio
+health, ideas), then switch back to `inspect`. Those conversations stay in the chat list as
+the showcase for every visitor. Local development defaults to `demo`.
 
 ---
 
@@ -154,9 +176,8 @@ Check credits: AWS console -> Billing and Cost Management -> Credits.
 | Symptom | Fix |
 |---|---|
 | Browser can't connect | EC2 security group must allow 80 and 443 from `0.0.0.0/0` |
-| HTTPS certificate error | `logs web`. Port 80 must be open and `SITE_ADDRESS` must match the IP exactly |
-| Login keeps failing | Re-run `make-password.sh`; keep the single quotes around the hash in `.env`; `up -d` |
-| `web` restarting, "illegal base64" | `BASIC_AUTH_HASH` empty -> set it, or `AUTH=off` |
+| HTTPS certificate error | `logs web`. Port 80 must be open and `SITE_ADDRESS` must be `<ip>.sslip.io` (not the bare IP) |
+| "Inspect mode" banner when you want live answers | `APP_MODE=demo` in `.env`, then `up -d` |
 | Backend restarting | `logs backend` - usually a missing/wrong value in `.env` |
 | Answers fail with 401/402/429 | LLM key invalid / out of credits / rate limited - check provider keys |
 | Server very slow / killed processes | `free -h`; lower `CELERY_CONCURRENCY=1`, or a bigger instance |

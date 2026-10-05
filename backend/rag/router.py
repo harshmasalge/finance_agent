@@ -5,7 +5,8 @@ import json
 import threading
 from typing import Dict, List, Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
+from backend.app_mode import require_demo_mode
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
@@ -98,7 +99,7 @@ def _run_ingest(req: IngestRequest) -> None:
         _ingest_lock.release()
 
 
-@router.post("/ingest", status_code=202)
+@router.post("/ingest", status_code=202, dependencies=[Depends(require_demo_mode)])
 def start_ingest(req: IngestRequest, background: BackgroundTasks) -> Dict:
     """Start (download +) ingest in the background; idempotent, only one run at a time."""
     if not _ingest_lock.acquire(blocking=False):

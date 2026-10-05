@@ -1,3 +1,4 @@
+from backend.app_mode import require_demo_mode
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -48,7 +49,7 @@ def rename_chat(chat_id: int, req: RenameRequest, user_id: int = Depends(get_cur
     return {"id": chat.id, "title": chat.title}
 
 
-@chats_router.delete("/{chat_id}")
+@chats_router.delete("/{chat_id}", dependencies=[Depends(require_demo_mode)])
 def delete_chat(chat_id: int, user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     chat = _session_or_404(db, user_id, chat_id)
     db.delete(chat)
