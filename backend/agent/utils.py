@@ -29,7 +29,7 @@ PROVIDERS: Dict[str, dict] = {
         "base_url": os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
         "key_env": ["OPENROUTER_API_KEY"],
         "models": ["openai/gpt-4o-mini"],
-        "max_tokens": None,
+        "max_tokens": 13000,
         "headers": {"HTTP-Referer": "http://localhost:5173", "X-Title": "FinSight AI"},
     },
     "gemini": {
@@ -121,12 +121,45 @@ def get_llm(temperature: float = 0.1, model: Optional[str] = None) -> ChatOpenAI
     return ChatOpenAI(**kwargs)
 
 
+_capability_cache: Dict[str, bool] = {}
+
+
+def supports_json_schema(provider: str, model: str) -> bool:
+    """Whether the model accepts response_format/json_schema.
+
+    For OpenRouter this is read once from the public models list (e.g. most ':free'
+    variants support tools but not structured outputs). Other providers are assumed to.
+    Unknown -> True, so the strict path is tried with function calling as fallback.
+    """
+    if provider != "openrouter":
+        return True
+    key = model
+    if key not in _capability_cache:
+        try:
+            import json
+            import urllib.request
+            req = urllib.request.Request(f"{PROVIDERS['openrouter']['base_url']}/models",
+                                         headers={"User-Agent": "finsight"})
+            models = json.load(urllib.request.urlopen(req, timeout=10))["data"]
+            for m in models:
+                params = set(m.get("supported_parameters") or [])
+                _capability_cache[m["id"]] = bool(params & {"structured_outputs", "response_format"})
+        except Exception:
+            pass
+        _capability_cache.setdefault(key, True)
+    return _capability_cache[key]
+
+
 def get_structured_llm(schema, temperature: float = 0.1):
     """LLM that must return `schema`.
 
-    Uses strict JSON-schema mode where supported; if that call fails it falls back to
-    function calling. Each path retries once.
+    Uses strict JSON-schema mode when the model supports it, with function calling as
+    fallback; models without structured-output support go straight to function calling
+    (no wasted requests on free-tier models).
     """
-    strict = get_llm(temperature).with_structured_output(schema, method="json_schema", strict=True).with_retry(stop_after_attempt=2)
+    sel = current_selection()
     tools = get_llm(temperature).with_structured_output(schema, method="function_calling").with_retry(stop_after_attempt=2)
+    if not supports_json_schema(sel["provider"], sel["model"]):
+        return tools
+    strict = get_llm(temperature).with_structured_output(schema, method="json_schema", strict=True)
     return strict.with_fallbacks([tools])

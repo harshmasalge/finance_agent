@@ -1,5 +1,6 @@
 """Synthesis (final answer) and Validator (checker) nodes."""
 import json
+from datetime import date
 import logging
 import re
 from typing import List
@@ -104,7 +105,7 @@ def synthesis_node(state: AgentState) -> dict:
                      f"Rules: score >= {BUY_THRESHOLD} -> BUY, <= {SELL_THRESHOLD} -> SELL, otherwise HOLD.\n" +
                      "\n".join(f"{c['ticker']} [{c['evidence_id']}]: score {c['score']:+} -> {c['verdict']} (confidence {c['confidence']:.0%}); factors: " +
                                "; ".join(f"{f['label']} {f['score']:+.2f} ({f['reason']})" for f in c["factors"]) for c in scorecards))
-    system = (f"{SYNTHESIS_RULES}\n\nAnswer type: {answer_type}. {fmt}{score_txt}\n\n"
+    system = (f"{SYNTHESIS_RULES}\nToday's date is {date.today():%d %b %Y}.\n\nAnswer type: {answer_type}. {fmt}{score_txt}\n\n"
               f"=== AGENT REPORTS ===\n{json.dumps(reports, indent=1, default=str)}\n\n"
               f"=== RAW EVIDENCE ===\n{evidence_digest(state.get('evidence') or [])}{revision}")
     llm = get_structured_llm(FinalAnswer, temperature=0.1)
@@ -174,7 +175,8 @@ def validator_node(state: AgentState) -> dict:
             "Rounded numbers (e.g. 26.53 for 26.52708, or 1,234 for 1234.4) are CORRECT. Minor wording issues are not problems.\n"
             "Report ONLY issues that would mislead a reader. If there are none, return passed=true with an empty list.\n"
             "Interpretive phrases (e.g. 'suggests', 'indicates') are fine if the underlying numbers are right.\n\n"
-            f"=== EVIDENCE ===\n{evidence_digest(evidence, max_chars=1200)}"),
+            f"Today's date is {date.today():%d %b %Y}; data dated up to today is current.\n\n"
+            f"=== EVIDENCE ===\n{evidence_digest(evidence, max_chars=2500)}"),
         HumanMessage(f"=== DRAFT ANSWER ===\n{json.dumps(answer, indent=1)}"),
     ])
     if not verdict.passed:

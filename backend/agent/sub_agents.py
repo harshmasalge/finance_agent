@@ -13,7 +13,9 @@ from backend.agent.tools.portfolio_tools import get_portfolio_position, get_port
 from backend.agent.tools.screener import screen_nifty_stocks
 from backend.agent.tools.sentiment_tools import get_recent_headlines, get_sentiment_score
 from backend.agent.tools.technical import get_technical_indicators
-from backend.agent.utils import get_llm
+from backend.agent.utils import get_llm, get_structured_llm
+from langchain_core.messages import SystemMessage
+from datetime import date
 from backend.rag.tool import search_filings
 
 COMMON_RULES = """
@@ -26,6 +28,10 @@ Rules:
 - Be specific: quote the actual numbers."""
 
 
+def _today_line() -> str:
+    return f"\nToday's date is {date.today():%d %b %Y}. Data dated up to today is current, not 'future-dated'."
+
+
 def _run_agent(name: str, prefix: str, funcs: List[Callable], prompt: str, state: AgentState,
                extra: Optional[List[Tuple[str, List[Callable]]]] = None) -> Dict:
     """Run one ReAct agent. `extra` adds tool groups with their own evidence prefix (e.g. F for filings)."""
@@ -33,10 +39,16 @@ def _run_agent(name: str, prefix: str, funcs: List[Callable], prompt: str, state
     tools = track_tools(funcs, prefix=prefix, agent=name, sink=evidence)
     for extra_prefix, extra_funcs in extra or []:
         tools += track_tools(extra_funcs, prefix=extra_prefix, agent=name, sink=evidence)
-    agent = create_react_agent(get_llm(), tools=tools, prompt=prompt + COMMON_RULES, response_format=AgentReport)
+    agent = create_react_agent(get_llm(), tools=tools, prompt=prompt + COMMON_RULES + _today_line())
     try:
         result = agent.invoke({"messages": state["messages"][-6:]}, config={"recursion_limit": 16})
-        report = result.get("structured_response")
+        # Turn the tool-calling transcript into a structured report with our own helper, which
+        # picks json_schema or function calling depending on what the model supports.
+        report = get_structured_llm(AgentReport, temperature=0).invoke([
+            SystemMessage(prompt + COMMON_RULES + _today_line() + "\n\nNow write your final AgentReport from the tool results above. "
+                          "Every finding must cite the evidence_id(s) it came from."),
+            *result["messages"],
+        ])
         report = report.model_dump() if report else {
             "summary": "The agent did not return a structured report.", "signal": None, "confidence": 0.0,
             "findings": [], "data_gaps": ["Agent output could not be parsed."]}

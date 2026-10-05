@@ -56,6 +56,21 @@ def evidence_digest(evidence: List[Dict], max_chars: int = 1800) -> str:
                          f"confidence {c.get('confidence')}\n" + "\n".join(
                              f"  - {f['label']}: {f['score']:+.2f} x weight {f['weight']} ({f['reason']})" for f in c.get("factors", [])))
             continue
+        o = e["output"] if isinstance(e["output"], dict) else {}
+        if e["tool"] == "search_filings" and o.get("passages"):
+            # Passages carry the facts the answer quotes - keep each one readable instead of truncating the JSON.
+            lines = [f"[{e['id']}] {e['agent']} · search_filings({json.dumps(e['input'])}) ticker={o.get('ticker')}"]
+            for i, ps in enumerate(o["passages"], 1):
+                lines.append(f"  ({i}) {ps.get('title')} p.{ps.get('page')} [{ps.get('section') or ''}]: "
+                             f"{' '.join(str(ps.get('text', '')).split())[:900]}")
+            parts.append("\n".join(lines))
+            continue
+        if e["tool"] == "get_recent_headlines" and o.get("headlines"):
+            lines = [f"[{e['id']}] {e['agent']} · get_recent_headlines({json.dumps(e['input'])}) company={o.get('company')}"]
+            for h in o["headlines"]:
+                lines.append(f"  - {h.get('published_at', '')[:10]} {h.get('source')}: {h.get('title')} — {(h.get('description') or '')[:200]}")
+            parts.append("\n".join(lines))
+            continue
         out = json.dumps(e["output"], default=str)
         if len(out) > max_chars:
             out = out[:max_chars] + "...(truncated)"
