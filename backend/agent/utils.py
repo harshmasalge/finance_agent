@@ -11,6 +11,7 @@ import threading
 from contextvars import ContextVar
 from typing import Dict, List, Optional
 
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
 from backend.app_mode import InspectModeError, inspect_message, is_inspect
@@ -33,6 +34,16 @@ PROVIDERS: Dict[str, dict] = {
         "models": ["openai/gpt-4o-mini", "nvidia/nemotron-3-ultra-550b-a55b:free", "qwen/qwen3.8-27b:free"],
         "max_tokens": 13000,
         "headers": {"HTTP-Referer": "http://localhost:5173", "X-Title": "FinSight AI"},
+    },
+    "anthropic": {
+        "label": "Anthropic",
+        "note": "Paid · Claude",
+        "kind": "anthropic",            # native SDK via langchain-anthropic (not OpenAI-compatible)
+        "key_env": ["ANTHROPIC_API_KEY"],
+        # Cheapest first: the first model is this provider's default.
+        "models": ["claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5"],
+        # Anthropic requires max_tokens; enough for the final structured answer.
+        "max_tokens": 4096,
     },
     "gemini": {
         "label": "Google Gemini",
@@ -73,8 +84,12 @@ def _next_key(provider: str) -> str:
 
 
 def default_model(provider: str) -> str:
+    env_model = os.getenv("LLM_MODEL")
     if provider == "openrouter":
-        return os.getenv("LLM_MODEL", PROVIDERS[provider]["models"][0])
+        return env_model or PROVIDERS[provider]["models"][0]
+    # e.g. LLM_PROVIDER=anthropic + LLM_MODEL=claude-sonnet-5-5; ignored if it isn't one of this provider's models
+    if env_model and env_model in PROVIDERS[provider]["models"]:
+        return env_model
     return PROVIDERS[provider]["models"][0]
 
 
@@ -134,11 +149,21 @@ def current_selection() -> dict:
     return _selection.get() or resolve(None, None)
 
 
-def get_llm(temperature: float = 0.1, model: Optional[str] = None) -> ChatOpenAI:
+def get_llm(temperature: float = 0.1, model: Optional[str] = None) -> BaseChatModel:
     if is_inspect():  # backstop: no LLM call can spend credits in inspect mode
         raise InspectModeError(inspect_message())
     sel = current_selection()
     p = PROVIDERS[sel["provider"]]
+    if p.get("kind") == "anthropic":
+        from langchain_anthropic import ChatAnthropic  # imported lazily: only needed when Claude is used
+        return ChatAnthropic(
+            model=model or sel["model"],
+            temperature=temperature,
+            api_key=_next_key(sel["provider"]),
+            max_tokens=p["max_tokens"],
+            default_request_timeout=90,
+            max_retries=3,
+        )
     kwargs = dict(
         model=model or sel["model"],
         temperature=temperature,
@@ -164,6 +189,8 @@ def supports_json_schema(provider: str, model: str) -> bool:
     variants support tools but not structured outputs). Other providers are assumed to.
     Unknown -> True, so the strict path is tried with function calling as fallback.
     """
+    if PROVIDERS.get(provider, {}).get("kind") == "anthropic":
+        return False  # use Claude's native tool-based structured output
     if provider != "openrouter":
         return True
     key = model

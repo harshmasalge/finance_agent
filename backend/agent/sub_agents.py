@@ -14,7 +14,7 @@ from backend.agent.tools.screener import screen_nifty_stocks
 from backend.agent.tools.sentiment_tools import get_recent_headlines, get_sentiment_score
 from backend.agent.tools.technical import get_technical_indicators
 from backend.agent.utils import get_llm, get_structured_llm
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 from datetime import date
 from backend.rag.tool import search_filings
 
@@ -45,9 +45,12 @@ def _run_agent(name: str, prefix: str, funcs: List[Callable], prompt: str, state
         # Turn the tool-calling transcript into a structured report with our own helper, which
         # picks json_schema or function calling depending on what the model supports.
         report = get_structured_llm(AgentReport, temperature=0).invoke([
-            SystemMessage(prompt + COMMON_RULES + _today_line() + "\n\nNow write your final AgentReport from the tool results above. "
-                          "Every finding must cite the evidence_id(s) it came from."),
+            SystemMessage(prompt + COMMON_RULES + _today_line()),
             *result["messages"],
+            # End on a user turn: some providers (e.g. Anthropic) reject a forced structured
+            # answer that follows an assistant message.
+            HumanMessage(content="Now write your final AgentReport from the tool results above. "
+                                 "Every finding must cite the evidence_id(s) it came from."),
         ])
         report = report.model_dump() if report else {
             "summary": "The agent did not return a structured report.", "signal": None, "confidence": 0.0,
