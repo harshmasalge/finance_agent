@@ -12,6 +12,8 @@ import { ToastProvider } from './components/toast';
 import { ThemeProvider, useTheme } from './lib/theme';
 import { AppDataProvider, useApp } from './lib/user';
 import { AppConfigProvider, InspectBanner } from './lib/appConfig';
+import { LlmProvider } from './lib/llm';
+import ModelPicker from './components/ModelPicker';
 import { cn, fmtINR } from './lib/format';
 
 type Tab = 'dashboard' | 'portfolio' | 'advisor' | 'notes' | 'kb' | 'evals' | 'alerts';
@@ -22,7 +24,9 @@ export default function App() {
       <ToastProvider>
         <AppConfigProvider>
           <AppDataProvider>
+          <LlmProvider>
             <Shell />
+          </LlmProvider>
           </AppDataProvider>
         </AppConfigProvider>
       </ToastProvider>
@@ -98,6 +102,7 @@ function Shell() {
         </nav>
 
         <div className="space-y-2 border-t border-border p-3">
+          {!collapsed && <ModelPicker variant="sidebar" direction="up" />}
           {!collapsed && (
             <div className="rounded-xl bg-surface-2 px-3 py-2.5">
               <div className="flex items-center justify-between text-[11px] font-medium text-muted">
@@ -112,6 +117,7 @@ function Shell() {
           )}
           {collapsed ? (
             <div className="flex flex-col items-center gap-1">
+              <ModelPicker variant="icon" direction="up" />
               <Button variant="ghost" size="icon" onClick={toggle} title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'} aria-label="Toggle theme">
                 {theme === 'dark' ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
               </Button>

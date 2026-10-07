@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { AlertTriangle, BookOpen, ChevronDown, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, BookOpen, ChevronDown, ShieldAlert, ShieldCheck, Cpu } from 'lucide-react';
 import type { AnswerPayload } from '../../lib/api';
 import { cn, tickerLabel } from '../../lib/format';
 import { citationNumbers, toolLabel } from './evidence';
 import { StepsSummary } from './AgentSteps';
 import ScorecardView from './ScorecardView';
+import { modelName } from '../../lib/llm';
 
 const TYPE_LABEL: Record<string, string> = {
   stock_analysis: 'Stock analysis', comparison: 'Comparison', portfolio_health: 'Portfolio health',
@@ -122,6 +123,11 @@ export default function AnswerView({ payload, activeCitation, onCite, onOpenSour
           <button onClick={onOpenSources} className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium text-fg-2 transition-colors hover:bg-surface-2 hover:text-fg">
             <BookOpen className="h-3.5 w-3.5" />{payload.evidence.length} sources
           </button>
+        )}
+        {payload.llm?.model && (
+          <span className="ml-auto inline-flex items-center gap-1 text-[11.5px] text-muted" title={`Answered by ${payload.llm.model}`}>
+            <Cpu className="h-3 w-3" />{payload.llm.label ?? payload.llm.provider} · {modelName(payload.llm.model)}
+          </span>
         )}
       </div>
       {showIssues && v && (

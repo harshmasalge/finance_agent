@@ -30,7 +30,7 @@ PROVIDERS: Dict[str, dict] = {
         "note": "Paid credits",
         "base_url": os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
         "key_env": ["OPENROUTER_API_KEY"],
-        "models": ["openai/gpt-4o-mini"],
+        "models": ["openai/gpt-4o-mini", "nvidia/nemotron-3-ultra-550b-a55b:free", "qwen/qwen3.8-27b:free"],
         "max_tokens": 13000,
         "headers": {"HTTP-Referer": "http://localhost:5173", "X-Title": "FinSight AI"},
     },
@@ -79,10 +79,36 @@ def default_model(provider: str) -> str:
 
 
 def list_providers() -> List[dict]:
-    return [{
-        "id": pid, "label": p["label"], "note": p["note"], "models": p["models"],
-        "default_model": default_model(pid), "available": bool(_keys(pid)), "keys": len(_keys(pid)),
-    } for pid, p in PROVIDERS.items()]
+    out = []
+    for pid, p in PROVIDERS.items():
+        models = list(p["models"])
+        if default_model(pid) not in models:  # e.g. a custom LLM_MODEL from .env
+            models.insert(0, default_model(pid))
+        out.append({"id": pid, "label": p["label"], "note": p["note"], "models": models,
+                    "default_model": default_model(pid), "available": bool(_keys(pid)), "keys": len(_keys(pid))})
+    return out
+
+
+def config_diagnostics() -> dict:
+    """Where the default provider/model come from, and whether the process environment
+    overrides .env (python-dotenv never overrides variables that are already set, so a stale
+    LLM_MODEL in the shell or Windows user environment silently wins)."""
+    from pathlib import Path
+    try:
+        from dotenv import dotenv_values
+        file_vals = dotenv_values(Path(__file__).resolve().parents[2] / ".env")
+    except Exception:
+        file_vals = {}
+    warnings = []
+    for var in ("LLM_PROVIDER", "LLM_MODEL"):
+        in_file, in_env = file_vals.get(var), os.getenv(var)
+        if in_file and in_env and in_file.strip().strip('"') != in_env:
+            warnings.append(f"{var} is '{in_env}' in the process environment but '{in_file}' in .env - "
+                            f"the environment value wins. Remove it (PowerShell: Remove-Item Env:{var}; "
+                            f"also check Windows user variables) and restart the API.")
+    src = ("environment (overrides .env)" if warnings else
+           ".env" if file_vals.get("LLM_MODEL") or file_vals.get("LLM_PROVIDER") else "built-in default")
+    return {"source": src, "warnings": warnings}
 
 
 def resolve(provider: Optional[str], model: Optional[str]) -> dict:
@@ -90,7 +116,10 @@ def resolve(provider: Optional[str], model: Optional[str]) -> dict:
     pid = provider if provider in PROVIDERS else DEFAULT_PROVIDER
     if not _keys(pid):
         pid = next((p for p in PROVIDERS if _keys(p)), pid)
-    mdl = model if model in PROVIDERS[pid]["models"] or (pid == "openrouter" and model) else default_model(pid)
+    # Only listed models (plus the configured default) - never an arbitrary model name from the client,
+    # which on a public deployment could run expensive models on the owner's credit.
+    allowed = set(PROVIDERS[pid]["models"]) | {default_model(pid)}
+    mdl = model if model in allowed else default_model(pid)
     return {"provider": pid, "model": mdl, "label": PROVIDERS[pid]["label"]}
 
 

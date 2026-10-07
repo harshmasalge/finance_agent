@@ -44,6 +44,14 @@ logger = structlog.get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting up FastAPI and background tasks...")
+    try:
+        from backend.agent.utils import config_diagnostics, resolve
+        sel, diag = resolve(None, None), config_diagnostics()
+        logger.info("Default LLM", provider=sel["provider"], model=sel["model"], source=diag["source"])
+        for w in diag["warnings"]:
+            logger.warning("LLM config override", detail=w)
+    except Exception as e:  # never block startup on diagnostics
+        logger.warning("LLM config check failed", error=str(e))
     # Create any missing tables so the app works even if init_db.py wasn't run
     Base.metadata.create_all(bind=engine)
     task = asyncio.create_task(redis_listener())

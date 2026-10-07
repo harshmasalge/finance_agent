@@ -52,13 +52,14 @@ function ToolChip({ call, onClick }: { call: ToolCall; onClick?: () => void }) {
   );
 }
 
-export function LiveSteps({ steps }: { steps: Step[] }) {
+export function LiveSteps({ steps, model }: { steps: Step[]; model?: string }) {
   const rows = mergeSteps(steps);
   return (
     <div className="rounded-2xl border border-border bg-surface p-4 shadow-[var(--shadow-card)] animate-fade-in-up">
       <div className="mb-3 flex items-center gap-2 text-[13px] font-medium text-fg-2">
         <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" /><span className="relative inline-flex h-2 w-2 rounded-full bg-primary" /></span>
         Agents at work
+        {model && <span className="ml-auto truncate rounded-md bg-surface-2 px-2 py-0.5 text-[11px] font-normal text-muted" title="Model answering this question">{model}</span>}
       </div>
       <ol className="space-y-2.5">
         {rows.map(s => (

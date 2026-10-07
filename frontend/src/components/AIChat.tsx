@@ -8,6 +8,8 @@ import AnswerView from './advisor/AnswerView';
 import EvidencePanel from './advisor/EvidencePanel';
 import { LiveSteps } from './advisor/AgentSteps';
 import ResizeHandle from './ResizeHandle';
+import ModelPicker from './ModelPicker';
+import { modelName, useLlm, type LlmSelection } from '../lib/llm';
 import ReviewBar from './review/ReviewBar';
 import { InspectNotice, useInspectMode } from '../lib/appConfig';
 
@@ -31,10 +33,11 @@ function groupChats(chats: ChatSummary[]) {
   return groups.filter(g => g.items.length);
 }
 
-interface Pending { sessionId: number | null; question: string; steps: Step[]; error?: string; }
+interface Pending { sessionId: number | null; question: string; steps: Step[]; error?: string; llm?: LlmSelection | null; }
 
 export default function Advisor() {
   const toast = useToast();
+  const { current: llm } = useLlm();
   const inspect = useInspectMode();
   const [chats, setChats] = useState<ChatSummary[] | null>(null);
   const [activeId, setActiveId] = useState<number | null>(null);
@@ -90,14 +93,14 @@ export default function Advisor() {
     setInput('');
     const startSession = activeId;
     setMessages(m => [...m, { id: `u-${Date.now()}`, role: 'user', content: question }]);
-    setPending({ sessionId: startSession, question, steps: [] });
+    setPending({ sessionId: startSession, question, steps: [], llm });
     scrollToBottom();
 
     let sessionId = startSession;
     try {
       const res = await fetch(`${API_URL}/agent/chat`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: question, session_id: startSession }),
+        body: JSON.stringify({ message: question, session_id: startSession, provider: llm?.provider, model: llm?.model }),
       });
       if (!res.ok || !res.body) throw new Error(`Server returned ${res.status}`);
       const reader = res.body.getReader();
@@ -116,7 +119,7 @@ export default function Advisor() {
           if (ev.type === 'session') {
             sessionId = ev.session_id;
             if (startSession === null && activeRef.current === null) setActiveId(ev.session_id);
-            setPending(p => (p ? { ...p, sessionId: ev.session_id } : p));
+            setPending(p => (p ? { ...p, sessionId: ev.session_id, llm: ev.llm ?? p.llm } : p));
             loadChats();
           } else if (ev.type === 'step') {
             setPending(p => (p ? { ...p, steps: [...p.steps, ev as Step] } : p));
@@ -202,7 +205,7 @@ export default function Advisor() {
         <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
           <Button variant="ghost" size="icon" onClick={() => setHistoryOpen(o => !o)} aria-label="Toggle chat history"><PanelLeft className="h-[18px] w-[18px]" /></Button>
           <div className="min-w-0 truncate text-sm font-medium">{chats?.find(c => c.id === activeId)?.title ?? 'New chat'}</div>
-          <span className="ml-auto hidden shrink-0 items-center gap-1.5 whitespace-nowrap text-[12px] text-muted @2xl:flex"><Sparkles className="h-3.5 w-3.5 text-primary" />Multi-agent · every claim cited</span>
+          <div className="ml-auto shrink-0"><ModelPicker align="right" /></div>
         </header>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto">
@@ -263,9 +266,12 @@ export default function Advisor() {
                       <div className="rounded-2xl border border-down/25 bg-down/[0.06] p-4 animate-fade-in">
                         <div className="flex items-center gap-2 text-sm font-medium text-down"><TriangleAlert className="h-4 w-4" />The agents hit a problem</div>
                         <p className="mt-1 break-words text-[13px] text-fg-2">{pending.error}</p>
+                        {pending.llm && <p className="mt-2 text-[12px] text-muted">Model: <span className="font-medium text-fg-2">{pending.llm.label ?? pending.llm.provider} · {modelName(pending.llm.model)}</span>
+                          {/overload|429|rate|402|credit/i.test(pending.error) && ' — this provider is busy or out of quota; pick another model in the top-right and try again.'}</p>}
                         <Button size="sm" variant="outline" className="mt-3" onClick={retry}>Try again</Button>
                       </div>
-                    ) : <LiveSteps steps={pending.steps.length ? pending.steps : [{ node: 'orchestrator_node', label: 'Orchestrator', status: 'running', detail: 'Understanding your question' }]} />}
+                    ) : <LiveSteps model={pending.llm ? `${pending.llm.label ?? pending.llm.provider} · ${modelName(pending.llm.model)}` : undefined}
+                          steps={pending.steps.length ? pending.steps : [{ node: 'orchestrator_node', label: 'Orchestrator', status: 'running', detail: 'Understanding your question' }]} />}
                   </div>
                 </div>
               )}

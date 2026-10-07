@@ -10,7 +10,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import BaseModel
 
 from backend.agent.graph import app as langgraph_app
-from backend.agent.utils import list_providers, use_llm
+from backend.agent.utils import config_diagnostics, list_providers, use_llm
 from backend.app_mode import require_demo_mode
 from backend.db.database import SessionLocal
 from backend.db.models import ChatMessage, ChatSession
@@ -46,7 +46,7 @@ class ChatRequest(BaseModel):
 @agent_router.get("/providers")
 def get_providers():
     """LLM providers/models the UI can offer (only ones with a key in .env are 'available')."""
-    return {"providers": list_providers(), "default": use_llm(None, None)}
+    return {"providers": list_providers(), "default": use_llm(None, None), **config_diagnostics()}
 
 
 def _answer_as_text(payload: dict) -> str:

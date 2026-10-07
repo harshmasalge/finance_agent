@@ -77,6 +77,7 @@ export interface Step { node: string; label: string; status: 'running' | 'done';
 export interface AnswerPayload {
   answer: FinalAnswer; evidence: Evidence[]; validation: Validation | null; scorecards?: Scorecard[]; intent?: string;
   tickers?: string[]; steps?: Step[]; duration_s?: number;
+  llm?: { provider: string; model: string; label?: string };
 }
 export interface ChatMessage {
   id: number | string; role: 'user' | 'assistant'; content: string; payload?: AnswerPayload | null; created_at?: string;
