@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { ArrowUp, Briefcase, Lightbulb, LineChart, MessageSquare, PanelLeft, Plus, Scale, Sparkles, Trash2, TriangleAlert } from 'lucide-react';
-import { api, API_URL, type AnswerPayload, type ChatMessage, type ChatSummary, type Step } from '../lib/api';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { ArrowUp, Briefcase, Loader2, Lightbulb, LineChart, MessageSquare, PanelLeft, Plus, Scale, Sparkles, Trash2, TriangleAlert } from 'lucide-react';
+import { api, type ChatMessage, type ChatSummary } from '../lib/api';
 import { cn } from '../lib/format';
 import { useToast } from './toast';
 import { Button, Skeleton } from './ui';
@@ -9,7 +9,9 @@ import EvidencePanel from './advisor/EvidencePanel';
 import { LiveSteps } from './advisor/AgentSteps';
 import ResizeHandle from './ResizeHandle';
 import ModelPicker from './ModelPicker';
-import { modelName, useLlm, type LlmSelection } from '../lib/llm';
+import { modelName, useLlm } from '../lib/llm';
+import { useRouter } from '../lib/router';
+import { useAdvisorRuns } from '../lib/advisorRuns';
 import ReviewBar from './review/ReviewBar';
 import { InspectNotice, useInspectMode } from '../lib/appConfig';
 
@@ -33,17 +35,16 @@ function groupChats(chats: ChatSummary[]) {
   return groups.filter(g => g.items.length);
 }
 
-interface Pending { sessionId: number | null; question: string; steps: Step[]; error?: string; llm?: LlmSelection | null; }
-
 export default function Advisor() {
   const toast = useToast();
   const { current: llm } = useLlm();
   const inspect = useInspectMode();
+  const { chatId: activeId, navigate, linkClick } = useRouter();   // the open chat comes from the URL
+  const runsCtx = useAdvisorRuns();
   const [chats, setChats] = useState<ChatSummary[] | null>(null);
-  const [activeId, setActiveId] = useState<number | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loadingChat, setLoadingChat] = useState(false);
-  const [pending, setPending] = useState<Pending | null>(null);
+  const [newRunKey, setNewRunKey] = useState<string | null>(null); // run started from the "New chat" screen
   const [input, setInput] = useState('');
   const [drawer, setDrawer] = useState<{ messageId: ChatMessage['id']; evidenceId: string | null } | null>(null);
   const [historyOpen, setHistoryOpen] = useState(true);
@@ -51,8 +52,17 @@ export default function Advisor() {
   const [drawerWidth, setDrawerWidth] = usePersistentWidth('finsight-sources-w', 440);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const activeRef = useRef<number | null>(null);
-  activeRef.current = activeId;
+  const activeRef = useRef<number | null>(activeId); // read by async callbacks: which chat is open *now*
+  useLayoutEffect(() => { activeRef.current = activeId; }, [activeId]);
+  const adoptRef = useRef<number | null>(null); // chat we just created ourselves: keep the on-screen messages
+
+  // The run shown in this thread: the chat's own run, or the one started from "New chat".
+  const pending = activeId !== null
+    ? runsCtx.runForChat(activeId)
+    : runsCtx.runs.find(r => r.key === newRunKey && r.sessionId === null);
+
+  const scrollToBottom = (smooth = true) =>
+    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: smooth ? 'smooth' : 'auto' }));
 
   const openDrawer = (messageId: ChatMessage['id'], evidenceId: string | null) => {
     setDrawer({ messageId, evidenceId });
@@ -60,92 +70,76 @@ export default function Advisor() {
   };
 
   const loadChats = useCallback(() => api<ChatSummary[]>('/chats').then(setChats).catch(() => setChats([])), []);
-  useEffect(() => { loadChats(); }, [loadChats]);
+  useEffect(() => { loadChats(); }, [loadChats, runsCtx.chatsVersion]);
 
-  const openChat = async (id: number) => {
-    if (id === activeId) return;
-    setActiveId(id); setDrawer(null); setLoadingChat(true);
+  const loadMessages = useCallback(async (id: number, quiet = false) => {
+    if (!quiet) setLoadingChat(true);
     try {
       const data = await api<{ messages: ChatMessage[] }>(`/chats/${id}`);
       if (activeRef.current === id) setMessages(data.messages);
-    } catch (e) { toast('error', 'Could not open chat', (e as Error).message); }
-    finally { setLoadingChat(false); }
-  };
+    } catch (e) {
+      if (activeRef.current === id) {
+        toast('error', 'Could not open chat', (e as Error).message);
+        navigate('/advisor', { replace: true });
+      }
+    } finally { if (!quiet) setLoadingChat(false); }
+  }, [navigate, toast]);
 
-  const newChat = () => { setActiveId(null); setMessages([]); setDrawer(null); setTimeout(() => inputRef.current?.focus(), 0); };
+  // Load whichever chat the URL points at (also on back/forward and reload).
+  useEffect(() => {
+    // Syncing with the URL (an external system), so resetting state here is intended.
+    setDrawer(null); // eslint-disable-line react-hooks/set-state-in-effect
+    if (activeId === null) { setMessages([]); setLoadingChat(false); return; }
+    if (adoptRef.current === activeId) { adoptRef.current = null; return; }
+    loadMessages(activeId);
+  }, [activeId, loadMessages]);
+
+  // A run started from "New chat" got its chat id: move the URL to that chat (same history entry).
+  useEffect(() => {
+    if (!newRunKey) return;
+    const run = runsCtx.runs.find(r => r.key === newRunKey);
+    if (run?.sessionId != null) {
+      setNewRunKey(null); // eslint-disable-line react-hooks/set-state-in-effect
+      if (activeRef.current === null) { adoptRef.current = run.sessionId; navigate(`/advisor/${run.sessionId}`, { replace: true }); }
+    } else if (!run) setNewRunKey(null);
+  }, [runsCtx.runs, newRunKey, navigate]);
+
+  // An answer was saved: refresh the open chat from the server.
+  useEffect(() => {
+    const f = runsCtx.lastFinished;
+    if (f && f.sessionId === activeRef.current) { loadMessages(f.sessionId, true); scrollToBottom(); }
+  }, [runsCtx.lastFinished]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const newChat = () => { navigate('/advisor'); setTimeout(() => inputRef.current?.focus(), 0); };
 
   const deleteChat = async (id: number) => {
     try {
       await api(`/chats/${id}`, { method: 'DELETE' });
       setChats(c => c?.filter(x => x.id !== id) ?? c);
-      if (id === activeId) newChat();
+      if (id === activeId) navigate('/advisor', { replace: true });
       toast('success', 'Chat deleted');
     } catch (e) { toast('error', 'Could not delete chat', (e as Error).message); }
   };
 
-  const scrollToBottom = (smooth = true) =>
-    requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: smooth ? 'smooth' : 'auto' }));
   useEffect(() => { scrollToBottom(false); }, [activeId, loadingChat]);
+  useEffect(() => { if (pending) scrollToBottom(); }, [pending?.steps.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const send = async (text?: string) => {
+  const send = (text?: string) => {
     const question = (text ?? input).trim();
-    if (!question || pending || inspect) return;
+    if (!question || (pending && pending.status === 'running') || inspect) return;
+    if (pending) runsCtx.dismiss(pending.key); // clear a previous error
     setInput('');
-    const startSession = activeId;
     setMessages(m => [...m, { id: `u-${Date.now()}`, role: 'user', content: question }]);
-    setPending({ sessionId: startSession, question, steps: [], llm });
+    const key = runsCtx.start(question, activeId, llm);
+    if (activeId === null) setNewRunKey(key);
     scrollToBottom();
-
-    let sessionId = startSession;
-    try {
-      const res = await fetch(`${API_URL}/agent/chat`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: question, session_id: startSession, provider: llm?.provider, model: llm?.model }),
-      });
-      if (!res.ok || !res.body) throw new Error(`Server returned ${res.status}`);
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const events = buffer.split('\n\n');
-        buffer = events.pop() ?? '';
-        for (const raw of events) {
-          const line = raw.split('\n').find(l => l.startsWith('data: '));
-          if (!line) continue;
-          const ev = JSON.parse(line.slice(6));
-          if (ev.type === 'session') {
-            sessionId = ev.session_id;
-            if (startSession === null && activeRef.current === null) setActiveId(ev.session_id);
-            setPending(p => (p ? { ...p, sessionId: ev.session_id, llm: ev.llm ?? p.llm } : p));
-            loadChats();
-          } else if (ev.type === 'step') {
-            setPending(p => (p ? { ...p, steps: [...p.steps, ev as Step] } : p));
-            scrollToBottom();
-          } else if (ev.type === 'final') {
-            const msg: ChatMessage = { id: ev.message_id, role: 'assistant', content: ev.payload.answer.headline, payload: ev.payload as AnswerPayload };
-            if (activeRef.current === sessionId) setMessages(m => [...m, msg]);
-            setPending(null);
-            loadChats();
-            scrollToBottom();
-          } else if (ev.type === 'error') {
-            throw new Error(ev.content);
-          }
-        }
-      }
-      setPending(p => (p && !p.error ? null : p));
-    } catch (e) {
-      setPending(p => (p ? { ...p, error: (e as Error).message } : p));
-    }
   };
 
   const retry = () => {
     if (!pending) return;
     const q = pending.question;
     setMessages(m => (m.length && m[m.length - 1].role === 'user' ? m.slice(0, -1) : m));
-    setPending(null);
+    runsCtx.dismiss(pending.key);
     setTimeout(() => send(q), 0);
   };
 
@@ -159,7 +153,7 @@ export default function Advisor() {
   }, [input]);
 
   const drawerMessage = useMemo(() => drawer && messages.find(m => m.id === drawer.messageId && m.payload), [drawer, messages]);
-  const showPending = pending && (pending.sessionId === activeId || (pending.sessionId === null && activeId === null) || (pending.sessionId !== null && activeId === pending.sessionId));
+  const showPending = !!pending;
   const empty = !loadingChat && messages.length === 0 && !showPending;
   const grouped = groupChats(chats ?? []);
   // Sources panel may never squeeze the thread below 440px (232px = app sidebar).
@@ -182,10 +176,13 @@ export default function Advisor() {
               {g.items.map(c => (
                 <div key={c.id}
                   className={cn('group flex items-center rounded-lg transition-colors', c.id === activeId ? 'bg-surface-2 text-fg' : 'text-fg-2 hover:bg-surface-2/70 hover:text-fg')}>
-                  <button onClick={() => openChat(c.id)} className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-2 text-left text-[13px]">
-                    <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />
+                  <a href={`/advisor/${c.id}`} onClick={linkClick(`/advisor/${c.id}`)} aria-current={c.id === activeId ? 'page' : undefined}
+                    className="flex min-w-0 flex-1 items-center gap-2 px-2.5 py-2 text-left text-[13px]">
+                    {runsCtx.runForChat(c.id)?.status === 'running'
+                      ? <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-primary" aria-label="Agents working" />
+                      : <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />}
                     <span className="truncate">{c.title}</span>
-                  </button>
+                  </a>
                   {!inspect && <button onClick={() => deleteChat(c.id)} aria-label="Delete chat"
                     className="mr-1 rounded-md p-1.5 text-muted opacity-0 transition-all hover:bg-down/10 hover:text-down group-hover:opacity-100 focus:opacity-100">
                     <Trash2 className="h-3.5 w-3.5" />
@@ -262,12 +259,12 @@ export default function Advisor() {
                 <div className="flex gap-3">
                   <div className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary"><Sparkles className="h-3.5 w-3.5" /></div>
                   <div className="min-w-0 flex-1">
-                    {pending.error ? (
+                    {pending.status === 'error' ? (
                       <div className="rounded-2xl border border-down/25 bg-down/[0.06] p-4 animate-fade-in">
                         <div className="flex items-center gap-2 text-sm font-medium text-down"><TriangleAlert className="h-4 w-4" />The agents hit a problem</div>
                         <p className="mt-1 break-words text-[13px] text-fg-2">{pending.error}</p>
                         {pending.llm && <p className="mt-2 text-[12px] text-muted">Model: <span className="font-medium text-fg-2">{pending.llm.label ?? pending.llm.provider} · {modelName(pending.llm.model)}</span>
-                          {/overload|429|rate|402|credit/i.test(pending.error) && ' — this provider is busy or out of quota; pick another model in the top-right and try again.'}</p>}
+                          {/overload|\b(429|402)\b|rate.?limit|quota|insufficient credit|out of credit/i.test(pending.error ?? "") && ' — this provider is busy or out of quota; pick another model in the top-right and try again.'}</p>}
                         <Button size="sm" variant="outline" className="mt-3" onClick={retry}>Try again</Button>
                       </div>
                     ) : <LiveSteps model={pending.llm ? `${pending.llm.label ?? pending.llm.provider} · ${modelName(pending.llm.model)}` : undefined}
@@ -288,7 +285,7 @@ export default function Advisor() {
               <textarea ref={inputRef} rows={1} value={input} onChange={e => setInput(e.target.value)} onKeyDown={onKeyDown}
                 placeholder="Ask about a stock, your portfolio, or new ideas…"
                 className="max-h-[200px] flex-1 resize-none bg-transparent py-2 text-[14.5px] text-fg placeholder:text-muted focus:outline-none" />
-              <Button size="icon" onClick={() => send()} disabled={!input.trim() || !!pending} aria-label="Send" className="rounded-xl">
+              <Button size="icon" onClick={() => send()} disabled={!input.trim() || pending?.status === 'running'} aria-label="Send" className="rounded-xl">
                 <ArrowUp className="h-4 w-4" />
               </Button>
             </div>

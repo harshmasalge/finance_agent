@@ -4,13 +4,14 @@ from datetime import datetime, timezone
 from typing import Optional
 
 import structlog
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import BaseModel
 
 from backend.agent.graph import app as langgraph_app
-from backend.agent.utils import config_diagnostics, list_providers, use_llm
+from backend.agent.runs import Run, get_run, json_safe, is_running, start_run, user_runs
+from backend.agent.utils import config_diagnostics, list_providers, resolve, use_llm
 from backend.app_mode import require_demo_mode
 from backend.db.database import SessionLocal
 from backend.db.models import ChatMessage, ChatSession
@@ -71,6 +72,8 @@ async def chat_with_agent(request: ChatRequest, user_id: int = Depends(get_curre
         chat = None
         if request.session_id:
             chat = db.query(ChatSession).filter(ChatSession.id == request.session_id, ChatSession.user_id == user_id).first()
+        if chat and is_running(chat.id):
+            raise HTTPException(status_code=409, detail="The agents are still working on this chat - wait for the answer first.")
         if not chat:
             title = request.message.strip().replace("\n", " ")
             chat = ChatSession(user_id=user_id, title=(title[:60] + "…") if len(title) > 60 else title or "New chat")
@@ -90,16 +93,18 @@ async def chat_with_agent(request: ChatRequest, user_id: int = Depends(get_curre
 
     logger.info("Agent chat", user_id=user_id, chat_id=chat_id)
 
-    async def generate():
+    llm_sel = resolve(request.provider, request.model)
+
+    async def work(run: Run):
         llm = use_llm(request.provider, request.model)  # context-local; inherited by every agent in this run
-        yield _sse({"type": "session", "session_id": chat_id, "title": chat_title, "llm": llm})
+        run.emit({"type": "session", "session_id": chat_id, "title": chat_title, "llm": llm})
         state = {"user_id": user_id, "session_id": str(chat_id), "messages": history + [HumanMessage(content=request.message)]}
         final: dict = {}
         evidence: list = []
         steps: list = []
         started = datetime.now(timezone.utc)
         try:
-            yield _sse({"type": "step", "node": "orchestrator_node", "label": "Orchestrator", "status": "running",
+            run.emit({"type": "step", "node": "orchestrator_node", "label": "Orchestrator", "status": "running",
                         "detail": "Understanding your question"})
             async for update in langgraph_app.astream(state, stream_mode="updates", config={"recursion_limit": 30}):
                 for node, out in update.items():
@@ -113,11 +118,11 @@ async def chat_with_agent(request: ChatRequest, user_id: int = Depends(get_curre
                         tickers = out.get("target_tickers") or []
                         step["detail"] = f"Intent: {out.get('intent')}" + (f" · {', '.join(tickers)}" if tickers else "")
                         steps.append(step)
-                        yield _sse({"type": "step", **step})
+                        run.emit({"type": "step", **step})
                         for agent in INTENT_AGENTS.get(out.get("intent"), []):
-                            yield _sse({"type": "step", "node": agent, "label": NODE_LABELS[agent], "status": "running"})
+                            run.emit({"type": "step", "node": agent, "label": NODE_LABELS[agent], "status": "running"})
                         if not INTENT_AGENTS.get(out.get("intent")):
-                            yield _sse({"type": "step", "node": "synthesis_node", "label": NODE_LABELS["synthesis_node"], "status": "running"})
+                            run.emit({"type": "step", "node": "synthesis_node", "label": NODE_LABELS["synthesis_node"], "status": "running"})
                         continue
 
                     if node in ("research_node", "sentiment_node", "risk_node"):
@@ -135,16 +140,16 @@ async def chat_with_agent(request: ChatRequest, user_id: int = Depends(get_curre
                                           "warning": f"{len(v.get('issues', []))} issue(s) remain",
                                           "skipped": "No data claims to check"}.get(v.get("status"), "")
                     steps.append(step)
-                    yield _sse({"type": "step", **step})
+                    run.emit({"type": "step", **step})
 
                     # Announce the next running step
                     if node in ("research_node", "sentiment_node", "risk_node") and \
                             all(any(s["node"] == a for s in steps) for a in INTENT_AGENTS.get(final.get("intent"), [])):
-                        yield _sse({"type": "step", "node": "synthesis_node", "label": NODE_LABELS["synthesis_node"], "status": "running"})
+                        run.emit({"type": "step", "node": "synthesis_node", "label": NODE_LABELS["synthesis_node"], "status": "running"})
                     if node == "synthesis_node":
-                        yield _sse({"type": "step", "node": "validator_node", "label": NODE_LABELS["validator_node"], "status": "running"})
+                        run.emit({"type": "step", "node": "validator_node", "label": NODE_LABELS["validator_node"], "status": "running"})
                     if node == "validator_node" and (out.get("validation") or {}).get("status") == "revising":
-                        yield _sse({"type": "step", "node": "synthesis_node", "label": NODE_LABELS["synthesis_node"], "status": "running", "detail": "Revising"})
+                        run.emit({"type": "step", "node": "synthesis_node", "label": NODE_LABELS["synthesis_node"], "status": "running", "detail": "Revising"})
 
             answer = final.get("final_answer") or {"answer_type": "general", "headline": "Sorry, I could not generate a response."}
             payload = {
@@ -159,6 +164,7 @@ async def chat_with_agent(request: ChatRequest, user_id: int = Depends(get_curre
                 "duration_s": round((datetime.now(timezone.utc) - started).total_seconds(), 1),
                 "llm": llm,
             }
+            payload = json_safe(payload)
             db2 = SessionLocal()
             try:
                 msg = ChatMessage(session_id=chat_id, role="assistant", content=answer.get("headline", ""), payload=payload)
@@ -169,12 +175,38 @@ async def chat_with_agent(request: ChatRequest, user_id: int = Depends(get_curre
                 message_id = msg.id
             finally:
                 db2.close()
-            yield _sse({"type": "final", "message_id": message_id, "session_id": chat_id, "payload": payload})
+            run.emit({"type": "final", "message_id": message_id, "session_id": chat_id, "payload": payload})
         except asyncio.CancelledError:
             raise
         except Exception as e:
             logger.error("LangGraph error", error=str(e))
-            yield _sse({"type": "error", "content": f"Something went wrong: {e}"})
+            run.emit({"type": "error", "content": f"Something went wrong: {e}"})
 
-    return StreamingResponse(generate(), media_type="text/event-stream",
+
+    run = start_run(Run(chat_id, user_id, request.message, llm_sel), work)
+    return _stream(run)
+
+
+def _stream(run: Run, after: int = 0) -> StreamingResponse:
+    """Watch a run over SSE. Closing the connection stops watching, not the run."""
+    async def events():
+        async for ev in run.follow(after):
+            yield _sse(ev)
+
+    return StreamingResponse(events(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@agent_router.get("/runs")
+def list_runs(user_id: int = Depends(get_current_user_id)):
+    """Agent runs in progress (or finished in the last few minutes) for this user."""
+    return [r.summary() for r in user_runs(user_id)]
+
+
+@agent_router.get("/runs/{chat_id}/events")
+def follow_run(chat_id: int, after: int = 0, user_id: int = Depends(get_current_user_id)):
+    """Re-attach to a run (after navigating away or reloading): replays events from `after`."""
+    run = get_run(chat_id, user_id)
+    if not run:
+        raise HTTPException(status_code=404, detail="No agent run for this chat")
+    return _stream(run, after)

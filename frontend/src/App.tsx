@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from 'react';
-import { Bell, Briefcase, FileCheck2, FlaskConical, LayoutDashboard, Library, Moon, PanelLeftClose, PanelLeftOpen, Sparkles, Sun, WifiOff } from 'lucide-react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Bell, Briefcase, Loader2, FileCheck2, FlaskConical, LayoutDashboard, Library, Moon, PanelLeftClose, PanelLeftOpen, Sparkles, Sun, WifiOff } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Portfolio from './components/Portfolio';
 import Alerts from './components/Alerts';
@@ -8,15 +8,15 @@ import ResearchNotes from './components/ResearchNotes';
 import KnowledgeBase from './components/KnowledgeBase';
 import Evaluation from './components/Evaluation';
 import { Button, Skeleton } from './components/ui';
-import { ToastProvider } from './components/toast';
+import { ToastProvider, useToast } from './components/toast';
 import { ThemeProvider, useTheme } from './lib/theme';
 import { AppDataProvider, useApp } from './lib/user';
 import { AppConfigProvider, InspectBanner } from './lib/appConfig';
 import { LlmProvider } from './lib/llm';
 import ModelPicker from './components/ModelPicker';
 import { cn, fmtINR } from './lib/format';
-
-type Tab = 'dashboard' | 'portfolio' | 'advisor' | 'notes' | 'kb' | 'evals' | 'alerts';
+import { RouterProvider, pathFor, useRouter, type Tab } from './lib/router';
+import { AdvisorRunsProvider, useAdvisorRuns } from './lib/advisorRuns';
 
 export default function App() {
   return (
@@ -25,7 +25,11 @@ export default function App() {
         <AppConfigProvider>
           <AppDataProvider>
           <LlmProvider>
+          <RouterProvider>
+          <AdvisorRunsProvider>
             <Shell />
+          </AdvisorRunsProvider>
+          </RouterProvider>
           </LlmProvider>
           </AppDataProvider>
         </AppConfigProvider>
@@ -37,9 +41,23 @@ export default function App() {
 function Shell() {
   const { user, loading, error, reload, unreadAlerts, wsConnected } = useApp();
   const { theme, toggle } = useTheme();
-  const [tab, setTab] = useState<Tab>(() => (localStorage.getItem('finsight-tab') as Tab) || 'dashboard');
+  const { tab, navigate, linkClick } = useRouter();
+  const { runs, lastFinished } = useAdvisorRuns();
+  const toast = useToast();
   const [collapsed, setCollapsed] = useState(false);
-  const go = (t: Tab) => { setTab(t); try { localStorage.setItem('finsight-tab', t); } catch { /* ignore */ } };
+  const go = (t: Tab) => navigate(pathFor(t));
+  const working = runs.filter(r => r.status === 'running').length;
+
+  // Tell the user when an answer lands while they're on another screen.
+  useEffect(() => {
+    if (lastFinished && tab !== 'advisor' && Date.now() - lastFinished.at < 2000)
+      toast('success', 'The advisor has answered', lastFinished.question);
+  }, [lastFinished]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const label = { dashboard: 'Dashboard', portfolio: 'Portfolio', advisor: 'AI Advisor', notes: 'Research Notes', kb: 'Knowledge Base', evals: 'Evaluation', alerts: 'Alerts' }[tab];
+    document.title = `${label} · FinSight`;
+  }, [tab]);
 
   if (!user) {
     return (
@@ -59,10 +77,10 @@ function Shell() {
     );
   }
 
-  const nav: { id: Tab; label: string; icon: ReactNode; badge?: number }[] = [
+  const nav: { id: Tab; label: string; icon: ReactNode; badge?: number; busy?: boolean }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
     { id: 'portfolio', label: 'Portfolio', icon: <Briefcase className="h-[18px] w-[18px]" /> },
-    { id: 'advisor', label: 'AI Advisor', icon: <Sparkles className="h-[18px] w-[18px]" /> },
+    { id: 'advisor', label: 'AI Advisor', icon: <Sparkles className="h-[18px] w-[18px]" />, busy: working > 0 },
     { id: 'notes', label: 'Research Notes', icon: <FileCheck2 className="h-[18px] w-[18px]" /> },
     { id: 'kb', label: 'Knowledge Base', icon: <Library className="h-[18px] w-[18px]" /> },
     { id: 'evals', label: 'Evaluation', icon: <FlaskConical className="h-[18px] w-[18px]" /> },
@@ -81,10 +99,12 @@ function Shell() {
 
         <nav className="flex-1 space-y-0.5 px-3 pt-2">
           {nav.map(n => (
-            <button
+            <a
               key={n.id}
-              onClick={() => go(n.id)}
-              title={collapsed ? n.label : undefined}
+              href={pathFor(n.id)}
+              onClick={linkClick(pathFor(n.id))}
+              aria-current={tab === n.id ? 'page' : undefined}
+              title={n.busy ? `${n.label} - agents are working` : collapsed ? n.label : undefined}
               className={cn(
                 'group relative flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors duration-150',
                 tab === n.id ? 'bg-primary/10 text-primary' : 'text-fg-2 hover:bg-surface-2 hover:text-fg')}
@@ -92,12 +112,15 @@ function Shell() {
               {tab === n.id && <span className="absolute -left-3 top-2 bottom-2 w-[3px] rounded-r bg-primary" />}
               <span className="shrink-0">{n.icon}</span>
               {!collapsed && <span className="truncate">{n.label}</span>}
+              {n.busy && (
+                <Loader2 aria-label="Agents working" className={cn('h-3.5 w-3.5 animate-spin text-primary', collapsed ? 'absolute right-1.5 top-1.5' : 'ml-auto')} />
+              )}
               {!!n.badge && (
                 <span className={cn('grid min-w-[18px] h-[18px] place-items-center rounded-full bg-down px-1 text-[10px] font-bold text-white', collapsed ? 'absolute right-1.5 top-1' : 'ml-auto')}>
                   {n.badge > 99 ? '99+' : n.badge}
                 </span>
               )}
-            </button>
+            </a>
           ))}
         </nav>
 

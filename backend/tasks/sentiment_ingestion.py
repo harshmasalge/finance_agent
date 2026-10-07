@@ -30,10 +30,15 @@ def get_newsapi_articles(tickers):
     for idx, query in enumerate(search_queries):
         if not query: continue
         try:
-            current_key = keys[idx % len(keys)] # Round-robin key selection
-            url = f"https://newsapi.org/v2/everything?q={query}&language=en&sortBy=publishedAt&apiKey={current_key}"
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
+            # Round robin across keys; a rate-limited or rejected key falls through to the next one.
+            response = None
+            for attempt in range(len(keys)):
+                current_key = keys[(idx + attempt) % len(keys)]
+                url = f"https://newsapi.org/v2/everything?q={query}&language=en&sortBy=publishedAt&apiKey={current_key}"
+                response = requests.get(url, timeout=10)
+                if response.status_code not in (401, 402, 403, 429):
+                    break
+            if response is not None and response.status_code == 200:
                 data = response.json()
                 for item in data.get("articles", [])[:10]: # Limit to top 10 per ticker to avoid overload
                     text = f"{item.get('title', '')}. {item.get('description', '')}"

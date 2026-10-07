@@ -4,8 +4,10 @@ LLM access for every agent.
 Providers are OpenAI-compatible endpoints configured from .env. The user picks a
 provider + model per chat in the UI; the choice is held in a context variable for
 the duration of that request, so agents just call get_llm() / get_structured_llm().
+
+Every key configured for a provider is used: requests take turns across the keys, and a key
+that is rate-limited, out of credit or rejected is skipped for the same request (keypool.py).
 """
-import itertools
 import os
 import threading
 from contextvars import ContextVar
@@ -14,6 +16,7 @@ from typing import Dict, List, Optional
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
+from backend.agent.keypool import KeyPool, make_clients
 from backend.app_mode import InspectModeError, inspect_message, is_inspect
 
 PROVIDERS: Dict[str, dict] = {
@@ -30,7 +33,7 @@ PROVIDERS: Dict[str, dict] = {
         "label": "OpenRouter",
         "note": "Paid credits",
         "base_url": os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
-        "key_env": ["OPENROUTER_API_KEY"],
+        "key_env": ["OPENROUTER_API_KEYS", "OPENROUTER_API_KEY"],
         "models": ["openai/gpt-4o-mini", "nvidia/nemotron-3-ultra-550b-a55b:free", "qwen/qwen3.8-27b:free"],
         "max_tokens": 13000,
         "headers": {"HTTP-Referer": "http://localhost:5173", "X-Title": "FinSight AI"},
@@ -39,7 +42,7 @@ PROVIDERS: Dict[str, dict] = {
         "label": "Anthropic",
         "note": "Paid · Claude",
         "kind": "anthropic",            # native SDK via langchain-anthropic (not OpenAI-compatible)
-        "key_env": ["ANTHROPIC_API_KEY"],
+        "key_env": ["ANTHROPIC_API_KEYS", "ANTHROPIC_API_KEY"],
         # Cheapest first: the first model is this provider's default.
         "models": ["claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5"],
         # Anthropic requires max_tokens; enough for the final structured answer.
@@ -49,7 +52,7 @@ PROVIDERS: Dict[str, dict] = {
         "label": "Google Gemini",
         "note": "Free tier · low rate limits",
         "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
-        "key_env": ["GEMINI_API_KEYS", "GOOGLE_API_KEYS", "GOOGLE_API_KEY"],
+        "key_env": ["GEMINI_API_KEYS", "GEMINI_API_KEY", "GOOGLE_API_KEYS", "GOOGLE_API_KEY"],
         "models": ["gemini-2.5-flash", "gemini-2.5-flash-lite"],
         "max_tokens": 4096,
     },
@@ -58,29 +61,44 @@ PROVIDERS: Dict[str, dict] = {
 DEFAULT_PROVIDER = os.getenv("LLM_PROVIDER", "groq")
 
 _selection: ContextVar[Optional[dict]] = ContextVar("llm_selection", default=None)
-_cycles: Dict[str, itertools.cycle] = {}
+_pools: Dict[str, KeyPool] = {}
+_sync_clients: Dict[str, object] = {}
 _lock = threading.Lock()
 
 
 def _keys(provider: str) -> List[str]:
+    """Every key configured for a provider: all of its variables (singular and plural), each of
+    which may hold a comma-separated list. Duplicates are dropped, order is kept."""
+    keys: List[str] = []
     for var in PROVIDERS[provider]["key_env"]:
-        raw = os.getenv(var, "")
-        keys = [k.strip().strip('"') for k in raw.split(",") if k.strip()]
-        if keys:
-            return keys
-    return []
+        for k in os.getenv(var, "").split(","):
+            k = k.strip().strip('"').strip("'")
+            if k and k not in keys:
+                keys.append(k)
+    return keys
 
 
-def _next_key(provider: str) -> str:
-    """Round-robin across all configured keys so free-tier limits are shared."""
+def _pool(provider: str) -> KeyPool:
     keys = _keys(provider)
     if not keys:
         raise RuntimeError(f"No API key configured for {PROVIDERS[provider]['label']}. "
                            f"Set {PROVIDERS[provider]['key_env'][0]} in .env.")
     with _lock:
-        if provider not in _cycles or len(_keys(provider)) != len(keys):
-            _cycles[provider] = itertools.cycle(keys)
-        return next(_cycles[provider])
+        pool = _pools.get(provider)
+        if pool is None or pool.keys != keys:  # keys changed (e.g. .env reloaded)
+            pool = _pools[provider] = KeyPool(provider, keys)
+            _sync_clients.pop(provider, None)
+        return pool
+
+
+def _http_clients(provider: str, sdk, header: str):
+    """Key-rotating HTTP clients for this provider (sync client shared, async client per model)."""
+    pool = _pool(provider)
+    with _lock:
+        if provider not in _sync_clients:
+            _sync_clients[provider] = make_clients(sdk, pool, header)[0]
+        sync_client = _sync_clients[provider]
+    return pool, sync_client, make_clients(sdk, pool, header)[1]
 
 
 def default_model(provider: str) -> str:
@@ -100,7 +118,8 @@ def list_providers() -> List[dict]:
         if default_model(pid) not in models:  # e.g. a custom LLM_MODEL from .env
             models.insert(0, default_model(pid))
         out.append({"id": pid, "label": p["label"], "note": p["note"], "models": models,
-                    "default_model": default_model(pid), "available": bool(_keys(pid)), "keys": len(_keys(pid))})
+                    "default_model": default_model(pid), "available": bool(_keys(pid)), "keys": len(_keys(pid)),
+                    "resting_keys": _pools[pid].status()["resting"] if pid in _pools else 0})
     return out
 
 
@@ -155,28 +174,66 @@ def get_llm(temperature: float = 0.1, model: Optional[str] = None) -> BaseChatMo
     sel = current_selection()
     p = PROVIDERS[sel["provider"]]
     if p.get("kind") == "anthropic":
-        from langchain_anthropic import ChatAnthropic  # imported lazily: only needed when Claude is used
-        return ChatAnthropic(
+        import anthropic
+        pool, sync_client, async_client = _http_clients(sel["provider"], anthropic, "x-api-key")
+        return _rotating_anthropic_class()(
             model=model or sel["model"],
             temperature=temperature,
-            api_key=_next_key(sel["provider"]),
+            api_key=pool.keys[0],  # placeholder: every request gets its key from the pool
             max_tokens=p["max_tokens"],
             default_request_timeout=90,
             max_retries=3,
+            sync_http=sync_client,
+            async_http=async_client,
         )
+    import openai
+    pool, sync_client, async_client = _http_clients(sel["provider"], openai, "Authorization")
     kwargs = dict(
         model=model or sel["model"],
         temperature=temperature,
-        api_key=_next_key(sel["provider"]),
+        api_key=pool.keys[0],  # placeholder: every request gets its key from the pool
         base_url=p["base_url"],
         timeout=90,
         max_retries=3,
+        http_client=sync_client,
+        http_async_client=async_client,
     )
     if p.get("max_tokens"):
         kwargs["max_tokens"] = p["max_tokens"]
     if p.get("headers"):
         kwargs["default_headers"] = p["headers"]
     return ChatOpenAI(**kwargs)
+
+
+_anthropic_cls = None
+
+
+def _rotating_anthropic_class():
+    """ChatAnthropic that sends through our key-rotating HTTP clients (it has no
+    http_client option, so the SDK client properties are overridden)."""
+    global _anthropic_cls
+    if _anthropic_cls is None:
+        from functools import cached_property
+
+        import anthropic
+        from langchain_anthropic import ChatAnthropic
+        from pydantic import ConfigDict
+
+        class RotatingChatAnthropic(ChatAnthropic):
+            model_config = ConfigDict(arbitrary_types_allowed=True)
+            sync_http: object = None
+            async_http: object = None
+
+            @cached_property
+            def _client(self) -> anthropic.Client:
+                return anthropic.Client(**self._client_params, http_client=self.sync_http)
+
+            @cached_property
+            def _async_client(self) -> anthropic.AsyncClient:
+                return anthropic.AsyncClient(**self._client_params, http_client=self.async_http)
+
+        _anthropic_cls = RotatingChatAnthropic
+    return _anthropic_cls
 
 
 _capability_cache: Dict[str, bool] = {}
