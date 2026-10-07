@@ -78,3 +78,5 @@ start_local.ps1
 # Evals: downloaded price data and other caches
 evals/cache/
 .shots/
+finsight_demo.dump
+backups/

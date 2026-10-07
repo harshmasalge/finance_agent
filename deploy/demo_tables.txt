@@ -1,0 +1,15 @@
+# Tables copied from the local app to the server by export_demo_data.ps1 / import_demo_data.sh.
+# One per line. ohlcv_data is intentionally excluded (large; Celery refills it on the server).
+users
+portfolios
+trade_log
+alert_log
+alert_feedback
+signal_log
+sentiment_scores
+chat_sessions
+chat_messages
+answer_status
+answer_revisions
+feedback
+research_notes

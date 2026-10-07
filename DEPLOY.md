@@ -153,6 +153,51 @@ the showcase for every visitor. Local development defaults to `demo`.
 
 ---
 
+## Copy your local demo data to the server
+
+The server has its own database, so chats, the portfolio, trades, alerts, review versions and
+Research Notes you created locally don't appear there until you copy them. This is how you make
+**inspect mode** look like a real, lived-in app.
+
+What is copied: the tables listed in `deploy/demo_tables.txt` (users, portfolios, trade_log,
+alert_log, alert_feedback, signal_log, sentiment_scores, chat_sessions, chat_messages,
+answer_status, answer_revisions, feedback, research_notes). `ohlcv_data` is skipped (Celery
+refills it). The knowledge base lives in `data/` and is uploaded separately (see above); evaluation
+results are in git.
+
+**Before you start**
+- Everything you copy is public in inspect mode. Locally (in demo mode) delete failed, empty or
+  test chats with the trash icon and keep the good ones.
+- Push your latest commits to GitHub, so the server has `deploy/import_demo_data.sh`
+  (the script below runs `git pull` on the server first).
+- The local app must be running (`start_app.ps1`), because the export reads its database.
+
+**One command (PowerShell, project folder):**
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\export_demo_data.ps1 -Upload `
+    -Server 3.94.163.86 -KeyFile $HOME\Downloads\finsight.pem
+```
+It shows the row counts, exports `finsight_demo.dump`, uploads it, and runs the import on the
+server.
+
+**Or step by step:**
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\export_demo_data.ps1      # -> finsight_demo.dump
+scp -i $HOME\Downloads\finsight.pem finsight_demo.dump ubuntu@<server-ip>:~/finance_agent/
+ssh -i $HOME\Downloads\finsight.pem ubuntu@<server-ip>
+cd ~/finance_agent && bash deploy/import_demo_data.sh finsight_demo.dump
+```
+
+What the import does: checks the tables exist, **backs up the server's current data** to
+`backups/server_<timestamp>.dump`, stops the backend/Celery containers, replaces the data, moves the
+id counters past the imported rows, and starts the containers again. If anything fails half-way it
+**puts the previous data back automatically**. It works in inspect mode (it talks to the database
+directly). To undo an import:
+```bash
+bash deploy/import_demo_data.sh backups/server_<timestamp>.dump
+```
+Re-run whenever you have recorded new showcase chats locally; each run replaces the server's copy.
+
 ## Everyday operations (on the server, in ~/finance_agent)
 
 | Task | Command |
