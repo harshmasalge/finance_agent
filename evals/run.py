@@ -273,7 +273,7 @@ def inprocess_chat_fn() -> ChatFn:
     client = TestClient(app)
     client.__enter__()  # run lifespan (creates tables)
     r = client.post("/auth/mock-login", json={"email": "evals@finsight.local", "name": "Evals"})
-    if r.status_code >= 400:
+    if r.status_code >= 400 and r.status_code != 404:  # login was removed: the app uses the single demo user
         raise RuntimeError(f"mock login failed: {r.status_code} {r.text[:200]}")
 
     def chat(question: str, history: List[str]) -> dict:

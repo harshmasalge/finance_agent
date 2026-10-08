@@ -1,4 +1,4 @@
-"""Read-only API over saved evaluation results (`/evals`). No evaluation runs from here - use the CLI."""
+"""API over saved evaluation results (`/evals`), plus scoring of real advisor chats (`/evals/live/score`)."""
 from __future__ import annotations
 
 import json
@@ -76,3 +76,82 @@ def rag_latest() -> Dict[str, Any]:
     if not p.is_file():
         return {"available": False, "message": "RAG benchmark not run yet (python -m backend.rag.benchmark)."}
     return {"available": True, "data": _read(p)}
+
+
+# --------------------------------------------------------------------------------------------
+# Live evaluation of real chats: dataset questions are asked through the normal advisor
+# (POST /agent/chat), so they become ordinary chats in the history; this endpoint then scores
+# those saved answers with the same checks as `python -m evals.run`.
+# --------------------------------------------------------------------------------------------
+
+from pydantic import BaseModel  # noqa: E402
+from fastapi import Depends  # noqa: E402
+
+
+class ScoreChatsRequest(BaseModel):
+    run_id: str
+    cases: Dict[str, int]  # dataset case id -> chat id that asked it
+
+
+@router.get("/dataset")
+def dataset() -> List[Dict[str, Any]]:
+    """The evaluation questions (with any earlier turns for follow-up cases)."""
+    from evals.run import load_dataset
+    return load_dataset()
+
+
+def _require_demo():
+    from backend.app_mode import require_demo_mode
+    return require_demo_mode()
+
+
+@router.post("/live/score", dependencies=[Depends(_require_demo)])
+def score_chats(req: ScoreChatsRequest) -> Dict[str, Any]:
+    """Score saved chats against their dataset cases and save the run (merged with the cases
+    already scored under the same run id), so a live run can be built up a few cases at a time."""
+    from backend.db.database import SessionLocal
+    from backend.db.models import ChatMessage
+    from evals.run import load_dataset, run as run_eval, save
+
+    if not RUN_ID.match(req.run_id):
+        raise HTTPException(400, "invalid run id")
+    by_id = {c["id"]: c for c in load_dataset()}
+    unknown = sorted(set(req.cases) - set(by_id))
+    if unknown:
+        raise HTTPException(400, f"unknown case ids: {unknown}")
+
+    path = _results_dir() / f"{req.run_id}.json"
+    mapping: Dict[str, int] = {}
+    if path.is_file():
+        mapping.update({k: int(v) for k, v in (_read(path).get("chats") or {}).items()})
+    mapping.update(req.cases)
+
+    db = SessionLocal()
+    try:
+        payloads = {}
+        for case_id, chat_id in mapping.items():
+            msg = (db.query(ChatMessage).filter(ChatMessage.session_id == chat_id, ChatMessage.role == "assistant")
+                   .order_by(ChatMessage.id.desc()).first())
+            if msg and msg.payload:
+                payloads[case_id] = msg.payload
+    finally:
+        db.close()
+
+    order = [cid for cid in by_id if cid in mapping]  # dataset order
+    cases = [by_id[cid] for cid in order]
+    current = iter(order)
+
+    def lookup(question, history):  # called once per case, in order
+        cid = next(current)
+        if cid not in payloads:
+            raise RuntimeError(f"chat {mapping[cid]} has no answer yet")
+        return payloads[cid]
+
+    res = run_eval("live", cases, chat_fn=lookup, run_id=req.run_id,
+                   fixtures_path="chats: " + ", ".join(f"{c}=#{mapping[c]}" for c in order))
+    res["chats"] = {c: mapping[c] for c in order}
+    save(res, _results_dir())
+    return {k: res[k] for k in ("run_id", "summary", "chats")} | {
+        "cases": [{"id": c["id"], "status": c["status"], "passed": c.get("passed"),
+                   "failed": [k["name"] for k in c.get("checks", []) if k["gating"] and k["passed"] is False],
+                   "reason": c.get("reason")} for c in res["cases"]]}
