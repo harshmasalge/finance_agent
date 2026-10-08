@@ -1,11 +1,12 @@
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, CircleDashed, FlaskConical, LineChart as LineIcon, MinusCircle, XCircle } from 'lucide-react';
+import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, CircleDashed, FlaskConical, LineChart as LineIcon, MessageSquare, MinusCircle, XCircle } from 'lucide-react';
 import { api } from '../lib/api';
 import { cn } from '../lib/format';
 import { useChartColors } from '../lib/theme';
 import { Badge, Card, CardHeader, EmptyState, PageHeader, Segmented, Select, Skeleton, Stat } from './ui';
-import type { BacktestBucket, BacktestResult, EvalCase, EvalCheck, EvalRun, EvalRunMeta, RagLatest } from './evaluation/types';
+import type { BacktestBucket, BacktestResult, EvalCase, EvalCheck, EvalOverview, RagLatest } from './evaluation/types';
+import { useRouter } from '../lib/router';
 
 // ---------- formatting ----------
 const pct = (v: number | null | undefined, d = 0) => (v == null ? 'n/a' : `${(v * 100).toFixed(d)}%`);
@@ -34,39 +35,52 @@ function StatusBadge({ c }: { c: EvalCase }) {
 
 // ---------- page ----------
 export default function Evaluation() {
-  const [runs, setRuns] = useState<EvalRunMeta[] | null>(null);
-  const [runId, setRunId] = useState<string>('');
-  const [run, setRun] = useState<EvalRun | null>(null);
+  const [model, setModel] = useState<string>(() => {
+    try { return localStorage.getItem('finsight-evals-model') || 'all'; } catch { return 'all'; }
+  });
+  const [data, setData] = useState<EvalOverview | null>(null);
   const [backtest, setBacktest] = useState<BacktestResult | null | 'missing'>(null);
   const [rag, setRag] = useState<RagLatest | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api<EvalRunMeta[]>('/evals/runs').then(r => { setRuns(r); if (r.length) setRunId(r[0].run_id); })
-      .catch(e => { setRuns([]); setError(String(e.message ?? e)); });
     api<BacktestResult>('/evals/backtest/latest').then(setBacktest).catch(() => setBacktest('missing'));
     api<RagLatest>('/evals/rag/latest').then(setRag).catch(() => setRag({ available: false }));
   }, []);
 
   useEffect(() => {
-    if (!runId) return;
-    api<EvalRun>(`/evals/runs/${encodeURIComponent(runId)}`).then(setRun).catch(e => setError(String(e.message ?? e)));
-  }, [runId]);
+    let live = true;
+    api<EvalOverview>(`/evals/overview?model=${encodeURIComponent(model)}`)
+      .then(d => { if (live) { setData(d); setError(null); } })
+      .catch(e => {
+        if (!live) return;
+        if (model !== 'all') { setModel('all'); return; } // that model has no results any more
+        setError(String(e.message ?? e));
+      });
+    return () => { live = false; };
+  }, [model]);
+
+  const pick = (m: string) => {
+    setModel(m);
+    try { localStorage.setItem('finsight-evals-model', m); } catch { /* ignore */ }
+  };
+  const total = data?.models.reduce((n, m) => n + m.n_evaluated, 0) ?? 0;
 
   return (
     <div className="mx-auto max-w-[1280px] px-6 py-8 lg:px-10">
       <PageHeader title="Evaluation"
         subtitle="How we know it works: answer-quality metrics on real agent answers, and a backtest of the signal scorecard"
-        actions={runs && runs.length > 0 ? (
-          <Select aria-label="Eval run" value={runId} onChange={e => { setRun(null); setRunId(e.target.value); }} className="w-[260px]">
-            {runs.map(r => <option key={r.run_id} value={r.run_id}>{r.run_id} · {r.mode}</option>)}
+        actions={data && data.models.length > 0 ? (
+          <Select aria-label="Filter by model" value={model} onChange={e => pick(e.target.value)} className="w-[300px]">
+            <option value="all">All models · {total} results</option>
+            {data.models.map(m => <option key={m.key} value={m.key}>{m.label} · {m.n_passed}/{m.n_evaluated} passed</option>)}
           </Select>
         ) : undefined} />
 
-      {runs === null ? <KpiSkeleton /> : runs.length === 0 ? (
-        <Card><EmptyState icon={<FlaskConical className="h-5 w-5" />} title="No eval runs yet"
-          body={error ?? 'Run `python -m evals.run --mode replay` to score the recorded answers.'} /></Card>
-      ) : !run ? <KpiSkeleton /> : <RunView run={run} />}
+      {data === null && !error ? <KpiSkeleton /> : !data || data.models.length === 0 ? (
+        <Card><EmptyState icon={<FlaskConical className="h-5 w-5" />} title="No eval results yet"
+          body={error ?? 'Ask the dataset questions in the advisor and score them, or run `python -m evals.run --mode replay`.'} /></Card>
+      ) : <RunView run={data} />}
 
       <div className="mt-6 grid gap-4 xl:grid-cols-3">
         <div className="xl:col-span-2"><BacktestCard bt={backtest} /></div>
@@ -81,16 +95,18 @@ function KpiSkeleton() {
 }
 
 // ---------- run ----------
-function RunView({ run }: { run: EvalRun }) {
+function RunView({ run }: { run: EvalOverview }) {
   const s = run.summary;
+  const label = run.model === 'all' ? 'All models' : run.models.find(m => m.key === run.model)?.label ?? run.model;
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center gap-2 text-[13px] text-muted">
-        <Badge tone={run.mode === 'live' ? 'primary' : 'neutral'}>{run.mode}</Badge>
-        <span>{s.n_evaluated} of {s.n_cases} dataset cases scored</span>
-        {s.n_not_run > 0 && <span>· {s.n_not_run} need {run.mode === 'replay' ? 'a live run (no recorded answer)' : 'a retry'}</span>}
-        {run.git_commit && <span>· commit <span className="font-mono">{run.git_commit}</span></span>}
-        <span>· {new Date(run.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+        <Badge tone="primary">{label}</Badge>
+        <span>{s.n_cases - s.n_not_run} of {s.n_cases} dataset cases scored</span>
+        {run.model === 'all' && s.n_results > s.n_cases - s.n_not_run && <span>· {s.n_results} answers (some cases answered by several models)</span>}
+        {s.n_not_run > 0 && <span>· {s.n_not_run} not run yet</span>}
+        <span>· from {run.runs.length} run{run.runs.length === 1 ? '' : 's'}</span>
+        {run.created_at && <span>· latest {new Date(run.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</span>}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -106,14 +122,14 @@ function RunView({ run }: { run: EvalRun }) {
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-3">
-        <div className="xl:col-span-2"><CaseTable cases={run.cases} /></div>
+        <div className="xl:col-span-2"><CaseTable cases={run.cases} showModel={run.model === 'all'} /></div>
         <MetricDetails run={run} />
       </div>
     </>
   );
 }
 
-function MetricDetails({ run }: { run: EvalRun }) {
+function MetricDetails({ run }: { run: EvalOverview }) {
   const s = run.summary;
   const rows: { key: string; label: string; value: string; n?: string }[] = [
     { key: 'schema_validity', label: 'Schema validity', value: pct(s.schema_validity) },
@@ -151,7 +167,7 @@ function MetricDetails({ run }: { run: EvalRun }) {
 
 type CaseFilter = 'all' | 'scored' | 'failed' | 'not_run';
 
-function CaseTable({ cases }: { cases: EvalCase[] }) {
+function CaseTable({ cases, showModel }: { cases: EvalCase[]; showModel: boolean }) {
   const [filter, setFilter] = useState<CaseFilter>('scored');
   const [open, setOpen] = useState<string | null>(null);
   const shown = useMemo(() => cases.filter(c =>
@@ -171,22 +187,24 @@ function CaseTable({ cases }: { cases: EvalCase[] }) {
           <thead>
             <tr className="border-b border-border text-left text-[11.5px] font-medium uppercase tracking-wide text-muted">
               <th className="w-6 px-2 py-2" /><th className="px-2 py-2">Case</th><th className="px-2 py-2">Intent</th>
+              {showModel && <th className="px-2 py-2">Model</th>}
               <th className="px-2 py-2">Checks</th><th className="px-2 py-2 text-right">Latency</th><th className="px-2 py-2 text-right">Result</th>
             </tr>
           </thead>
           <tbody>
-            {shown.length === 0 && <tr><td colSpan={6} className="px-2 py-8 text-center text-muted">No cases in this view</td></tr>}
+            {shown.length === 0 && <tr><td colSpan={showModel ? 7 : 6} className="px-2 py-8 text-center text-muted">No cases in this view</td></tr>}
             {shown.map(c => {
               const gating = (c.checks ?? []).filter(k => k.gating && k.passed !== null);
               const ok = gating.filter(k => k.passed).length;
-              const isOpen = open === c.id;
+              const rowKey = `${c.id}|${c.model_key ?? ''}`;
+              const isOpen = open === rowKey;
               const intentOk = c.actual ? c.actual.intent === c.expected.expected_intent : null;
               return (
-                <Fragment key={c.id}>
+                <Fragment key={rowKey}>
                   <tr className={cn('cursor-pointer border-b border-border transition-colors hover:bg-surface-2', isOpen && 'bg-surface-2')}
-                    onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen}>
+                    onClick={() => setOpen(isOpen ? null : rowKey)} aria-expanded={isOpen}>
                     <td className="px-2 py-2.5 text-muted">{isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}</td>
-                    <td className="max-w-[340px] px-2 py-2.5">
+                    <td className={cn('px-2 py-2.5', showModel ? 'max-w-[240px]' : 'max-w-[340px]')}>
                       <div className="truncate font-medium text-fg">{c.question}</div>
                       <div className="truncate text-[11.5px] text-muted">{c.id}{c.history.length > 0 && ` · follow-up to "${c.history[c.history.length - 1]}"`}</div>
                     </td>
@@ -194,11 +212,12 @@ function CaseTable({ cases }: { cases: EvalCase[] }) {
                       <span className="text-fg-2">{c.expected.expected_intent}</span>
                       {c.actual && intentOk === false && <span className="text-down"> → {c.actual.intent}</span>}
                     </td>
+                    {showModel && <td className="max-w-[130px] px-2 py-2.5 text-[12px] leading-tight text-fg-2" title={c.model_label ?? ''}>{c.model_label?.split(' · ')[0] ?? '—'}</td>}
                     <td className="whitespace-nowrap px-2 py-2.5 tabular text-fg-2">{c.status === 'evaluated' ? `${ok}/${gating.length}` : '—'}</td>
                     <td className="whitespace-nowrap px-2 py-2.5 text-right tabular text-fg-2">{c.metrics ? sec(c.metrics.latency_s) : '—'}</td>
                     <td className="px-2 py-2.5 text-right"><StatusBadge c={c} /></td>
                   </tr>
-                  {isOpen && <tr className="border-b border-border bg-surface-2/50"><td colSpan={6} className="px-4 py-4"><CaseDetail c={c} /></td></tr>}
+                  {isOpen && <tr className="border-b border-border bg-surface-2/50"><td colSpan={showModel ? 7 : 6} className="px-4 py-4"><CaseDetail c={c} /></td></tr>}
                 </Fragment>
               );
             })}
@@ -210,6 +229,7 @@ function CaseTable({ cases }: { cases: EvalCase[] }) {
 }
 
 function CaseDetail({ c }: { c: EvalCase }) {
+  const { linkClick } = useRouter();
   if (c.status === 'not_run') {
     return (
       <div className="flex items-start gap-2 text-[13px] text-muted">
@@ -226,6 +246,16 @@ function CaseDetail({ c }: { c: EvalCase }) {
   }
   return (
     <div className="space-y-4 text-[13px]">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted">
+        {c.model_label && <span>Answered by <span className="font-medium text-fg-2">{c.model_label}</span></span>}
+        {c.run_id && <span>run <span className="font-mono">{c.run_id}</span></span>}
+        {c.chat_id && (
+          <a href={`/advisor/${c.chat_id}`} onClick={linkClick(`/advisor/${c.chat_id}`)}
+            className="inline-flex items-center gap-1 font-medium text-primary hover:underline">
+            <MessageSquare className="h-3.5 w-3.5" />Open the chat
+          </a>
+        )}
+      </div>
       {c.actual?.headline && <p className="text-fg-2">“{c.actual.headline}”</p>}
       <ul className="grid gap-x-6 gap-y-2 md:grid-cols-2">
         {(c.checks ?? []).map((k: EvalCheck) => (

@@ -1,56 +1,75 @@
 {
  "run_id": "live-haiku-2026-10-08",
  "mode": "live",
- "created_at": "2026-10-08T06:08:59+00:00",
- "git_commit": "271aeb3",
+ "created_at": "2026-10-08T06:26:08+00:00",
+ "git_commit": "4f87d70",
  "dataset": {
   "path": "evals/dataset.yaml",
-  "n_cases": 3
+  "n_cases": 25
  },
- "fixtures": "chats: research-lt=#24, research-sbi=#25, research-bajaj-auto=#26",
+ "fixtures": "chats: research-lt=#24, research-sbi=#25, research-bajaj-auto=#26, research-tatasteel=#27, research-zomato=#28, followup-infy=#29, followup-sentiment-hdfc=#30, followup-compare-icici=#31, compare-mm-maruti=#32, compare-three-fmcg=#33, sentiment-reliance=#35, sentiment-tcs=#34, portfolio-risk=#36, portfolio-pnl=#37, ideas-diversify=#38, clarify-buy-it=#39, clarify-good-stock=#40, direct-pe=#41, out-of-scope-apple=#42",
  "judge": false,
  "summary": {
-  "n_cases": 3,
-  "n_evaluated": 3,
-  "n_not_run": 0,
-  "case_pass_rate": 0.6667,
-  "routing_accuracy": 1.0,
-  "ticker_f1": 1.0,
+  "n_cases": 25,
+  "n_evaluated": 19,
+  "n_not_run": 6,
+  "case_pass_rate": 0.6316,
+  "routing_accuracy": 0.9474,
+  "ticker_f1": 0.9474,
   "answer_type_accuracy": 1.0,
   "schema_validity": 1.0,
-  "claims": 65,
-  "citation_coverage": 1.0,
+  "claims": 222,
+  "citation_coverage": 0.9955,
   "citation_validity": 1.0,
-  "n_citation_validity": 3,
-  "numbers_checked": 137,
-  "numbers_grounded": 129,
-  "number_grounding": 0.9416,
-  "claims_fully_grounded": 0.9,
-  "grounding_false_positive_rate": 0.0584,
-  "grounding_control_numbers": 274,
-  "forbidden_pass_rate": 1.0,
+  "n_citation_validity": 15,
+  "numbers_checked": 458,
+  "numbers_grounded": 415,
+  "number_grounding": 0.9061,
+  "claims_fully_grounded": 0.8182,
+  "grounding_false_positive_rate": 0.0568,
+  "grounding_control_numbers": 916,
+  "forbidden_pass_rate": 0.9474,
   "must_include_rate": 1.0,
-  "n_must_include": 3,
+  "n_must_include": 16,
   "verdict_determinism": 1.0,
   "verdict_matches_stored": 1.0,
-  "n_verdict_matches_stored": 3,
+  "n_verdict_matches_stored": 9,
   "verdict_consistency": 1.0,
-  "n_verdict_consistency": 3,
-  "rule_checker_pass_rate": 1.0,
-  "n_rule_checker": 3,
-  "llm_validator_pass_rate": 0.3333,
-  "n_llm_validator": 3,
-  "llm_validator_revisions": 0.6667,
-  "latency_p50_s": 76.1,
-  "latency_p95_s": 146.21,
-  "latency_mean_s": 99.1667,
+  "n_verdict_consistency": 9,
+  "rule_checker_pass_rate": 0.9333,
+  "n_rule_checker": 15,
+  "llm_validator_pass_rate": 0.4667,
+  "n_llm_validator": 15,
+  "llm_validator_revisions": 0.6,
+  "latency_p50_s": 31.5,
+  "latency_p95_s": 84.97,
+  "latency_mean_s": 38.2368,
   "total_tokens_mean": null,
   "cost_usd_total": null,
   "judge_faithfulness": null,
   "n_judged": 0,
   "intent_confusion": {
    "research": {
-    "research": 3
+    "research": 6
+   },
+   "sentiment": {
+    "sentiment": 3
+   },
+   "comparison": {
+    "comparison": 3
+   },
+   "portfolio": {
+    "portfolio": 2
+   },
+   "ideas": {
+    "ideas": 1
+   },
+   "clarify": {
+    "clarify": 2
+   },
+   "direct_answer": {
+    "direct_answer": 1,
+    "clarify": 1
    }
   }
  },
@@ -70,10 +89,47 @@
  },
  "cases": [
   {
+   "id": "research-techm",
+   "question": "how is tech mahindra",
+   "history": [],
+   "status": "not_run",
+   "reason": "not asked yet",
+   "passed": null,
+   "notes": "Company name -> ticker. Recorded before the scorecard existed (verdict chosen by the LLM).",
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "TECHM.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   }
+  },
+  {
+   "id": "research-policybazaar",
+   "question": "how is policy bazaar looking",
+   "history": [],
+   "status": "not_run",
+   "reason": "not asked yet",
+   "passed": null,
+   "notes": "Brand name differs from the listed entity (PB Fintech) and the NSE symbol.",
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "POLICYBZR.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   }
+  },
+  {
    "id": "research-lt",
    "question": "should I buy L&T?",
    "history": [],
    "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
    "passed": false,
    "expected": {
     "expected_intent": "research",
@@ -201,6 +257,8 @@
     "validator_attempts": 2,
     "latency_s": 76.1,
     "evidence_items": 11,
+    "control_numbers": 74,
+    "control_grounded": 4,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,
@@ -252,13 +310,19 @@
     ]
    },
    "judge": null,
-   "notes": "Ampersand abbreviation -> LT.NS."
+   "notes": "Ampersand abbreviation -> LT.NS.",
+   "chat_id": 24
   },
   {
    "id": "research-sbi",
    "question": "sbi share price outlook",
    "history": [],
    "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
    "passed": true,
    "expected": {
     "expected_intent": "research",
@@ -386,6 +450,8 @@
     "validator_attempts": 2,
     "latency_s": 154.0,
     "evidence_items": 11,
+    "control_numbers": 114,
+    "control_grounded": 10,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,
@@ -414,13 +480,19 @@
     ]
    },
    "judge": null,
-   "notes": "Abbreviation -> SBIN.NS (not SBI.NS)."
+   "notes": "Abbreviation -> SBIN.NS (not SBI.NS).",
+   "chat_id": 25
   },
   {
    "id": "research-bajaj-auto",
    "question": "what do you think about bajaj auto",
    "history": [],
    "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
    "passed": true,
    "expected": {
     "expected_intent": "research",
@@ -548,6 +620,8 @@
     "validator_attempts": 1,
     "latency_s": 67.4,
     "evidence_items": 11,
+    "control_numbers": 86,
+    "control_grounded": 2,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,
@@ -590,12 +664,2894 @@
     ]
    },
    "judge": null,
-   "notes": "Hyphenated NSE symbol; must not be confused with Bajaj Finance / Finserv."
+   "notes": "Hyphenated NSE symbol; must not be confused with Bajaj Finance / Finserv.",
+   "chat_id": 26
+  },
+  {
+   "id": "research-tatasteel",
+   "question": "how is tata steel doing",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "TATASTEEL.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   },
+   "actual": {
+    "intent": "research",
+    "tickers": [
+     "TATASTEEL.NS"
+    ],
+    "answer_type": "stock_analysis",
+    "verdict": "SELL",
+    "verdict_ticker": "TATASTEEL.NS",
+    "headline": "SELL on Tata Steel (TATASTEEL.NS): the scorecard totals -27.3 (confidence 72%), driven by a broken price trend and a Prophet downtrend, partly offset by cheap forward valuation and revenue growth. The stock closed at ₹172.52, below its 20-, 50- and 200-day EMAs."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected research, got research",
+     "value": "research",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['TATASTEEL.NS'], got ['TATASTEEL.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected stock_analysis, got stock_analysis",
+     "value": "stock_analysis",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 22 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "44/46 numbers found in cited evidence",
+     "value": 0.9565,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": true,
+     "detail": "answer SELL vs scorecard TATASTEEL.NS SELL (-27.3)",
+     "value": true,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 3 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 22,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 46,
+    "numbers_grounded": 44,
+    "grounding_rate": 0.9565,
+    "claims_with_numbers": 16,
+    "claims_fully_grounded": 14,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": true,
+    "verdict_consistent": true,
+    "rule_checker_ok": true,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 77.3,
+    "evidence_items": 11,
+    "control_numbers": 92,
+    "control_grounded": 7,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [
+    {
+     "claim": "The position is the smallest holding at 4.67% of invested value and about 1.73% of total account value, with no concentration flags.",
+     "number": "1.73%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "Adding 10 shares at ₹172.58 would cost about ₹1,726 and bring the position to roughly 20 shares; this is a rough illustration that excludes fees, not a recommendation.",
+     "number": "20",
+     "citations": [
+      "P1",
+      "P2"
+     ]
+    }
+   ],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": true,
+    "answer_consistent": true,
+    "recomputed": [
+     {
+      "ticker": "TATASTEEL.NS",
+      "score": -27.3,
+      "verdict": "SELL"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Tata group has many listed companies; only Tata Steel is meant.",
+   "chat_id": 27
+  },
+  {
+   "id": "research-zomato",
+   "question": "is zomato a buy right now",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": false,
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "ETERNAL.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   },
+   "actual": {
+    "intent": "research",
+    "tickers": [
+     "ZOMATO.NS"
+    ],
+    "answer_type": "stock_analysis",
+    "verdict": "HOLD",
+    "verdict_ticker": "ZOMATO.NS",
+    "headline": "HOLD on ZOMATO.NS (scorecard score 0.0, confidence 38%), but this is a data-driven hold rather than a considered view: no price, fundamentals, model or filing data came back for the ticker, so it is not a recommendation to buy. Treat it as \"no evidence to buy,\" not \"safe to hold.\""
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected research, got research",
+     "value": "research",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": false,
+     "detail": "expected ['ETERNAL.NS'], got ['ZOMATO.NS']",
+     "value": 0.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected stock_analysis, got stock_analysis",
+     "value": "stock_analysis",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 16 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "8/8 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": true,
+     "detail": "answer HOLD vs scorecard ZOMATO.NS HOLD (+0.0)",
+     "value": true,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": true,
+     "detail": "recorded status passed",
+     "value": "passed",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 0.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 16,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 8,
+    "numbers_grounded": 8,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 4,
+    "claims_fully_grounded": 4,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": true,
+    "verdict_consistent": true,
+    "rule_checker_ok": true,
+    "validator_status": "passed",
+    "validator_attempts": 1,
+    "latency_s": 35.8,
+    "evidence_items": 11,
+    "control_numbers": 16,
+    "control_grounded": 3,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": true,
+    "answer_consistent": true,
+    "recomputed": [
+     {
+      "ticker": "ZOMATO.NS",
+      "score": 0.0,
+      "verdict": "HOLD"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Zomato Ltd was renamed Eternal Ltd (NSE ETERNAL) in 2025; ZOMATO.NS is a stale symbol.",
+   "chat_id": 28
+  },
+  {
+   "id": "followup-infy",
+   "question": "what about Infosys?",
+   "history": [
+    "how is TCS doing"
+   ],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "research",
+    "expected_tickers": [
+     "INFY.NS"
+    ],
+    "expected_answer_type": "stock_analysis"
+   },
+   "actual": {
+    "intent": "research",
+    "tickers": [
+     "INFY.NS"
+    ],
+    "answer_type": "stock_analysis",
+    "verdict": "SELL",
+    "verdict_ticker": "INFY.NS",
+    "headline": "INFY.NS scores SELL (-23.2) on the signal scorecard: the stock is in a price downtrend below its 50- and 200-day EMAs, with a weak 3-month return, while valuation and news sentiment offer some support. Confidence is 69%."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected research, got research",
+     "value": "research",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['INFY.NS'], got ['INFY.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected stock_analysis, got stock_analysis",
+     "value": "stock_analysis",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 21 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "44/48 numbers found in cited evidence",
+     "value": 0.9167,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": true,
+     "detail": "answer SELL vs scorecard INFY.NS SELL (-23.2)",
+     "value": true,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": true,
+     "detail": "recorded status passed",
+     "value": "passed",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 21,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 48,
+    "numbers_grounded": 44,
+    "grounding_rate": 0.9167,
+    "claims_with_numbers": 16,
+    "claims_fully_grounded": 13,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": true,
+    "verdict_consistent": true,
+    "rule_checker_ok": true,
+    "validator_status": "passed",
+    "validator_attempts": 2,
+    "latency_s": 33.4,
+    "evidence_items": 12,
+    "control_numbers": 96,
+    "control_grounded": 9,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [
+    {
+     "claim": "Last close is ₹1,002.00, 1.7% above the 52-week low of ₹985.30 and 39% below the 52-week high of ₹1,654.01.",
+     "number": "1.7%",
+     "citations": [
+      "R3"
+     ]
+    },
+    {
+     "claim": "Last close is ₹1,002.00, 1.7% above the 52-week low of ₹985.30 and 39% below the 52-week high of ₹1,654.01.",
+     "number": "39%",
+     "citations": [
+      "R3"
+     ]
+    },
+    {
+     "claim": "Price is 2.79% below the 20-day EMA (₹1,030.74), 4.8% below the 50-day EMA (₹1,066.60) and 15.84% below the 200-day EMA (₹1,190.56).",
+     "number": "4.8%",
+     "citations": [
+      "R3"
+     ]
+    },
+    {
+     "claim": "TCS.NS and WIPRO.NS already make up 45.11% of invested holdings, so an INFY purchase would add to IT-services concentration.",
+     "number": "45.11%",
+     "citations": [
+      "P2"
+     ]
+    }
+   ],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": true,
+    "answer_consistent": true,
+    "recomputed": [
+     {
+      "ticker": "INFY.NS",
+      "score": -23.2,
+      "verdict": "SELL"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Follow-up; intent carried over from the previous turn, ticker replaced.",
+   "chat_id": 29
+  },
+  {
+   "id": "followup-sentiment-hdfc",
+   "question": "and what is the news sentiment on it?",
+   "history": [
+    "analyse HDFC Bank"
+   ],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "sentiment",
+    "expected_tickers": [
+     "HDFCBANK.NS"
+    ],
+    "expected_answer_type": "sentiment"
+   },
+   "actual": {
+    "intent": "sentiment",
+    "tickers": [
+     "HDFCBANK.NS"
+    ],
+    "answer_type": "sentiment",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "News sentiment on HDFC Bank (HDFCBANK.NS) is UNKNOWN, not neutral: no sentiment score is stored, and only one of six recent headlines concerns the bank directly, without stating the direction of the share move."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected sentiment, got sentiment",
+     "value": "sentiment",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['HDFCBANK.NS'], got ['HDFCBANK.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected sentiment, got sentiment",
+     "value": "sentiment",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 6 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "7/7 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": true,
+     "detail": "recorded status passed",
+     "value": "passed",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 6,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 7,
+    "numbers_grounded": 7,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 3,
+    "claims_fully_grounded": 3,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": true,
+    "validator_status": "passed",
+    "validator_attempts": 1,
+    "latency_s": 14.5,
+    "evidence_items": 2,
+    "control_numbers": 14,
+    "control_grounded": 4,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": [
+     {
+      "ticker": "HDFCBANK.NS",
+      "score": 0.0,
+      "verdict": "HOLD"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Pronoun resolution (\"it\" = HDFC Bank).",
+   "chat_id": 30
+  },
+  {
+   "id": "followup-compare-icici",
+   "question": "compare it with ICICI Bank",
+   "history": [
+    "how is SBI"
+   ],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": false,
+   "expected": {
+    "expected_intent": "comparison",
+    "expected_tickers": [
+     "SBIN.NS",
+     "ICICIBANK.NS"
+    ],
+    "expected_answer_type": "comparison"
+   },
+   "actual": {
+    "intent": "comparison",
+    "tickers": [
+     "SBIN.NS",
+     "ICICIBANK.NS"
+    ],
+    "answer_type": "comparison",
+    "verdict": "HOLD",
+    "verdict_ticker": "ICICIBANK.NS",
+    "headline": "ICICIBANK.NS scores +5.2 (HOLD, 59% confidence), while SBIN.NS has no verifiable scorecard in this session, so the scorecard comparison cannot be completed and the ICICI HOLD is the only scored verdict available."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected comparison, got comparison",
+     "value": "comparison",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['SBIN.NS', 'ICICIBANK.NS'], got ['SBIN.NS', 'ICICIBANK.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected comparison, got comparison",
+     "value": "comparison",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": false,
+     "detail": "94% of 17 claims cite evidence",
+     "value": 0.9412,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": false,
+     "detail": "38/51 numbers found in cited evidence",
+     "value": 0.7451,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": true,
+     "detail": "answer HOLD vs scorecard ICICIBANK.NS HOLD (+5.2)",
+     "value": true,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": false,
+     "detail": "Claim has no citation: \"SBIN.NS has no verifiable scorecard score in this session; the -9.8 HOLD figure from my ea\"",
+     "value": 1,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 7 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 17,
+    "citation_coverage": 0.9412,
+    "citation_validity": 1.0,
+    "numbers": 51,
+    "numbers_grounded": 38,
+    "grounding_rate": 0.7451,
+    "claims_with_numbers": 16,
+    "claims_fully_grounded": 9,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": true,
+    "verdict_consistent": true,
+    "rule_checker_ok": false,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 52.8,
+    "evidence_items": 12,
+    "control_numbers": 102,
+    "control_grounded": 4,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [
+    {
+     "claim": "SBIN.NS has no verifiable scorecard score in this session; the -9.8 HOLD figure from my earlier reply could not be re-verified against tool evidence, so I withdraw it.",
+     "number": "-9.8",
+     "citations": []
+    },
+    {
+     "claim": "SBIN.NS last close was ₹948.0, 2.74% below its 20-day EMA and 5.53% below its 200-day EMA, with RSI(14) at 22.",
+     "number": "₹948.0",
+     "citations": [
+      "R1"
+     ]
+    },
+    {
+     "claim": "SBIN.NS last close was ₹948.0, 2.74% below its 20-day EMA and 5.53% below its 200-day EMA, with RSI(14) at 22.",
+     "number": "2.74%",
+     "citations": [
+      "R1"
+     ]
+    },
+    {
+     "claim": "SBIN.NS last close was ₹948.0, 2.74% below its 20-day EMA and 5.53% below its 200-day EMA, with RSI(14) at 22.",
+     "number": "5.53%",
+     "citations": [
+      "R1"
+     ]
+    },
+    {
+     "claim": "SBIN.NS last close was ₹948.0, 2.74% below its 20-day EMA and 5.53% below its 200-day EMA, with RSI(14) at 22.",
+     "number": "22",
+     "citations": [
+      "R1"
+     ]
+    },
+    {
+     "claim": "SBIN.NS forward P/E 9.01 and PEG 0.91 (from fundamentals), though the earlier research figures were not re-fetched in this session.",
+     "number": "9.01",
+     "citations": [
+      "R2"
+     ]
+    },
+    {
+     "claim": "SBIN.NS forward P/E 9.01 and PEG 0.91 (from fundamentals), though the earlier research figures were not re-fetched in this session.",
+     "number": "0.91",
+     "citations": [
+      "R2"
+     ]
+    },
+    {
+     "claim": "Valuation is a premium to SBI: trailing P/E 17.52, forward P/E 14.53, price-to-book 2.56, ROE 16.07%, revenue growth 11.4% and earnings growth 13.8%, giving a PEG of about 1.05.",
+     "number": "1.05",
+     "citations": [
+      "R2"
+     ]
+    },
+    {
+     "claim": "On the technicals ICICI is stronger: it trades near its 200-day EMA with RSI 55.5, while SBI is oversold with RSI 22 and below both EMAs.",
+     "number": "22",
+     "citations": [
+      "R1"
+     ]
+    },
+    {
+     "claim": "On valuation SBI screens cheaper (forward P/E 9.01 vs 14.53), but ICICI has the stronger ROE (16.07% vs 15.18% is from R2 for SBI only; SBI ROE not re-verified).",
+     "number": "9.01",
+     "citations": [
+      "R2"
+     ]
+    },
+    {
+     "claim": "On valuation SBI screens cheaper (forward P/E 9.01 vs 14.53), but ICICI has the stronger ROE (16.07% vs 15.18% is from R2 for SBI only; SBI ROE not re-verified).",
+     "number": "15.18%",
+     "citations": [
+      "R2"
+     ]
+    },
+    {
+     "claim": "Adding either stock increases concentration: SBI would rise to about 30.0% and ICICI to about 24.8% of invested holdings, with no concentration flag raised.",
+     "number": "30.0%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "Adding either stock increases concentration: SBI would rise to about 30.0% and ICICI to about 24.8% of invested holdings, with no concentration flag raised.",
+     "number": "24.8%",
+     "citations": [
+      "P1"
+     ]
+    }
+   ],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": true,
+    "answer_consistent": true,
+    "recomputed": [
+     {
+      "ticker": "ICICIBANK.NS",
+      "score": 5.2,
+      "verdict": "HOLD"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Comparison where one side comes from context.",
+   "chat_id": 31
+  },
+  {
+   "id": "compare-tcs-infy",
+   "question": "Compare TCS and Infosys",
+   "history": [],
+   "status": "not_run",
+   "reason": "not asked yet",
+   "passed": null,
+   "notes": "Two-stock comparison; one section per stock plus head to head.",
+   "expected": {
+    "expected_intent": "comparison",
+    "expected_tickers": [
+     "TCS.NS",
+     "INFY.NS"
+    ],
+    "expected_answer_type": "comparison"
+   }
+  },
+  {
+   "id": "compare-mm-maruti",
+   "question": "M&M vs Maruti, which is better?",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "comparison",
+    "expected_tickers": [
+     "M&M.NS",
+     "MARUTI.NS"
+    ],
+    "expected_answer_type": "comparison"
+   },
+   "actual": {
+    "intent": "comparison",
+    "tickers": [
+     "M&M.NS",
+     "MARUTI.NS"
+    ],
+    "answer_type": "comparison",
+    "verdict": "SELL",
+    "verdict_ticker": "M&M.NS",
+    "headline": "Both stocks score in SELL territory, but M&M (score -22.7) scores higher than Maruti (score -39.1), so M&M is the preferred of the two, with a SELL verdict on its own scorecard [C1][C2]."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected comparison, got comparison",
+     "value": "comparison",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['M&M.NS', 'MARUTI.NS'], got ['M&M.NS', 'MARUTI.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected comparison, got comparison",
+     "value": "comparison",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 13 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "30/30 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": true,
+     "detail": "answer SELL vs scorecard M&M.NS SELL (-22.7), MARUTI.NS SELL (-39.1)",
+     "value": true,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 5 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 13,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 30,
+    "numbers_grounded": 30,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 12,
+    "claims_fully_grounded": 12,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": true,
+    "verdict_consistent": true,
+    "rule_checker_ok": true,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 47.1,
+    "evidence_items": 21,
+    "control_numbers": 60,
+    "control_grounded": 2,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 2,
+    "deterministic": true,
+    "matches_stored": true,
+    "answer_consistent": true,
+    "recomputed": [
+     {
+      "ticker": "M&M.NS",
+      "score": -22.7,
+      "verdict": "SELL"
+     },
+     {
+      "ticker": "MARUTI.NS",
+      "score": -39.1,
+      "verdict": "SELL"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Symbol containing '&'.",
+   "chat_id": 32
+  },
+  {
+   "id": "compare-three-fmcg",
+   "question": "HUL vs ITC vs Nestle India",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "comparison",
+    "expected_tickers": [
+     "HINDUNILVR.NS",
+     "ITC.NS",
+     "NESTLEIND.NS"
+    ],
+    "expected_answer_type": "comparison"
+   },
+   "actual": {
+    "intent": "comparison",
+    "tickers": [
+     "HINDUNILVR.NS",
+     "ITC.NS",
+     "NESTLEIND.NS"
+    ],
+    "answer_type": "comparison",
+    "verdict": "HOLD",
+    "verdict_ticker": "NESTLEIND.NS",
+    "headline": "All three screen weak, with HINDUNILVR and ITC at SELL and NESTLEIND at HOLD; Nestlé India has the highest scorecard score (-4.6) and is therefore the preferred name on score, though its verdict is only HOLD."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected comparison, got comparison",
+     "value": "comparison",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['HINDUNILVR.NS', 'ITC.NS', 'NESTLEIND.NS'], got ['HINDUNILVR.NS', 'ITC.NS', 'NESTLEIND.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected comparison, got comparison",
+     "value": "comparison",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 16 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "38/38 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": true,
+     "detail": "answer HOLD vs scorecard HINDUNILVR.NS SELL (-57.5), ITC.NS SELL (-49.2), NESTLEIND.NS HOLD (-4.6)",
+     "value": true,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 7 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 16,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 38,
+    "numbers_grounded": 38,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 14,
+    "claims_fully_grounded": 14,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": true,
+    "verdict_consistent": true,
+    "rule_checker_ok": true,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 52.5,
+    "evidence_items": 31,
+    "control_numbers": 76,
+    "control_grounded": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 3,
+    "deterministic": true,
+    "matches_stored": true,
+    "answer_consistent": true,
+    "recomputed": [
+     {
+      "ticker": "HINDUNILVR.NS",
+      "score": -57.5,
+      "verdict": "SELL"
+     },
+     {
+      "ticker": "ITC.NS",
+      "score": -49.2,
+      "verdict": "SELL"
+     },
+     {
+      "ticker": "NESTLEIND.NS",
+      "score": -4.6,
+      "verdict": "HOLD"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Three-way comparison; HUL -> HINDUNILVR.",
+   "chat_id": 33
+  },
+  {
+   "id": "sentiment-reliance",
+   "question": "what is the latest news on Reliance?",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "sentiment",
+    "expected_tickers": [
+     "RELIANCE.NS"
+    ],
+    "expected_answer_type": "sentiment"
+   },
+   "actual": {
+    "intent": "sentiment",
+    "tickers": [
+     "RELIANCE.NS"
+    ],
+    "answer_type": "sentiment",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "The latest Reliance-specific news (6-7 Oct 2026) is a Jefferies portfolio weight increase citing valuation, plus the upcoming Jio Platforms IPO, a Reliance subsidiary. Sentiment for RELIANCE.NS is UNKNOWN because no sentiment score is stored."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected sentiment, got sentiment",
+     "value": "sentiment",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['RELIANCE.NS'], got ['RELIANCE.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected sentiment, got sentiment",
+     "value": "sentiment",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 6 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "7/7 numbers found in cited evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": true,
+     "detail": "recorded status passed",
+     "value": "passed",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 6,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 7,
+    "numbers_grounded": 7,
+    "grounding_rate": 1.0,
+    "claims_with_numbers": 3,
+    "claims_fully_grounded": 3,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": true,
+    "validator_status": "passed",
+    "validator_attempts": 1,
+    "latency_s": 16.6,
+    "evidence_items": 2,
+    "control_numbers": 14,
+    "control_grounded": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": [
+     {
+      "ticker": "RELIANCE.NS",
+      "score": 0.0,
+      "verdict": "HOLD"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "News-only request; no verdict should be given.",
+   "chat_id": 35
+  },
+  {
+   "id": "sentiment-tcs",
+   "question": "what are people saying about TCS",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "sentiment",
+    "expected_tickers": [
+     "TCS.NS"
+    ],
+    "expected_answer_type": "sentiment"
+   },
+   "actual": {
+    "intent": "sentiment",
+    "tickers": [
+     "TCS.NS"
+    ],
+    "answer_type": "sentiment",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Sentiment on TCS.NS is mixed and thin: the latest reading is strongly bearish, but the 10-score average is near neutral, and no recent headlines were found to explain either."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected sentiment, got sentiment",
+     "value": "sentiment",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected ['TCS.NS'], got ['TCS.NS']",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected sentiment, got sentiment",
+     "value": "sentiment",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 6 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": true,
+     "detail": "9/10 numbers found in cited evidence",
+     "value": 0.9,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": true,
+     "detail": "recorded status passed",
+     "value": "passed",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 6,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 10,
+    "numbers_grounded": 9,
+    "grounding_rate": 0.9,
+    "claims_with_numbers": 4,
+    "claims_fully_grounded": 3,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": true,
+    "validator_status": "passed",
+    "validator_attempts": 1,
+    "latency_s": 12.7,
+    "evidence_items": 2,
+    "control_numbers": 20,
+    "control_grounded": 1,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [
+    {
+     "claim": "The score carries a reported confidence of 1.0 and is based on 10 scores as of 2026-10-08 06:15 UTC.",
+     "number": "06",
+     "citations": [
+      "S1"
+     ]
+    }
+   ],
+   "scorecard_recheck": {
+    "n_cards": 1,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": [
+     {
+      "ticker": "TCS.NS",
+      "score": -5.0,
+      "verdict": "HOLD"
+     }
+    ]
+   },
+   "judge": null,
+   "notes": "Colloquial sentiment phrasing.",
+   "chat_id": 34
+  },
+  {
+   "id": "portfolio-health",
+   "question": "check health of my portfolio",
+   "history": [],
+   "status": "not_run",
+   "reason": "not asked yet",
+   "passed": null,
+   "notes": "Portfolio answers must not carry a BUY/SELL/HOLD verdict.",
+   "expected": {
+    "expected_intent": "portfolio",
+    "expected_tickers": [],
+    "expected_answer_type": "portfolio_health"
+   }
+  },
+  {
+   "id": "portfolio-risk",
+   "question": "how risky is my portfolio right now?",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": false,
+   "expected": {
+    "expected_intent": "portfolio",
+    "expected_tickers": [],
+    "expected_answer_type": "portfolio_health"
+   },
+   "actual": {
+    "intent": "portfolio",
+    "tickers": [],
+    "answer_type": "portfolio_health",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Overall risk looks low to moderate: about 63% of the account is cash, and the 5 holdings are concentrated in banks and IT services. Unrealised P&L is essentially flat at +0.07%."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected portfolio, got portfolio",
+     "value": "portfolio",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected portfolio_health, got portfolio_health",
+     "value": "portfolio_health",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 11 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": false,
+     "detail": "19/25 numbers found in cited evidence",
+     "value": 0.76,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 4 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 11,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 25,
+    "numbers_grounded": 19,
+    "grounding_rate": 0.76,
+    "claims_with_numbers": 10,
+    "claims_fully_grounded": 6,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": true,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 30.8,
+    "evidence_items": 1,
+    "control_numbers": 50,
+    "control_grounded": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [
+    {
+     "claim": "Total account value is about ₹99,790.84, so market exposure is roughly 37% of the account.",
+     "number": "₹99,790.84",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "Total account value is about ₹99,790.84, so market exposure is roughly 37% of the account.",
+     "number": "37%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "The tool raised no concentration flags; the largest position, SBIN.NS, is 28.21% of invested capital, just under a 30% threshold.",
+     "number": "30%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "Grouping by sector (the risk agent's own classification, not a tool output), banks are about 50.2% and IT services about 45.1% of invested capital, so equity risk is more concentrated than the holding count suggests.",
+     "number": "50.2%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "Grouping by sector (the risk agent's own classification, not a tool output), banks are about 50.2% and IT services about 45.1% of invested capital, so equity risk is more concentrated than the holding count suggests.",
+     "number": "45.1%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "Review the bank and IT services concentration, since about 95% of invested capital sits in two sectors.",
+     "number": "95%",
+     "citations": [
+      "P1"
+     ]
+    }
+   ],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "Risk framing of a portfolio question.",
+   "chat_id": 36
+  },
+  {
+   "id": "portfolio-pnl",
+   "question": "what's my P&L?",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": false,
+   "expected": {
+    "expected_intent": "portfolio",
+    "expected_tickers": [],
+    "expected_answer_type": "portfolio_health"
+   },
+   "actual": {
+    "intent": "portfolio",
+    "tickers": [],
+    "answer_type": "portfolio_health",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Your paper-trading portfolio is essentially flat, with an unrealised P&L of +₹24.69 (+0.07%) on ₹36,936.21 invested, against a current market value of ₹36,960.90. Most of the account (about 63%) is still cash."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected portfolio, got portfolio",
+     "value": "portfolio",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected portfolio_health, got portfolio_health",
+     "value": "portfolio_health",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 13 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": false,
+     "detail": "27/32 numbers found in cited evidence",
+     "value": 0.8438,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": true,
+     "detail": "recorded status passed",
+     "value": "passed",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 13,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 32,
+    "numbers_grounded": 27,
+    "grounding_rate": 0.8438,
+    "claims_with_numbers": 10,
+    "claims_fully_grounded": 5,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": true,
+    "validator_status": "passed",
+    "validator_attempts": 1,
+    "latency_s": 15.8,
+    "evidence_items": 1,
+    "control_numbers": 64,
+    "control_grounded": 6,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [
+    {
+     "claim": "Cash is ₹62,829.94, which is 62.96% of the account, and total account value is approximately ₹99,791.",
+     "number": "₹99,791",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "SBIN.NS is the largest position at 28.21% of the portfolio, below the 30% high-concentration threshold, and no concentration flags were raised.",
+     "number": "30%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "ICICIBANK.NS is the largest gainer at +2.96% (about +₹234), with 6 shares bought at ₹1,316.59 average and trading at ₹1,355.60.",
+     "number": "+₹234",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "SBIN.NS is down -1.34% (about -₹141), with 11 shares at ₹960.76 average versus ₹947.90 current.",
+     "number": "-₹141",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "TATASTEEL.NS has the worst percentage loss at -3.19% (about -₹57), with 10 shares at ₹178.09 average versus ₹172.40 current.",
+     "number": "-₹57",
+     "citations": [
+      "P1"
+     ]
+    }
+   ],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "Short form; P&L must not be read as a ticker.",
+   "chat_id": 37
+  },
+  {
+   "id": "ideas-add",
+   "question": "what should i add to my portfolio",
+   "history": [],
+   "status": "not_run",
+   "reason": "not asked yet",
+   "passed": null,
+   "notes": "Ideas must come from the screener evidence.",
+   "expected": {
+    "expected_intent": "ideas",
+    "expected_tickers": [],
+    "expected_answer_type": "ideas"
+   }
+  },
+  {
+   "id": "ideas-diversify",
+   "question": "suggest a few stocks to diversify into",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": false,
+   "expected": {
+    "expected_intent": "ideas",
+    "expected_tickers": [],
+    "expected_answer_type": "ideas"
+   },
+   "actual": {
+    "intent": "ideas",
+    "tickers": [],
+    "answer_type": "ideas",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Only one diversification candidate passed the screen: Axis Bank (AXISBANK.NS) at ₹1,247.50, and it is a bank, so it would add to your existing banking exposure rather than diversify it. The screen returned one name instead of the three requested, so this is a thin set of ideas."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected ideas, got ideas",
+     "value": "ideas",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected ideas, got ideas",
+     "value": "ideas",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": true,
+     "detail": "100% of 10 claims cite evidence",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": true,
+     "detail": "all cited ids exist",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": false,
+     "detail": "15/19 numbers found in cited evidence",
+     "value": 0.7895,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": true,
+     "detail": "no issues",
+     "value": 0,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": false,
+     "detail": "recorded status warning: 4 issue(s)",
+     "value": "warning",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 10,
+    "citation_coverage": 1.0,
+    "citation_validity": 1.0,
+    "numbers": 19,
+    "numbers_grounded": 15,
+    "grounding_rate": 0.7895,
+    "claims_with_numbers": 7,
+    "claims_fully_grounded": 4,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": true,
+    "validator_status": "warning",
+    "validator_attempts": 2,
+    "latency_s": 31.5,
+    "evidence_items": 3,
+    "control_numbers": 38,
+    "control_grounded": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [
+    {
+     "claim": "Your holdings are about 50% banking (SBIN.NS, ICICIBANK.NS) and about 45% IT services (TCS.NS, WIPRO.NS) by company name, with TATASTEEL.NS at 4.66%.",
+     "number": "50%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "Your holdings are about 50% banking (SBIN.NS, ICICIBANK.NS) and about 45% IT services (TCS.NS, WIPRO.NS) by company name, with TATASTEEL.NS at 4.66%.",
+     "number": "45%",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "Cash is 62.96% of the ₹99,791 account, so you have room to add a position without selling existing holdings.",
+     "number": "₹99,791",
+     "citations": [
+      "P1"
+     ]
+    },
+    {
+     "claim": "No forecast was run on Axis Bank, and the research signal is MIXED with confidence 0.4.",
+     "number": "0.4",
+     "citations": [
+      "R1",
+      "R2"
+     ]
+    }
+   ],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "Synonym phrasing of ideas.",
+   "chat_id": 38
+  },
+  {
+   "id": "clarify-buy-it",
+   "question": "should I buy it?",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "clarify",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   },
+   "actual": {
+    "intent": "clarify",
+    "tickers": [],
+    "answer_type": "general",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Which stock are you thinking of buying? Give me the company name or NSE ticker (for example, Infosys or INFY.NS) and I'll run the analysis."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected clarify, got clarify",
+     "value": "clarify",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected general, got general",
+     "value": "general",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": null,
+     "detail": "no claims",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": null,
+     "detail": "nothing cited",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": null,
+     "detail": "no checkable numbers",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": null,
+     "detail": "n/a",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": null,
+     "detail": "skipped for general answers (same as the app's validator)",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": null,
+     "detail": "recorded status skipped",
+     "value": "skipped",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 0,
+    "citation_coverage": null,
+    "citation_validity": null,
+    "numbers": 0,
+    "numbers_grounded": 0,
+    "grounding_rate": null,
+    "claims_with_numbers": 0,
+    "claims_fully_grounded": 0,
+    "forbidden_hits": 0,
+    "must_include_ok": null,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": null,
+    "validator_status": "skipped",
+    "validator_attempts": 1,
+    "latency_s": 1.4,
+    "evidence_items": 0,
+    "control_numbers": 0,
+    "control_grounded": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "No stock in the message or context.",
+   "chat_id": 39
+  },
+  {
+   "id": "clarify-good-stock",
+   "question": "is this stock good for the long term?",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "clarify",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   },
+   "actual": {
+    "intent": "clarify",
+    "tickers": [],
+    "answer_type": "general",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "Which stock do you have in mind? Please share the company name or NSE ticker (for example, TCS or RELIANCE.NS) and I'll look into its long-term prospects."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected clarify, got clarify",
+     "value": "clarify",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected general, got general",
+     "value": "general",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": null,
+     "detail": "no claims",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": null,
+     "detail": "nothing cited",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": null,
+     "detail": "no checkable numbers",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": null,
+     "detail": "n/a",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": null,
+     "detail": "skipped for general answers (same as the app's validator)",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": null,
+     "detail": "recorded status skipped",
+     "value": "skipped",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 0,
+    "citation_coverage": null,
+    "citation_validity": null,
+    "numbers": 0,
+    "numbers_grounded": 0,
+    "grounding_rate": null,
+    "claims_with_numbers": 0,
+    "claims_fully_grounded": 0,
+    "forbidden_hits": 0,
+    "must_include_ok": null,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": null,
+    "validator_status": "skipped",
+    "validator_attempts": 1,
+    "latency_s": 1.6,
+    "evidence_items": 0,
+    "control_numbers": 0,
+    "control_grounded": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "Stock-specific question naming no stock.",
+   "chat_id": 40
+  },
+  {
+   "id": "direct-hi",
+   "question": "hi",
+   "history": [],
+   "status": "not_run",
+   "reason": "not asked yet",
+   "passed": null,
+   "notes": "Greeting; no tools should run.",
+   "expected": {
+    "expected_intent": "direct_answer",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   }
+  },
+  {
+   "id": "direct-pe",
+   "question": "what is a P/E ratio?",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": true,
+   "expected": {
+    "expected_intent": "direct_answer",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   },
+   "actual": {
+    "intent": "direct_answer",
+    "tickers": [],
+    "answer_type": "general",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "The P/E ratio (Price-to-Earnings ratio) tells you how much investors are paying for each rupee of a company's earnings.\n\n**Formula:** P/E = Share price ÷ Earnings per share (EPS)\n\n**Example:** If a stock trades at ₹500 and its EPS over the last 12 months is ₹25, its P/E is 20. You're paying ₹20 for every ₹1 of annual earnings.\n\n**How to read it:**\n- **Higher P/E** usually means investors expect strong future growth, but the stock may be expensive.\n- **Lower P/E** may mean good value, or that the market sees problems ahead.\n- **Compare within the same sector.** IT and FMCG companies often trade at higher P/Es than banks or metals companies.\n\n**Watch out for:**\n- Trailing P/E uses past earnings; forward P/E uses estimates.\n- Cyclical companies can look cheap at peak profits and expensive at low profits.\n- A very high or negative P/E can signal losses or a bubble.\n\nWould you like me to analyse a specific NSE stock's valuation, or compare a few companies on P/E and other metrics?"
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": true,
+     "detail": "expected direct_answer, got direct_answer",
+     "value": "direct_answer",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected general, got general",
+     "value": "general",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": null,
+     "detail": "no claims",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": null,
+     "detail": "nothing cited",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": null,
+     "detail": "no checkable numbers",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": true,
+     "detail": "none",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": true,
+     "detail": "all present",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": null,
+     "detail": "skipped for general answers (same as the app's validator)",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": null,
+     "detail": "recorded status skipped",
+     "value": "skipped",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": true,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 0,
+    "citation_coverage": null,
+    "citation_validity": null,
+    "numbers": 0,
+    "numbers_grounded": 0,
+    "grounding_rate": null,
+    "claims_with_numbers": 0,
+    "claims_fully_grounded": 0,
+    "forbidden_hits": 0,
+    "must_include_ok": true,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": null,
+    "validator_status": "skipped",
+    "validator_attempts": 1,
+    "latency_s": 3.5,
+    "evidence_items": 0,
+    "control_numbers": 0,
+    "control_grounded": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "General finance question, no data needed.",
+   "chat_id": 41
+  },
+  {
+   "id": "out-of-scope-apple",
+   "question": "should I buy Apple stock?",
+   "history": [],
+   "status": "evaluated",
+   "llm": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "label": "Anthropic"
+   },
+   "passed": false,
+   "expected": {
+    "expected_intent": "direct_answer",
+    "expected_tickers": [],
+    "expected_answer_type": "general"
+   },
+   "actual": {
+    "intent": "clarify",
+    "tickers": [],
+    "answer_type": "general",
+    "verdict": null,
+    "verdict_ticker": null,
+    "headline": "FinSight AI covers Indian equities listed on NSE/BSE, so I can't analyse Apple (AAPL). Did you mean an Indian stock? For example, TCS, Infosys, Reliance, or HDFC Bank. Tell me which one and I'll run the analysis."
+   },
+   "checks": [
+    {
+     "name": "routing",
+     "passed": false,
+     "detail": "expected direct_answer, got clarify",
+     "value": "clarify",
+     "gating": true
+    },
+    {
+     "name": "tickers",
+     "passed": true,
+     "detail": "expected [], got []",
+     "value": 1.0,
+     "gating": true
+    },
+    {
+     "name": "answer_type",
+     "passed": true,
+     "detail": "expected general, got general",
+     "value": "general",
+     "gating": true
+    },
+    {
+     "name": "schema",
+     "passed": true,
+     "detail": "FinalAnswer parses",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_coverage",
+     "passed": null,
+     "detail": "no claims",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "citation_validity",
+     "passed": null,
+     "detail": "nothing cited",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "number_grounding",
+     "passed": null,
+     "detail": "no checkable numbers",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "forbidden_content",
+     "passed": false,
+     "detail": "found ['AAPL', 'AAPL']",
+     "value": [
+      "AAPL",
+      "AAPL"
+     ],
+     "gating": true
+    },
+    {
+     "name": "must_include",
+     "passed": null,
+     "detail": "n/a",
+     "value": [],
+     "gating": true
+    },
+    {
+     "name": "verdict_consistency",
+     "passed": null,
+     "detail": "no verdict / nothing to score",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "rule_checker",
+     "passed": null,
+     "detail": "skipped for general answers (same as the app's validator)",
+     "value": null,
+     "gating": true
+    },
+    {
+     "name": "llm_validator",
+     "passed": null,
+     "detail": "recorded status skipped",
+     "value": "skipped",
+     "gating": false
+    }
+   ],
+   "metrics": {
+    "routing": false,
+    "ticker_f1": 1.0,
+    "answer_type_ok": true,
+    "schema_valid": true,
+    "claims": 0,
+    "citation_coverage": null,
+    "citation_validity": null,
+    "numbers": 0,
+    "numbers_grounded": 0,
+    "grounding_rate": null,
+    "claims_with_numbers": 0,
+    "claims_fully_grounded": 0,
+    "forbidden_hits": 2,
+    "must_include_ok": null,
+    "verdict_deterministic": true,
+    "verdict_matches_stored": null,
+    "verdict_consistent": null,
+    "rule_checker_ok": null,
+    "validator_status": "skipped",
+    "validator_attempts": 1,
+    "latency_s": 1.7,
+    "evidence_items": 0,
+    "control_numbers": 0,
+    "control_grounded": 0,
+    "prompt_tokens": null,
+    "completion_tokens": null,
+    "total_tokens": null,
+    "cost_usd": null
+   },
+   "ungrounded": [],
+   "scorecard_recheck": {
+    "n_cards": 0,
+    "deterministic": true,
+    "matches_stored": null,
+    "answer_consistent": null,
+    "recomputed": []
+   },
+   "judge": null,
+   "notes": "Foreign stock - must not be mapped to a ticker or analysed (orchestrator rule \"never output non-Indian tickers\").",
+   "chat_id": 42
   }
  ],
  "chats": {
   "research-lt": 24,
   "research-sbi": 25,
-  "research-bajaj-auto": 26
+  "research-bajaj-auto": 26,
+  "research-tatasteel": 27,
+  "research-zomato": 28,
+  "followup-infy": 29,
+  "followup-sentiment-hdfc": 30,
+  "followup-compare-icici": 31,
+  "compare-mm-maruti": 32,
+  "compare-three-fmcg": 33,
+  "sentiment-reliance": 35,
+  "sentiment-tcs": 34,
+  "portfolio-risk": 36,
+  "portfolio-pnl": 37,
+  "ideas-diversify": 38,
+  "clarify-buy-it": 39,
+  "clarify-good-stock": 40,
+  "direct-pe": 41,
+  "out-of-scope-apple": 42
  }
 }

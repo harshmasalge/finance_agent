@@ -140,8 +140,16 @@ def evaluate_case(case: dict, payload: dict, judge_llm: Optional[Callable] = Non
                              f"{judge['counts']}", judge["faithfulness"], gating=False))
 
     gating = [c for c in checks if c["gating"] and c["passed"] is not None]
+    # Negative control for grounding (perturb every claim number by +/-10%), kept per case so
+    # combined views across runs can be summarised without the original payloads.
+    ctrl_n = ctrl_g = 0
+    for f in (1.1, 0.9):
+        cg = M.number_grounding(M.perturb_numbers(answer, f), evidence)
+        ctrl_n += cg["numbers"]
+        ctrl_g += cg["grounded"]
     return {
         "id": case["id"], "question": case["question"], "history": case["history"], "status": "evaluated",
+        "llm": payload.get("llm"),  # provider/model that produced the answer (None for old recordings)
         "passed": all(c["passed"] for c in gating),
         "expected": {k: case[k] for k in ("expected_intent", "expected_tickers", "expected_answer_type")},
         "actual": {"intent": intent, "tickers": tickers, "answer_type": at, "verdict": answer.get("verdict"),
@@ -158,6 +166,7 @@ def evaluate_case(case: dict, payload: dict, judge_llm: Optional[Callable] = Non
             "rule_checker_ok": next(c["passed"] for c in checks if c["name"] == "rule_checker"),
             "validator_status": vstatus, "validator_attempts": v.get("attempts"),
             "latency_s": payload.get("duration_s"), "evidence_items": len(evidence),
+            "control_numbers": ctrl_n, "control_grounded": ctrl_g,
             **M.usage_from_payload(payload),
         },
         "ungrounded": g["ungrounded"],
@@ -195,6 +204,10 @@ def summarize(case_results: Sequence[dict], payloads: Sequence[dict] = ()) -> di
 
     # Negative control for the grounding metric: perturb every claim number by +/-10% and re-score.
     fp_n = fp_g = 0
+    if m and all("control_numbers" in x for x in m):  # per-case controls (newer results)
+        fp_n = sum(x["control_numbers"] for x in m)
+        fp_g = sum(x["control_grounded"] for x in m)
+        payloads = ()
     for p in payloads:
         for f in (1.1, 0.9):
             gg = M.number_grounding(M.perturb_numbers(p.get("answer") or {}, f), p.get("evidence") or [])

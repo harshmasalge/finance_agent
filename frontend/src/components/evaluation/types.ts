@@ -34,9 +34,24 @@ export interface EvalCase {
   metrics?: { claims: number; latency_s: number | null; numbers: number; numbers_grounded: number; grounding_rate: number | null };
   ungrounded?: { claim: string; number: string; citations: string[] }[];
   judge?: { faithfulness: number | null; claims: { claim: string; label: string; reason: string }[] } | null;
+  // Combined view (/evals/overview)
+  llm?: { provider: string; model: string; label?: string } | null;
+  model_key?: string | null; model_label?: string | null; run_id?: string; chat_id?: number | null;
 }
 
 export interface EvalRun extends EvalRunMeta { metric_notes: Record<string, string>; cases: EvalCase[]; }
+
+export interface EvalModel { key: string; label: string; n_evaluated: number; n_passed: number; }
+
+/** GET /evals/overview: every dataset case with the latest result per model, across all runs. */
+export interface EvalOverview {
+  run_id: 'all'; mode: 'combined'; model: string; created_at: string | null;
+  models: EvalModel[];
+  runs: { run_id: string; mode: string; created_at: string | null; git_commit: string | null }[];
+  summary: EvalSummary & { n_results: number };
+  metric_notes: Record<string, string>;
+  cases: EvalCase[];
+}
 
 export interface BacktestBucket {
   verdict: 'BUY' | 'HOLD' | 'SELL' | 'ALL'; count: number; hit_rate: number | null; pct_outperform: number | null;

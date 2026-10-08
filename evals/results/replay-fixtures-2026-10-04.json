@@ -1,8 +1,8 @@
 {
  "run_id": "replay-fixtures-2026-10-04",
  "mode": "replay",
- "created_at": "2026-10-04T10:51:41+00:00",
- "git_commit": "89593be",
+ "created_at": "2026-10-08T06:17:25+00:00",
+ "git_commit": "4f87d70",
  "dataset": {
   "path": "evals/dataset.yaml",
   "n_cases": 25
@@ -86,6 +86,7 @@
    "question": "how is tech mahindra",
    "history": [],
    "status": "evaluated",
+   "llm": null,
    "passed": false,
    "expected": {
     "expected_intent": "research",
@@ -215,6 +216,8 @@
     "validator_attempts": 2,
     "latency_s": 31.3,
     "evidence_items": 8,
+    "control_numbers": 22,
+    "control_grounded": 0,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,
@@ -242,6 +245,7 @@
    "question": "how is policy bazaar looking",
    "history": [],
    "status": "evaluated",
+   "llm": null,
    "passed": true,
    "expected": {
     "expected_intent": "research",
@@ -369,6 +373,8 @@
     "validator_attempts": 2,
     "latency_s": 42.1,
     "evidence_items": 9,
+    "control_numbers": 48,
+    "control_grounded": 1,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,
@@ -531,6 +537,7 @@
    "question": "Compare TCS and Infosys",
    "history": [],
    "status": "evaluated",
+   "llm": null,
    "passed": false,
    "expected": {
     "expected_intent": "comparison",
@@ -660,6 +667,8 @@
     "validator_attempts": 1,
     "latency_s": 33.4,
     "evidence_items": 15,
+    "control_numbers": 34,
+    "control_grounded": 0,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,
@@ -759,6 +768,7 @@
    "question": "check health of my portfolio",
    "history": [],
    "status": "evaluated",
+   "llm": null,
    "passed": false,
    "expected": {
     "expected_intent": "portfolio",
@@ -884,6 +894,8 @@
     "validator_attempts": 2,
     "latency_s": 23.8,
     "evidence_items": 1,
+    "control_numbers": 8,
+    "control_grounded": 0,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,
@@ -933,6 +945,7 @@
    "question": "what should i add to my portfolio",
    "history": [],
    "status": "evaluated",
+   "llm": null,
    "passed": false,
    "expected": {
     "expected_intent": "ideas",
@@ -1058,6 +1071,8 @@
     "validator_attempts": 2,
     "latency_s": 35.3,
     "evidence_items": 5,
+    "control_numbers": 16,
+    "control_grounded": 0,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,
@@ -1121,6 +1136,7 @@
    "question": "hi",
    "history": [],
    "status": "evaluated",
+   "llm": null,
    "passed": true,
    "expected": {
     "expected_intent": "direct_answer",
@@ -1244,6 +1260,8 @@
     "validator_attempts": 1,
     "latency_s": 2.7,
     "evidence_items": 0,
+    "control_numbers": 0,
+    "control_grounded": 0,
     "prompt_tokens": null,
     "completion_tokens": null,
     "total_tokens": null,

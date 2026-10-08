@@ -1,6 +1,6 @@
 # Eval run replay-fixtures-2026-10-04
 
-mode: replay · commit 89593be · 2026-10-04T10:51:41+00:00
+mode: replay · commit 4f87d70 · 2026-10-08T06:17:25+00:00
 
 | metric | value |
 |---|---|
