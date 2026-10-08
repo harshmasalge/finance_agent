@@ -13,7 +13,20 @@ export const useInspectMode = () => useContext(ConfigCtx).mode === 'inspect';
 
 export function AppConfigProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<AppConfig>(DEFAULT);
-  useEffect(() => { api<AppConfig>('/app-config').then(setConfig).catch(() => { /* older backend: demo */ }); }, []);
+  useEffect(() => {
+    // Retry until the backend answers: if the first request lands while the backend is restarting
+    // (e.g. right after a deploy), giving up would silently show demo mode and hide the inspect banner.
+    let cancelled = false, timer: ReturnType<typeof setTimeout> | undefined, delay = 2000;
+    const load = () => api<AppConfig>('/app-config')
+      .then(c => { if (!cancelled) setConfig(c); })
+      .catch((e: { status?: number }) => {
+        if (cancelled || e?.status === 404) return;  // 404 = older backend without site modes: demo
+        timer = setTimeout(load, delay);
+        delay = Math.min(delay * 2, 30000);
+      });
+    load();
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, []);
   return <ConfigCtx.Provider value={config}>{children}</ConfigCtx.Provider>;
 }
 
