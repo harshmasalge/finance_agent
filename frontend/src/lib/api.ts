@@ -41,9 +41,13 @@ export interface Trade {
   timestamp: string; virtual_balance_after: number;
 }
 
+export interface AlertCitation {
+  kind: 'article' | 'data'; title: string; url?: string | null; source?: string | null;
+  published_at?: string | null; score?: number | null;
+}
 export interface AlertItem {
   id: number; ticker: string; alert_type: string; message: string; signal: string;
-  is_read: boolean; created_at: string; price_at_alert?: number;
+  is_read: boolean; created_at: string; price_at_alert?: number; citations?: AlertCitation[] | null;
 }
 
 export interface HistoryPoint { time: string; TotalValue: number; [ticker: string]: number | string; }

@@ -154,6 +154,11 @@ export default function Dashboard({ onNavigate }: { onNavigate: (t: 'portfolio' 
                   <span className="ml-auto text-[11px] text-muted">{timeAgo(a.created_at)}</span>
                 </div>
                 <p className="mt-1 line-clamp-2 text-[12.5px] text-muted">{a.message}</p>
+                {(a.citations?.length ?? 0) > 0 && (
+                  <button type="button" onClick={() => onNavigate('alerts')} className="mt-1 text-[11.5px] font-medium text-primary hover:underline">
+                    {a.citations!.length} source{a.citations!.length === 1 ? '' : 's'}
+                  </button>
+                )}
               </div>
             ))}
           </div>

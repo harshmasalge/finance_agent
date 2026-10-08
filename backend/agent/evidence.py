@@ -68,7 +68,16 @@ def evidence_digest(evidence: List[Dict], max_chars: int = 1800) -> str:
         if e["tool"] == "get_recent_headlines" and o.get("headlines"):
             lines = [f"[{e['id']}] {e['agent']} · get_recent_headlines({json.dumps(e['input'])}) company={o.get('company')}"]
             for h in o["headlines"]:
-                lines.append(f"  - {h.get('published_at', '')[:10]} {h.get('source')}: {h.get('title')} — {(h.get('description') or '')[:200]}")
+                senti = f" [sentiment {h['sentiment']:+.2f}]" if isinstance(h.get("sentiment"), (int, float)) else ""
+                lines.append(f"  - {(h.get('published_at') or '')[:10]} {h.get('source')}: {h.get('title')}{senti} — {(h.get('description') or '')[:200]}")
+            parts.append("\n".join(lines))
+            continue
+        if e["tool"] == "get_sentiment_score" and o.get("articles"):
+            head = {k: v for k, v in o.items() if k != "articles"}
+            lines = [f"[{e['id']}] {e['agent']} · get_sentiment_score({json.dumps(e['input'])}) {json.dumps(head, default=str)}",
+                     f"  articles averaged ({len(o['articles'])}):"]
+            for a in o["articles"]:
+                lines.append(f"  - [{a.get('score'):+.2f}] {(a.get('published_at') or '')[:10]} {a.get('source')}: {a.get('title')}")
             parts.append("\n".join(lines))
             continue
         out = json.dumps(e["output"], default=str)

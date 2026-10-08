@@ -54,6 +54,11 @@ async def lifespan(app: FastAPI):
         logger.warning("LLM config check failed", error=str(e))
     # Create any missing tables so the app works even if init_db.py wasn't run
     Base.metadata.create_all(bind=engine)
+    try:
+        from backend.db.database import ensure_schema
+        ensure_schema()
+    except Exception as e:
+        logger.warning("Schema upgrade failed", error=str(e))
     task = asyncio.create_task(redis_listener())
     yield
     task.cancel()

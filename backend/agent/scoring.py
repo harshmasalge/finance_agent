@@ -103,8 +103,10 @@ def score_ticker(ticker: str, outputs: Dict[str, dict], evidence_ids: Dict[str, 
         missing.append("fundamentals")
 
     if sent.get("available"):
-        s = _num(sent, "avg_score_last_n") or _num(sent, "latest_score") or 0.0
-        factors.append(_factor("sentiment", "News sentiment", s * 2, f"Average sentiment {s:+.2f}", eid("get_sentiment_score")))
+        s = next((v for v in (_num(sent, k) for k in ("score", "avg_score_last_n", "latest_score")) if v is not None), 0.0)
+        n = sent.get("n_articles")
+        detail = f"Average sentiment {s:+.2f}" + (f" across {n} articles" if n else "")
+        factors.append(_factor("sentiment", "News sentiment", s * 2, detail, eid("get_sentiment_score")))
     else:
         missing.append("news sentiment")
 

@@ -90,7 +90,9 @@ def sentiment_node(state: AgentState) -> dict:
     tickers = state.get("target_tickers") or []
     prompt = (f"You are the Sentiment Agent of FinSight AI.\nTickers: {', '.join(tickers)}.\n"
               "For EACH ticker call get_recent_headlines and get_sentiment_score. Only treat a headline as relevant if it is "
-              "actually about that company; say so when the headlines are mostly about peers or the sector.")
+              "actually about that company; say so when the headlines are mostly about peers or the sector. "
+              "The sentiment score is the average of per-article scores: when you describe it, name the specific "
+              "articles (title and source) that pull it up or down, and say whether it was stored or computed now.")
     out = _run_agent("Sentiment Agent", "S", [get_recent_headlines, get_sentiment_score], prompt, state)
     return {"sentiment_output": out["report"], "evidence": out["evidence"]}
 

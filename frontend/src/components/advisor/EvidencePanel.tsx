@@ -35,18 +35,43 @@ function OutputView({ output }: { output: unknown }) {
 
   if (isFilingsOutput(output)) return <FilingPassages output={output} />;
 
-  if (Array.isArray(o.headlines)) {
+  const articleKey = Array.isArray(o.headlines) ? 'headlines' : Array.isArray(o.articles) ? 'articles' : null;
+  if (articleKey) {
+    const skip = new Set([articleKey, 'available', 'ticker', 'query', 'description']);
+    const facts = Object.entries(o).filter(([k, v]) => !skip.has(k) && (v === null || typeof v !== 'object'));
     return (
-      <ul className="space-y-2">
-        {(o.headlines as Record<string, string>[]).map((h, i) => (
-          <li key={i} className="rounded-lg border border-border p-2.5 transition-colors hover:border-border-strong">
-            <a href={h.url} target="_blank" rel="noreferrer" className="group flex items-start gap-1.5 text-[13px] font-medium text-fg hover:text-primary">
-              <span>{h.title}</span><ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-50 group-hover:opacity-100" />
-            </a>
-            <div className="mt-1 text-[11px] text-muted">{h.source}{h.published_at ? ` · ${timeAgo(h.published_at)}` : ''}</div>
-          </li>
-        ))}
-      </ul>
+      <div className="space-y-3">
+        {facts.length > 0 && (
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
+            {facts.map(([k, v]) => (
+              <div key={k} className="min-w-0">
+                <dt className="truncate text-[11px] text-muted">{humanKey(k)}</dt>
+                <dd className="truncate text-[13px] font-medium tabular text-fg" title={fmtVal(v)}>{fmtVal(v)}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        <ul className="space-y-2">
+          {(o[articleKey] as Record<string, unknown>[]).map((h, i) => {
+            const s = typeof h.sentiment === 'number' ? h.sentiment : typeof h.score === 'number' ? h.score : null;
+            return (
+              <li key={i} className="flex items-start gap-2 rounded-lg border border-border p-2.5 transition-colors hover:border-border-strong">
+                <div className="min-w-0 flex-1">
+                  <a href={String(h.url ?? '#')} target="_blank" rel="noreferrer" className="group flex items-start gap-1.5 text-[13px] font-medium text-fg hover:text-primary">
+                    <span>{String(h.title ?? '')}</span><ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-50 group-hover:opacity-100" />
+                  </a>
+                  <div className="mt-1 text-[11px] text-muted">{String(h.source ?? '')}{h.published_at ? ` · ${timeAgo(String(h.published_at))}` : ''}</div>
+                </div>
+                {s !== null && (
+                  <span className={cn('shrink-0 rounded px-1.5 py-0.5 text-[11px] font-medium tabular',
+                    s <= -0.15 ? 'bg-down/10 text-down' : s >= 0.15 ? 'bg-up/10 text-up' : 'bg-surface-2 text-muted')}
+                    title="Article sentiment, -1 bearish to +1 bullish">{s > 0 ? '+' : ''}{s.toFixed(2)}</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     );
   }
 

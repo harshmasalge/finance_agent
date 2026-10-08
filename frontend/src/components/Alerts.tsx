@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Activity, Bell, CheckCheck, ThumbsDown, ThumbsUp, TrendingDown, TrendingUp, Zap } from 'lucide-react';
-import { api, type AlertItem } from '../lib/api';
+import { Activity, Bell, CheckCheck, ExternalLink, ThumbsDown, ThumbsUp, TrendingDown, TrendingUp, Zap } from 'lucide-react';
+import { api, type AlertCitation, type AlertItem } from '../lib/api';
 import { cn, fmtINR, tickerLabel, timeAgo } from '../lib/format';
 import { useApp } from '../lib/user';
 import { useToast } from './toast';
@@ -77,6 +77,7 @@ export default function Alerts() {
                     <span className="ml-auto text-[12px] text-muted">{timeAgo(a.created_at)}</span>
                   </div>
                   <p className="mt-1 text-sm text-fg-2">{a.message}</p>
+                  {(a.citations?.length ?? 0) > 0 && <Citations items={a.citations!} />}
                   <div className="mt-2 flex items-center gap-3">
                     {a.price_at_alert != null && <span className="text-[12px] text-muted tabular">Price at alert {fmtINR(a.price_at_alert)}</span>}
                     <div className="ml-auto flex items-center gap-1" onClick={e => e.stopPropagation()}>
@@ -93,6 +94,37 @@ export default function Alerts() {
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+function Citations({ items }: { items: AlertCitation[] }) {
+  return (
+    <div className="mt-2.5 rounded-lg border border-border bg-surface-2/40 p-2.5" onClick={e => e.stopPropagation()}>
+      <div className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted">Sources</div>
+      <ol className="space-y-1.5">
+        {items.map((c, i) => {
+          const meta = [c.source, c.published_at ? timeAgo(c.published_at) : null].filter(Boolean).join(' · ');
+          return (
+            <li key={i} className="flex items-start gap-2 text-[13px]">
+              <span className="mt-px w-4 shrink-0 text-right text-[11px] tabular text-muted">{i + 1}</span>
+              <div className="min-w-0 flex-1">
+                {c.url ? (
+                  <a href={c.url} target="_blank" rel="noreferrer" className="group inline-flex items-start gap-1 font-medium text-fg hover:text-primary">
+                    <span>{c.title}</span><ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-50 group-hover:opacity-100" />
+                  </a>
+                ) : <span className="font-medium text-fg">{c.title}</span>}
+                {meta && <div className="text-[11px] text-muted">{meta}</div>}
+              </div>
+              {typeof c.score === 'number' && (
+                <span className={cn('shrink-0 rounded px-1.5 py-0.5 text-[11px] font-medium tabular',
+                  c.score <= -0.15 ? 'bg-down/10 text-down' : c.score >= 0.15 ? 'bg-up/10 text-up' : 'bg-surface-2 text-muted')}
+                  title="Article sentiment, -1 bearish to +1 bullish">{c.score > 0 ? '+' : ''}{c.score.toFixed(2)}</span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

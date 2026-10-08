@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Float, DateTime, Integer, Boolean, ForeignKey, Enum, Text, JSON
+from sqlalchemy import Column, String, Float, DateTime, Integer, Boolean, ForeignKey, Enum, Text, JSON, UniqueConstraint
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 import enum
@@ -76,7 +76,9 @@ class Portfolio(Base):
 
 class SentimentScore(Base):
     """
-    Aggregated sentiment score per ticker.
+    Aggregated sentiment score per ticker: one row per ingestion run, the mean score of the
+    articles about that ticker published in the last `window_hours` (see NewsArticle).
+    Rows with window_hours NULL are legacy single-article scores from before 2026-10-08.
     """
     __tablename__ = "sentiment_scores"
     
@@ -84,8 +86,27 @@ class SentimentScore(Base):
     ticker = Column(String(50), index=True)
     timestamp = Column(DateTime(timezone=True), server_default=func.now(), index=True)
     score = Column(Float, nullable=False) # -1.0 to +1.0
-    source_count = Column(Integer, default=1)
+    source_count = Column(Integer, default=1)  # number of articles averaged
     confidence = Column(Float, default=1.0)
+    window_hours = Column(Integer, nullable=True)
+
+
+class NewsArticle(Base):
+    """A news article about a ticker, with its own sentiment score. The citations behind SentimentScore."""
+    __tablename__ = "news_articles"
+    __table_args__ = (UniqueConstraint("ticker", "url", name="uq_news_articles_ticker_url"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    ticker = Column(String(50), index=True, nullable=False)
+    url = Column(String(1000), nullable=False)
+    title = Column(Text, nullable=False)
+    description = Column(Text, nullable=True)
+    source = Column(String(200), nullable=True)
+    feed = Column(String(50), nullable=True)  # NewsAPI / Moneycontrol / ET Markets
+    published_at = Column(DateTime(timezone=True), nullable=True, index=True)
+    fetched_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    score = Column(Float, nullable=False)  # -1.0 .. +1.0
+    model = Column(String(20), nullable=True)  # finbert / vader
 
 class AlertLog(Base):
     __tablename__ = "alert_log"
@@ -99,6 +120,8 @@ class AlertLog(Base):
     price_at_alert = Column(Float)
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    # Sources behind the alert: [{kind: "article"|"data", title, url, source, published_at, score?, detail?}]
+    citations = Column(JSON, nullable=True)
     
     owner = relationship("User", back_populates="alerts")
 
