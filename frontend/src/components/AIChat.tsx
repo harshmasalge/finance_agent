@@ -37,10 +37,11 @@ function groupChats(chats: ChatSummary[]) {
 
 export default function Advisor() {
   const toast = useToast();
-  const { current: llm } = useLlm();
   const inspect = useInspectMode();
   const { chatId: activeId, navigate, linkClick } = useRouter();   // the open chat comes from the URL
   const runsCtx = useAdvisorRuns();
+  const llmCtx = useLlm();
+  const llm = llmCtx.forChat(activeId).selection; // each chat keeps its own model
   const [chats, setChats] = useState<ChatSummary[] | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -100,9 +101,10 @@ export default function Advisor() {
     const run = runsCtx.runs.find(r => r.key === newRunKey);
     if (run?.sessionId != null) {
       setNewRunKey(null); // eslint-disable-line react-hooks/set-state-in-effect
+      if (run.llm) llmCtx.chooseForChat(run.sessionId, run.llm); // the new chat keeps the model it started with
       if (activeRef.current === null) { adoptRef.current = run.sessionId; navigate(`/advisor/${run.sessionId}`, { replace: true }); }
     } else if (!run) setNewRunKey(null);
-  }, [runsCtx.runs, newRunKey, navigate]);
+  }, [runsCtx.runs, newRunKey, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // An answer was saved: refresh the open chat from the server.
   useEffect(() => {
@@ -202,7 +204,7 @@ export default function Advisor() {
         <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
           <Button variant="ghost" size="icon" onClick={() => setHistoryOpen(o => !o)} aria-label="Toggle chat history"><PanelLeft className="h-[18px] w-[18px]" /></Button>
           <div className="min-w-0 truncate text-sm font-medium">{chats?.find(c => c.id === activeId)?.title ?? 'New chat'}</div>
-          <div className="ml-auto shrink-0"><ModelPicker align="right" /></div>
+          <div className="ml-auto shrink-0"><ModelPicker align="right" chatId={activeId} /></div>
         </header>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto">

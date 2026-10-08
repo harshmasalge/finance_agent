@@ -7,9 +7,19 @@ import { modelName, useLlm } from '../lib/llm';
  * Always-visible indicator of the LLM the agents will use, doubling as a picker.
  * variant "sidebar" = full-width card, "compact" = pill for headers, "icon" = collapsed sidebar.
  */
-export default function ModelPicker({ variant = 'compact', align = 'left', direction = 'down' }:
-  { variant?: 'sidebar' | 'compact' | 'icon'; align?: 'left' | 'right'; direction?: 'up' | 'down' }) {
-  const { providers, current, serverDefault, isOverride, choose, warnings, source, loaded } = useLlm();
+export default function ModelPicker({ variant = 'compact', align = 'left', direction = 'down', chatId }:
+  { variant?: 'sidebar' | 'compact' | 'icon'; align?: 'left' | 'right'; direction?: 'up' | 'down';
+    /** Set on an open chat: the picker then chooses the model for that chat only. */
+    chatId?: number | null }) {
+  const llm = useLlm();
+  const { providers, serverDefault, warnings, source, loaded } = llm;
+  const perChat = chatId !== undefined && chatId !== null;
+  const chat = perChat ? llm.forChat(chatId) : null;
+  const current = chat ? chat.selection : llm.current;
+  const isOverride = chat ? chat.isChatPick : llm.isOverride;
+  // Per chat, "reset" means: follow the default for new chats again.
+  const fallback = perChat ? llm.current : serverDefault;
+  const choose = (sel: { provider: string; model: string } | null) => (perChat ? llm.chooseForChat(chatId!, sel) : llm.choose(sel));
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -24,7 +34,9 @@ export default function ModelPicker({ variant = 'compact', align = 'left', direc
   const label = current ? `${current.label ?? current.provider} · ${modelName(current.model)}` : loaded ? 'No model available' : 'Loading model…';
   const free = current?.model.endsWith(':free');
   const warn = warnings.length > 0;
-  const title = `Model used for new questions: ${current?.model ?? 'unknown'}${isOverride ? ' (your choice)' : ' (server default)'}`;
+  const title = perChat
+    ? `Model for this chat: ${current?.model ?? 'unknown'}${isOverride ? ' (picked for this chat)' : ' (default for new chats)'}`
+    : `Default model for new chats: ${current?.model ?? 'unknown'}${isOverride ? ' (your choice)' : ' (server default)'}`;
 
   const trigger = variant === 'icon' ? (
     <button onClick={() => setOpen(o => !o)} title={title} aria-label="Model"
@@ -36,7 +48,7 @@ export default function ModelPicker({ variant = 'compact', align = 'left', direc
     <button onClick={() => setOpen(o => !o)} title={title}
       className="w-full rounded-xl bg-surface-2 px-3 py-2.5 text-left transition-colors hover:bg-surface-3">
       <div className="flex items-center justify-between text-[11px] font-medium text-muted">
-        <span className="flex items-center gap-1.5"><Cpu className="h-3 w-3" />Model{isOverride ? ' · your pick' : ''}</span>
+        <span className="flex items-center gap-1.5"><Cpu className="h-3 w-3" />Default model{isOverride ? ' · your pick' : ''}</span>
         {warn ? <AlertTriangle className="h-3.5 w-3.5 text-warn" /> : <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', open && 'rotate-180')} />}
       </div>
       <div className="mt-0.5 truncate text-[13px] font-semibold text-fg">{modelName(current?.model)}</div>
@@ -59,7 +71,7 @@ export default function ModelPicker({ variant = 'compact', align = 'left', direc
         <div className={cn('absolute z-50 w-[320px] rounded-xl border border-border bg-surface p-2 shadow-[var(--shadow-pop)] animate-fade-in',
           direction === 'up' ? 'bottom-full mb-2' : 'top-full mt-2', align === 'right' ? 'right-0' : 'left-0')} role="menu">
           <div className="px-2 pb-2 pt-1 text-[11px] text-muted">
-            Used for new questions. Server default: <span className="font-medium text-fg-2">{serverDefault ? `${serverDefault.label} · ${modelName(serverDefault.model)}` : '—'}</span>
+            {perChat ? <>Used for this chat only - other chats keep their own model. Default for new chats: <span className="font-medium text-fg-2">{fallback ? `${fallback.label ?? fallback.provider} · ${modelName(fallback.model)}` : '—'}</span>.<br /></> : 'Default for new chats. '}Server default: <span className="font-medium text-fg-2">{serverDefault ? `${serverDefault.label} · ${modelName(serverDefault.model)}` : '—'}</span>
             {source && <> (from {source})</>}
           </div>
           {warn && (
@@ -77,7 +89,7 @@ export default function ModelPicker({ variant = 'compact', align = 'left', direc
                   const active = current?.provider === p.id && current?.model === m;
                   return (
                     <button key={m} disabled={!p.available} role="menuitemradio" aria-checked={active}
-                      onClick={() => { choose(serverDefault?.provider === p.id && serverDefault?.model === m ? null : { provider: p.id, model: m }); setOpen(false); }}
+                      onClick={() => { choose(fallback?.provider === p.id && fallback?.model === m ? null : { provider: p.id, model: m }); setOpen(false); }}
                       className={cn('flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors disabled:cursor-not-allowed disabled:opacity-40',
                         active ? 'bg-primary/10 text-primary' : 'text-fg-2 hover:bg-surface-2 hover:text-fg')}>
                       <span className="grid h-4 w-4 shrink-0 place-items-center">{active && <Check className="h-3.5 w-3.5" />}</span>
@@ -92,7 +104,7 @@ export default function ModelPicker({ variant = 'compact', align = 'left', direc
           {isOverride && (
             <button onClick={() => { choose(null); setOpen(false); }}
               className="mt-1 flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-[12.5px] text-muted transition-colors hover:bg-surface-2 hover:text-fg">
-              <RotateCcw className="h-3.5 w-3.5" />Use server default
+              <RotateCcw className="h-3.5 w-3.5" />{perChat ? 'Use the default for new chats' : 'Use server default'}
             </button>
           )}
         </div>

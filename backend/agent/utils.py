@@ -47,6 +47,8 @@ PROVIDERS: Dict[str, dict] = {
         "models": ["claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5"],
         # Anthropic requires max_tokens; enough for the final structured answer.
         "max_tokens": 4096,
+        # The 5.x Claude models reject `temperature` ("deprecated for this model"), so it is not sent.
+        "temperature": False,
     },
     "gemini": {
         "label": "Google Gemini",
@@ -178,7 +180,7 @@ def get_llm(temperature: float = 0.1, model: Optional[str] = None) -> BaseChatMo
         pool, sync_client, async_client = _http_clients(sel["provider"], anthropic, "x-api-key")
         return _rotating_anthropic_class()(
             model=model or sel["model"],
-            temperature=temperature,
+            temperature=temperature if p.get("temperature", True) else None,
             api_key=pool.keys[0],  # placeholder: every request gets its key from the pool
             max_tokens=p["max_tokens"],
             default_request_timeout=90,

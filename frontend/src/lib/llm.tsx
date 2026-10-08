@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- provider, hook and helpers belong together */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api } from './api';
 
@@ -16,6 +17,10 @@ interface Ctx {
   current: LlmSelection | null;
   isOverride: boolean;
   choose: (sel: LlmSelection | null) => void;
+  /** Model for one chat: its own pick if it has one, else the default for new chats (`current`). */
+  forChat: (chatId: number | null) => { selection: LlmSelection | null; isChatPick: boolean };
+  /** Pin a model to one chat (null = follow the default again). */
+  chooseForChat: (chatId: number, sel: LlmSelection | null) => void;
   refresh: () => void;
   loaded: boolean;
 }
@@ -23,6 +28,7 @@ interface Ctx {
 const LlmCtx = createContext<Ctx>({} as Ctx);
 export const useLlm = () => useContext(LlmCtx);
 const KEY = 'finsight-llm';
+const CHAT_KEY = 'finsight-chat-llm'; // { [chatId]: LlmSelection }
 
 /** Short display name: "nvidia/nemotron-3-ultra-550b-a55b:free" -> "nemotron-3-ultra-550b-a55b (free)". */
 export function modelName(model?: string | null) {
@@ -35,6 +41,10 @@ export function LlmProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<ProvidersResponse | null>(null);
   const [pick, setPick] = useState<LlmSelection | null>(() => {
     try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; }
+  });
+
+  const [chatPicks, setChatPicks] = useState<Record<string, LlmSelection>>(() => {
+    try { return JSON.parse(localStorage.getItem(CHAT_KEY) || '{}') ?? {}; } catch { return {}; }
   });
 
   const refresh = useCallback(() => {
@@ -50,19 +60,34 @@ export function LlmProvider({ children }: { children: ReactNode }) {
 
   const choose = useCallback((sel: LlmSelection | null) => {
     setPick(sel);
-    try { sel ? localStorage.setItem(KEY, JSON.stringify(sel)) : localStorage.removeItem(KEY); } catch { /* ignore */ }
+    try { if (sel) localStorage.setItem(KEY, JSON.stringify(sel)); else localStorage.removeItem(KEY); } catch { /* ignore */ }
+  }, []);
+
+  const chooseForChat = useCallback((chatId: number, sel: LlmSelection | null) => {
+    setChatPicks(prev => {
+      const next = { ...prev };
+      if (sel) next[chatId] = { provider: sel.provider, model: sel.model }; else delete next[chatId];
+      try { localStorage.setItem(CHAT_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
   }, []);
 
   const value = useMemo<Ctx>(() => {
     const providers = data?.providers ?? [];
     // A saved pick is only honoured if that provider still has a key and offers the model.
-    const valid = pick && providers.some(p => p.id === pick.provider && p.available && p.models.includes(pick.model));
-    const current = valid ? { ...pick!, label: providers.find(p => p.id === pick!.provider)?.label } : data?.default ?? null;
+    const usable = (s?: LlmSelection | null) => !!s && providers.some(p => p.id === s.provider && p.available && p.models.includes(s.model));
+    const withLabel = (s: LlmSelection) => ({ ...s, label: providers.find(p => p.id === s.provider)?.label });
+    const valid = usable(pick);
+    const current = valid ? withLabel(pick!) : data?.default ?? null;
+    const forChat = (chatId: number | null) => {
+      const own = chatId !== null ? chatPicks[chatId] : null;
+      return usable(own) ? { selection: withLabel(own!), isChatPick: true } : { selection: current, isChatPick: false };
+    };
     return {
       providers, serverDefault: data?.default ?? null, source: data?.source ?? '', warnings: data?.warnings ?? [],
-      current, isOverride: !!valid, choose, refresh, loaded: !!data,
+      current, isOverride: valid, choose, forChat, chooseForChat, refresh, loaded: !!data,
     };
-  }, [data, pick, choose, refresh]);
+  }, [data, pick, chatPicks, choose, chooseForChat, refresh]);
 
   return <LlmCtx.Provider value={value}>{children}</LlmCtx.Provider>;
 }
