@@ -4,7 +4,7 @@ FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
     HF_HOME=/cache/huggingface
 
 WORKDIR /app
@@ -14,9 +14,11 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends libgomp1 curl \
  && rm -rf /var/lib/apt/lists/*
 
-# CPU-only torch first (the default wheel bundles ~3 GB of CUDA we don't need)
+# CPU-only torch first (the default wheel bundles ~3 GB of CUDA we don't need).
+# The pip cache persists between builds, so adding one package doesn't re-download everything.
 COPY backend/requirements.txt /tmp/requirements.txt
-RUN pip install torch --index-url https://download.pytorch.org/whl/cpu \
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install torch --index-url https://download.pytorch.org/whl/cpu \
  && pip install -r /tmp/requirements.txt
 
 # Run as a normal user (uid 1000 = the default 'ubuntu' user on the server,

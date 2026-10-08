@@ -7,10 +7,9 @@
 # Only Caddy is reachable from outside (ports 80/443); the database, Redis and
 # the backend are on the internal Docker network.
 
+# Shared settings for backend, celery_worker and celery_beat. They all run the same image,
+# which only the `backend` service builds (building it 3x in parallel wastes time and can fail).
 x-backend: &backend
-  build:
-    context: .
-    dockerfile: deploy/backend.Dockerfile
   image: finsight-backend:latest
   env_file: .env
   environment: &backend-env
@@ -64,15 +63,20 @@ services:
 
   backend:
     <<: *backend
+    build:
+      context: .
+      dockerfile: deploy/backend.Dockerfile
 
   celery_worker:
     <<: *backend
+    pull_policy: never          # built by the backend service
     command: celery -A backend.celery_app worker --loglevel=info --concurrency=${CELERY_CONCURRENCY:-2}
     healthcheck:
       disable: true
 
   celery_beat:
     <<: *backend
+    pull_policy: never          # built by the backend service
     command: celery -A backend.celery_app beat --loglevel=info --schedule=/tmp/celerybeat-schedule
     healthcheck:
       disable: true
