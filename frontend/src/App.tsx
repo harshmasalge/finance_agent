@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Bell, Briefcase, Loader2, FileCheck2, FlaskConical, LayoutDashboard, Library, Moon, PanelLeftClose, PanelLeftOpen, Sparkles, Sun, WifiOff } from 'lucide-react';
+import { Bell, Briefcase, Loader2, FileCheck2, FlaskConical, LayoutDashboard, Library, Moon, Network, PanelLeftClose, PanelLeftOpen, Sparkles, Sun, WifiOff } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import Portfolio from './components/Portfolio';
 import Alerts from './components/Alerts';
@@ -7,6 +7,7 @@ import Advisor from './components/AIChat';
 import ResearchNotes from './components/ResearchNotes';
 import KnowledgeBase from './components/KnowledgeBase';
 import Evaluation from './components/Evaluation';
+import Architecture from './components/Architecture';
 import { Button, Skeleton } from './components/ui';
 import { ToastProvider, useToast } from './components/toast';
 import { ThemeProvider, useTheme } from './lib/theme';
@@ -55,7 +56,7 @@ function Shell() {
   }, [lastFinished]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const label = { dashboard: 'Dashboard', portfolio: 'Portfolio', advisor: 'AI Advisor', notes: 'Research Notes', kb: 'Knowledge Base', evals: 'Evaluation', alerts: 'Alerts' }[tab];
+    const label = { dashboard: 'Dashboard', portfolio: 'Portfolio', advisor: 'AI Advisor', notes: 'Research Notes', kb: 'Knowledge Base', evals: 'Evaluation', alerts: 'Alerts', architecture: 'Architecture' }[tab];
     document.title = `${label} · FinSight`;
   }, [tab]);
 
@@ -85,6 +86,7 @@ function Shell() {
     { id: 'kb', label: 'Knowledge Base', icon: <Library className="h-[18px] w-[18px]" /> },
     { id: 'evals', label: 'Evaluation', icon: <FlaskConical className="h-[18px] w-[18px]" /> },
     { id: 'alerts', label: 'Alerts', icon: <Bell className="h-[18px] w-[18px]" />, badge: unreadAlerts },
+    { id: 'architecture', label: 'Architecture', icon: <Network className="h-[18px] w-[18px]" /> },
   ];
 
   return (
@@ -173,6 +175,7 @@ function Shell() {
           {tab === 'notes' && <ResearchNotes />}
           {tab === 'kb' && <KnowledgeBase />}
           {tab === 'evals' && <Evaluation />}
+          {tab === 'architecture' && <Architecture />}
           {tab === 'advisor' && <Advisor />}
         </div>
       </main>

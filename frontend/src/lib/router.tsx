@@ -6,10 +6,10 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
  * and "open in new tab" work:
  *   /                 dashboard          /advisor          new chat
  *   /portfolio        portfolio          /advisor/42       chat #42
- *   /notes /kb /evals /alerts
+ *   /notes /kb /evals /alerts /architecture
  */
-export type Tab = 'dashboard' | 'portfolio' | 'advisor' | 'notes' | 'kb' | 'evals' | 'alerts';
-const TABS: Tab[] = ['dashboard', 'portfolio', 'advisor', 'notes', 'kb', 'evals', 'alerts'];
+export type Tab = 'dashboard' | 'portfolio' | 'advisor' | 'notes' | 'kb' | 'evals' | 'alerts' | 'architecture';
+const TABS: Tab[] = ['dashboard', 'portfolio', 'advisor', 'notes', 'kb', 'evals', 'alerts', 'architecture'];
 
 export interface Route { tab: Tab; chatId: number | null; }
 

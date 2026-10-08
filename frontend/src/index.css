@@ -119,3 +119,12 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
 }
+
+/* Architecture page: diagram accent colours and the moving dashes on highlighted arrows */
+:root { --arch-violet: #7357d9; --arch-teal: #0b8a82; }
+.dark { --arch-violet: #a28ff2; --arch-teal: #34c3b6; }
+@keyframes arch-flow { to { stroke-dashoffset: -24; } }
+.arch-flow { stroke-dasharray: 7 5; animation: arch-flow 900ms linear infinite; }
+.arch-node { outline: none; }
+.arch-node:focus-visible .arch-focus { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .arch-flow { animation: none; } }
