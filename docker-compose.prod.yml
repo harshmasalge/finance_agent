@@ -21,6 +21,7 @@ x-backend: &backend
     ENVIRONMENT: production
   volumes:
     - ./data:/app/data          # RAG corpus + Chroma index (copy your local data/ folder here)
+    - ./evals/results:/app/evals/results   # evaluation results (tracked in git; arrive with git pull)
     - hf_cache:/cache           # downloaded HuggingFace models (FinBERT, embeddings)
   depends_on:
     db:
