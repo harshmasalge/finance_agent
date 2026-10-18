@@ -1,15 +1,13 @@
 """Deterministic scorecard re-weighting for analyst weighting corrections.
 
-Recomputes a stored scorecard from its own factors with weight overrides, using the same
-formula as `backend.agent.scoring.score_ticker` (score = sum(score*w) / sum(w) * 100, verdict
-from the card's thresholds, same confidence formula), without re-running any tools and
-without editing the protected scoring module.
+Recomputes a stored scorecard from its own factors with weight overrides, using
+`backend.agent.scoring.summarize` (the scorecard's own formula), without re-running any tools.
 """
 import copy
 import re
 from typing import Dict, List, Optional, Tuple
 
-from backend.agent.scoring import BUY_THRESHOLD, SELL_THRESHOLD, WEIGHTS
+from backend.agent.scoring import summarize
 
 Overrides = Dict[str, Optional[float]]
 
@@ -20,6 +18,7 @@ FACTOR_ALIASES: Dict[str, List[str]] = {
     "momentum": ["short-term momentum", "momentum", "macd"],
     "rsi": ["rsi"],
     "returns": ["3-month return", "3 month return", "three-month return", "past returns", "returns"],
+    # XGBoost and Prophet no longer vote (removed 2026-10-18); kept so corrections on older answers still parse.
     "xgboost": ["xgboost", "xgb", "ml model", "machine learning model", "ml signal"],
     "valuation": ["valuation", "peg", "p/e", "pe ratio"],
     "growth": ["revenue growth", "growth"],
@@ -32,20 +31,13 @@ _DOWN = r"(lower|less|down|decrease|reduce|halve|lighter|lightly|downweight|down
 
 
 def compute(card: dict) -> dict:
-    """Recompute score, verdict, confidence and coverage of `card` from its factors (in place copy)."""
+    """Recompute score, verdict, confidence and coverage of `card` from its factors (in place copy).
+
+    Uses `backend.agent.scoring.summarize`, the same function the scorecard itself uses. A card that had
+    no verdict because its inputs were invalid (INSUFFICIENT_DATA) stays that way: re-weighting cannot add data.
+    """
     card = copy.deepcopy(card)
-    factors = card.get("factors") or []
-    th = card.get("thresholds") or {"buy": BUY_THRESHOLD, "sell": SELL_THRESHOLD}
-    total_w = sum(f["weight"] for f in factors)
-    score = round(sum(f["score"] * f["weight"] for f in factors) / total_w * 100, 1) if total_w else 0.0
-    verdict = "BUY" if score >= th["buy"] else "SELL" if score <= th["sell"] else "HOLD"
-    direction = 1 if score > 0 else -1 if score < 0 else 0
-    voting = [f for f in factors if abs(f["score"]) >= 0.15 and f["weight"] > 0]
-    agreement = (sum(1 for f in voting if (f["score"] > 0) == (direction > 0)) / len(voting)) if voting and direction else 0.5
-    coverage = min(1.0, total_w / sum(WEIGHTS.values()))
-    strength = min(1.0, abs(score) / 50)
-    confidence = round(0.25 + 0.35 * strength + 0.25 * agreement + 0.15 * coverage, 2)
-    card.update(score=score, verdict=verdict, confidence=min(confidence, 0.9), coverage=round(coverage, 2))
+    card.update(summarize(card.get("factors") or [], card.get("thresholds"), card.get("insufficient_reason")))
     return card
 
 

@@ -11,8 +11,20 @@ CARD = next(f for f in FIXTURES if f["payload"].get("scorecards"))["payload"]["s
 
 
 def test_compute_reproduces_stored_card():
+    # Cards stored before 2026-10-18 still carry XGBoost/Prophet factors: score and verdict reproduce exactly;
+    # confidence can differ slightly because coverage is now measured against the smaller current weight set.
     c = compute(CARD)
-    assert (c["score"], c["verdict"], c["confidence"]) == (CARD["score"], CARD["verdict"], CARD["confidence"])
+    assert (c["score"], c["verdict"]) == (CARD["score"], CARD["verdict"])
+
+
+def test_compute_reproduces_current_scorecards():
+    from backend.agent.scoring import build_scorecards
+    for f in FIXTURES:
+        p = f["payload"]
+        for card in build_scorecards(p.get("evidence") or [], p.get("tickers") or []):
+            c = compute(card)
+            assert (c["score"], c["verdict"], c["confidence"], c["coverage"]) == \
+                (card["score"], card["verdict"], card["confidence"], card["coverage"])
 
 
 @pytest.mark.parametrize("text,expected", [

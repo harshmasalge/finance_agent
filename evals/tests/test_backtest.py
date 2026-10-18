@@ -17,19 +17,11 @@ def _walk(n, drift, seed, start=100.0):
 
 
 def test_technicals_match_production_tool(monkeypatch):
-    """Same formulas as backend/agent/tools/technical.py: feed the tool the same frame via a fake yfinance."""
+    """Same formulas as backend/agent/tools/technical.py: feed the tool the same frame via a fake price fetch."""
     from backend.agent.tools import technical
 
     df = _df(_walk(260, 0.001, 1))
-
-    class FakeTicker:
-        def __init__(self, t):
-            pass
-
-        def history(self, period):
-            return df
-
-    monkeypatch.setattr(technical.yf, "Ticker", FakeTicker)
+    monkeypatch.setattr(technical, "get_history", lambda ticker, period="1y": df)
     assert B.technicals_from_history(df, "X.NS") == technical.get_technical_indicators("X.NS")
 
 

@@ -76,7 +76,7 @@ export const overview: Spec = {
       id: 'yahoo', x: 532, y: 24, w: 190, h: 60, title: 'Yahoo Finance', sub: 'prices · fundamentals', kind: 'external',
       summary: 'Market data source.',
       points: [
-        '2 years of daily candles for technical indicators, XGBoost and Prophet',
+        '1 year of daily candles for technical indicators',
         'Fundamentals such as P/E and growth',
         'Live prices for the dashboard',
         '3 months of daily candles for RSI and volume alerts',
@@ -128,7 +128,6 @@ export const overview: Spec = {
       points: [
         'FinBERT scores the tone of financial headlines',
         'bge-small-en-v1.5 embeds filing passages and search queries',
-        'XGBoost and Prophet are not stored: they are fitted fresh for each stock when a question needs them',
       ],
     },
   ],
@@ -206,12 +205,11 @@ export const pipeline: Spec = {
       ],
     },
     {
-      id: 'research', x: 326, y: 64, w: 170, h: 72, title: 'Research Agent', sub: 'technicals · ML · filings', kind: 'agent',
+      id: 'research', x: 326, y: 64, w: 170, h: 72, title: 'Research Agent', sub: 'technicals · filings', kind: 'agent',
       summary: 'A ReAct agent: it decides which tools to call, reads the results and calls more until it has what it needs.',
       points: [
         'Technical indicators: EMA 20/50/200, RSI(14), MACD, 1- and 3-month returns, 52-week range',
         'Fundamentals: P/E, earnings and revenue growth',
-        'XGBoost 5-day signal and Prophet trend (see Machine learning)',
         'Filings search over annual reports and earnings calls (see Retrieval)',
         'NIFTY screener for "ideas" questions',
         'Rule: numbers may only come from tool results, never from memory',

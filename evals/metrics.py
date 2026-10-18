@@ -295,6 +295,9 @@ def missing_required(text: str, must_include: Sequence[str]) -> List[str]:
 # --------------------------------------------------------------------------------------------
 
 
+RETIRED_FACTORS = {"xgboost", "prophet"}  # removed from the scorecard on 2026-10-18
+
+
 def _card_signature(cards: Sequence[dict]) -> List[tuple]:
     return sorted((c.get("ticker"), c.get("score"), c.get("verdict"), c.get("confidence")) for c in cards or [])
 
@@ -305,8 +308,8 @@ def verdict_determinism(evidence: Sequence[dict], tickers: Sequence[str], stored
 
     * ``deterministic``: identical output on every re-run (expected True by construction).
     * ``matches_stored``: re-computed cards equal the scorecards saved with the answer (None if none were saved,
-      e.g. answers recorded before the scorecard existed).
-    * ``answer_consistent``: the answer's BUY/SELL/HOLD equals the best re-computed card's verdict (None when
+      e.g. answers recorded before the scorecard existed, or if they were scored with retired factors: ``legacy_rules``).
+    * ``answer_consistent``: the answer's verdict equals the best re-computed card's verdict (INSUFFICIENT_DATA if any card has invalid inputs) (None when
       the answer has no verdict or there is nothing to score).
     """
     from backend.agent.scoring import build_scorecards
@@ -318,12 +321,18 @@ def verdict_determinism(evidence: Sequence[dict], tickers: Sequence[str], stored
     stored = [c for c in stored_scorecards or []]
     if not stored:
         stored = [e["output"] for e in evidence or [] if e.get("tool") == "compute_signal_scorecard" and isinstance(e.get("output"), dict)]
-    matches = (_card_signature(cards) == _card_signature(stored)) if stored else None
+    # Answers recorded before 2026-10-18 were scored with factors that no longer exist; the current rules
+    # cannot reproduce them, so the reproduction check is not applicable and consistency uses the stored cards.
+    legacy = any(f.get("name") in RETIRED_FACTORS for c in stored for f in c.get("factors") or [])
+    matches = None if legacy or not stored else (_card_signature(cards) == _card_signature(stored))
+    reference = stored if legacy else cards
     consistent = None
-    if answer and answer.get("verdict") and cards:
-        best = max(cards, key=lambda c: c["score"])
-        consistent = best["verdict"] == answer["verdict"]
-    return {"n_cards": len(cards), "deterministic": len(set(sigs)) == 1, "matches_stored": matches,
+    if answer and answer.get("verdict") and reference:
+        # Mirrors backend.agent.synthesis._verdict_block: any card without valid inputs means no verdict.
+        expected = "INSUFFICIENT_DATA" if any(c.get("verdict") == "INSUFFICIENT_DATA" for c in reference) \
+            else max(reference, key=lambda c: c["score"])["verdict"]
+        consistent = expected == answer["verdict"]
+    return {"n_cards": len(cards), "deterministic": len(set(sigs)) == 1, "matches_stored": matches, "legacy_rules": legacy,
             "answer_consistent": consistent, "recomputed": [{"ticker": c["ticker"], "score": c["score"], "verdict": c["verdict"]} for c in cards]}
 
 

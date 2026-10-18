@@ -44,7 +44,9 @@ class Section(BaseModel):
 class FinalAnswer(BaseModel):
     answer_type: AnswerType
     headline: str = Field(description="One or two sentence direct answer to the user's question.")
-    verdict: Optional[Literal["BUY", "SELL", "HOLD"]] = Field(default=None, description="Only for stock_analysis (and optionally comparison). Null otherwise.")
+    verdict: Optional[Literal["BUY", "SELL", "HOLD", "INSUFFICIENT_DATA"]] = Field(default=None, description=(
+        "Only for stock_analysis (and optionally comparison). Null otherwise. Set by the scorecard after the answer "
+        "is written; INSUFFICIENT_DATA means the inputs a verdict needs were missing or invalid."))
     verdict_ticker: Optional[str] = Field(default=None, description="The stock the verdict refers to.")
     confidence: Optional[float] = Field(default=None, ge=0, le=1, description="Confidence in the verdict (0-1). Null when there is no verdict.")
     sections: List[Section] = Field(default_factory=list)

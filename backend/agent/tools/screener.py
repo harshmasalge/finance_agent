@@ -1,6 +1,8 @@
 import pandas as pd
 import yfinance as yf
 
+from backend.providers.prices import clean_history
+
 # Liquid large caps from the NIFTY 50 used as the idea universe (NSE symbols).
 UNIVERSE = [
     "RELIANCE.NS", "TCS.NS", "HDFCBANK.NS", "ICICIBANK.NS", "INFY.NS", "BHARTIARTL.NS", "ITC.NS", "SBIN.NS",
@@ -26,7 +28,7 @@ def screen_nifty_stocks(exclude: list[str] | None = None, top_n: int = 5) -> dic
     rows = []
     for t in tickers:
         try:
-            close = data[t]["Close"].dropna()
+            close = clean_history(data[t])["Close"]
             if len(close) < 70:
                 continue
             price = float(close.iloc[-1])

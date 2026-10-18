@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from backend.db.database import get_db, redis_client
 from backend.db.models import Portfolio, TradeLog, TradeSide
+from backend.providers.prices import clean_history, last_close
 from backend.services.auth import get_current_user_id
 from backend.services.trading_engine import TradingEngine, TradeException
 from pydantic import BaseModel
@@ -42,8 +43,7 @@ def get_holdings(user_id: int = Depends(get_current_user_id), db: Session = Depe
                 if hasattr(stock, 'fast_info') and 'lastPrice' in stock.fast_info:
                     current_price = float(stock.fast_info['lastPrice'])
                 else:
-                    data = stock.history(period="1d", interval="1m")
-                    current_price = float(data['Close'].iloc[-1]) if not data.empty else h.avg_cost
+                    current_price = last_close(stock.history(period="1d", interval="1m")) or h.avg_cost
             except Exception:
                 current_price = h.avg_cost
             
@@ -144,7 +144,7 @@ def get_portfolio_history(user_id: int = Depends(get_current_user_id), db: Sessi
     
     for ticker in tickers:
         stock = yf.Ticker(ticker)
-        df = stock.history(period=period, interval=interval)
+        df = clean_history(stock.history(period=period, interval=interval))
         if not df.empty:
             if df.index.tz is None:
                 df.index = df.index.tz_localize('UTC').tz_convert(tz)

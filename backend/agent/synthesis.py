@@ -9,7 +9,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from backend.agent.evidence import evidence_digest
 from backend.agent.schemas import FinalAnswer, ValidationVerdict
-from backend.agent.scoring import BUY_THRESHOLD, SELL_THRESHOLD, build_scorecards
+from backend.agent.scoring import BUY_THRESHOLD, INSUFFICIENT, SELL_THRESHOLD, build_scorecards
 from backend.agent.state import AgentState
 from backend.agent.utils import get_llm, get_structured_llm
 from backend.review.notes import analyst_notes_for
@@ -17,11 +17,12 @@ from backend.review.notes import analyst_notes_for
 logger = logging.getLogger(__name__)
 
 MAX_ATTEMPTS = 2  # first answer + one revision
+FAILED_AGENT_CONFIDENCE_CAP = 0.5  # a supporting agent (sentiment / risk) failed: the verdict stands, with less confidence
 
 ANSWER_FORMATS = {
     "research": ("stock_analysis",
                  "The verdict is FIXED by the signal scorecard (see SCORECARD). Explain why the factors lead to it - lead with the "
-                 "strongest factors for and against. Sections: 'Why this verdict', 'Price & trend', 'Fundamentals', 'Model signals', "
+                 "strongest factors for and against. Sections: 'Why this verdict', 'Price & trend', 'Fundamentals', "
                  "'News & sentiment', 'Fit with your portfolio'."),
     "comparison": ("comparison",
                    "Compare the stocks side by side using their scorecards; the stock with the higher score is preferred and its "
@@ -63,6 +64,36 @@ def _general_answer(state: AgentState) -> dict:
     return FinalAnswer(answer_type="general", headline=reply.content).model_dump()
 
 
+def _failed_agents(state: AgentState) -> List[str]:
+    return [r.get("agent", k) for k in ("research_output", "sentiment_output", "risk_output")
+            for r in [state.get(k) or {}] if r.get("failed")]
+
+
+def _verdict_block(state: AgentState, scorecards: List[dict]) -> dict:
+    """Decide the verdict before the answer is written, so the headline can be told when there is none.
+
+    INSUFFICIENT_DATA when there is no scorecard, any scorecard lacks valid price data, or the research agent
+    failed. Otherwise the best scorecard's verdict, with confidence capped if a supporting agent failed.
+    """
+    failed = _failed_agents(state)
+    if not scorecards:
+        reason = "No scorecard could be computed: the research tools returned no usable data."
+        return {"verdict": INSUFFICIENT, "ticker": (state.get("target_tickers") or [None])[0], "confidence": None,
+                "reason": reason, "gap": reason}
+    bad = [c for c in scorecards if c["verdict"] == INSUFFICIENT]
+    if bad or "Research Agent" in failed:
+        reason = ("; ".join(f"{c['ticker']}: {c.get('insufficient_reason') or 'inputs invalid'}" for c in bad)
+                  if bad else "The research agent failed, so the scorecard inputs could not be checked.")
+        return {"verdict": INSUFFICIENT, "ticker": (bad[0] if bad else scorecards[0])["ticker"], "confidence": None,
+                "reason": reason, "gap": f"No verdict: {reason}"}
+    best = max(scorecards, key=lambda c: c["score"])
+    confidence, gap = best["confidence"], None
+    if failed:
+        confidence = min(confidence, FAILED_AGENT_CONFIDENCE_CAP)
+        gap = f"{' and '.join(failed)} failed; confidence capped at {FAILED_AGENT_CONFIDENCE_CAP:.0%}."
+    return {"verdict": best["verdict"], "ticker": best["ticker"], "confidence": confidence, "reason": None, "gap": gap}
+
+
 def synthesis_node(state: AgentState) -> dict:
     intent = state.get("intent")
     attempts = int(state.get("attempts") or 0) + 1
@@ -92,6 +123,7 @@ def synthesis_node(state: AgentState) -> dict:
             update["evidence"] = (update.get("evidence") or []) + notes
             state = {**state, "evidence": (state.get("evidence") or []) + notes}
     scorecards = scorecards or []
+    verdict_block = _verdict_block(state, scorecards) if answer_type in ("stock_analysis", "comparison") else None
     reports = {k: state.get(k) for k in ("research_output", "sentiment_output", "risk_output") if state.get(k)}
     feedback = state.get("validation_feedback") or []
     revision = ("\n\nYOUR PREVIOUS DRAFT FAILED REVIEW. Fix these issues:\n- " + "\n- ".join(feedback)) if feedback else ""
@@ -105,6 +137,10 @@ def synthesis_node(state: AgentState) -> dict:
                      f"Rules: score >= {BUY_THRESHOLD} -> BUY, <= {SELL_THRESHOLD} -> SELL, otherwise HOLD.\n" +
                      "\n".join(f"{c['ticker']} [{c['evidence_id']}]: score {c['score']:+} -> {c['verdict']} (confidence {c['confidence']:.0%}); factors: " +
                                "; ".join(f"{f['label']} {f['score']:+.2f} ({f['reason']})" for f in c["factors"]) for c in scorecards))
+    if verdict_block and verdict_block["verdict"] == INSUFFICIENT:
+        score_txt += ("\n\n=== NO VERDICT ===\n" + verdict_block["reason"] +
+                      "\nThe headline must say that no BUY/SELL/HOLD verdict can be given and why. Do not recommend "
+                      "buying, selling or holding; describe only what the valid evidence shows.")
     system = (f"{SYNTHESIS_RULES}\nToday's date is {date.today():%d %b %Y}.\n\nAnswer type: {answer_type}. {fmt}{score_txt}\n\n"
               f"=== AGENT REPORTS ===\n{json.dumps(reports, indent=1, default=str)}\n\n"
               f"=== RAW EVIDENCE ===\n{evidence_digest(state.get('evidence') or [])}{revision}")
@@ -120,10 +156,12 @@ def synthesis_node(state: AgentState) -> dict:
         answer.data_gaps = seen[:5]
     if answer_type not in ("stock_analysis", "comparison"):
         answer.verdict, answer.verdict_ticker, answer.confidence = None, None, None
-    elif scorecards:
+    else:
         # The verdict always comes from the scorecard, never from the LLM.
-        best = max(scorecards, key=lambda c: c["score"])
-        answer.verdict, answer.verdict_ticker, answer.confidence = best["verdict"], best["ticker"], best["confidence"]
+        answer.verdict, answer.verdict_ticker, answer.confidence = (
+            verdict_block["verdict"], verdict_block["ticker"], verdict_block["confidence"])
+        if verdict_block["gap"] and verdict_block["gap"] not in answer.data_gaps:
+            answer.data_gaps = [verdict_block["gap"], *answer.data_gaps][:6]
     return {**update, "final_answer": answer.model_dump(), "attempts": attempts}
 
 

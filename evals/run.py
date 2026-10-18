@@ -117,7 +117,9 @@ def evaluate_case(case: dict, payload: dict, judge_llm: Optional[Callable] = Non
     checks.append(_check("verdict_consistency", det["answer_consistent"],
                          "no verdict / nothing to score" if det["answer_consistent"] is None else
                          f"answer {answer.get('verdict')} vs scorecard " + ", ".join(f"{c['ticker']} {c['verdict']} ({c['score']:+})" for c in det["recomputed"])
-                         + ("" if det["matches_stored"] is not None else " · answer recorded without a scorecard (pre-scorecard pipeline)"),
+                         + (" · recorded under the pre-2026-10-18 scorecard (XGBoost/Prophet); checked against its stored cards"
+                            if det.get("legacy_rules") else
+                            "" if det["matches_stored"] is not None else " · answer recorded without a scorecard (pre-scorecard pipeline)"),
                          det["answer_consistent"]))
 
     if at == "general":

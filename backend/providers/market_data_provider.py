@@ -2,6 +2,8 @@ from typing import Dict, Any, Optional
 import structlog
 import yfinance as yf
 
+from backend.providers.prices import clean_history, last_close
+
 logger = structlog.get_logger(__name__)
 
 class MarketDataProvider:
@@ -28,11 +30,7 @@ class MarketDataProvider:
                     return price
 
             # Fallback to 1m intraday data
-            data = stock.history(period="1d", interval="1m")
-            if not data.empty:
-                return float(data['Close'].iloc[-1])
-                
-            return None
+            return last_close(stock.history(period="1d", interval="1m"))
         except Exception as e:
             logger.error("Failed to fetch latest price", ticker=ticker, error=str(e))
             return None
@@ -40,11 +38,12 @@ class MarketDataProvider:
     def get_historical_data(self, ticker: str, period: str = "1mo", interval: str = "1d") -> Any:
         """
         Fetches historical OHLCV data.
-        Returns a pandas DataFrame (returned directly from yfinance).
+        Returns a pandas DataFrame from yfinance with rows lacking a valid close removed
+        (the unsettled current session comes back with Close = NaN).
         """
         try:
             stock = yf.Ticker(ticker)
-            return stock.history(period=period, interval=interval)
+            return clean_history(stock.history(period=period, interval=interval))
         except Exception as e:
             logger.error("Failed to fetch historical data", ticker=ticker, error=str(e))
             return None

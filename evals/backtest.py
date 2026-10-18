@@ -215,6 +215,9 @@ def run_backtest(prices: Dict[str, pd.DataFrame], tickers: Sequence[str], horizo
                 continue
             tech = technicals_from_history(window_at(df, t), tk)
             card = score_ticker(tk, {"get_technical_indicators": tech}, {"get_technical_indicators": "R1"})
+            if card["verdict"] == "INSUFFICIENT_DATA":
+                skipped.setdefault(tk, f"invalid price inputs at {t.date()}")
+                continue
             ret = (float(df["Close"].loc[exit_t]) / float(df["Close"].loc[t]) - 1) * 100
             obs.append({"date": t.date().isoformat(), "exit": exit_t.date().isoformat(), "ticker": tk,
                         "score": card["score"], "verdict": card["verdict"], "ret": round(ret, 3),

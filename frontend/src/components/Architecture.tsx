@@ -5,9 +5,9 @@ import { Badge, Card, PageHeader } from './ui';
 import { InteractiveDiagram } from './architecture/Diagram';
 import { KIND, type Kind } from './architecture/types';
 import { intents, overview, overviewModes, pipeline } from './architecture/systemDiagrams';
-import { monitor, monitorModes, news, prophet, xgboost } from './architecture/mlDiagrams';
+import { monitor, monitorModes, news } from './architecture/mlDiagrams';
 import { evals, ragBench, ragIngest, ragModes, ragQuery, review, reviewModes } from './architecture/flowDiagrams';
-import { HeadlineExamples, ProphetSlope, ScorecardSimulator, XgbCalculator } from './architecture/MlWidgets';
+import { HeadlineExamples, ScorecardSimulator } from './architecture/MlWidgets';
 
 /**
  * How FinSight works, as interactive diagrams. Entirely static: this page makes no API calls,
@@ -47,9 +47,7 @@ function SubHeading({ children }: { children: ReactNode }) {
 const LEGEND: Kind[] = ['client', 'service', 'agent', 'ml', 'data', 'external', 'person', 'output'];
 
 const ML_TABS = [
-  { id: 'score', title: 'Signal scorecard', blurb: 'Combines 9 factors into BUY / HOLD / SELL' },
-  { id: 'xgb', title: 'XGBoost', blurb: 'Odds of a ±2% move in the next 5 days' },
-  { id: 'prophet', title: 'Prophet', blurb: 'Direction of the long-term trend' },
+  { id: 'score', title: 'Signal scorecard', blurb: 'Combines 7 factors into BUY / HOLD / SELL' },
   { id: 'finbert', title: 'FinBERT news', blurb: 'Tone of headlines, −1 to +1' },
   { id: 'monitor', title: 'Alert monitor', blurb: 'Rules that raise alerts every 15 min' },
 ] as const;
@@ -115,18 +113,11 @@ export default function Architecture() {
                 <p className="mb-4 max-w-3xl text-[13px] leading-relaxed text-fg-2">
                   The scoring engine turns raw tool outputs into factor scores from −1 to +1 and combines them with fixed weights. The LLM is given the result and must explain it; it cannot change it. Move the sliders to see how the verdict responds.
                 </p>
+                <p className="mb-4 max-w-3xl text-[13px] leading-relaxed text-muted">
+                  With no valid price data the scorecard gives no verdict (INSUFFICIENT_DATA) instead of a guess. The XGBoost and Prophet factors were removed on 18 Oct 2026: tested out of sample on NIFTY 50 stocks, neither predicted returns.
+                </p>
                 <ScorecardSimulator />
               </div>
-            )}
-            {ml === 'xgb' && (
-              <InteractiveDiagram spec={xgboost} label="XGBoost signal pipeline"
-                intro={<p>A small gradient-boosted tree model trained on the fly for each stock asked about. Its vote in the verdict is scaled by how well it did on data it had not seen.</p>}
-                footer={() => <div className="mt-5 border-t border-border pt-5"><XgbCalculator /></div>} />
-            )}
-            {ml === 'prophet' && (
-              <InteractiveDiagram spec={prophet} label="Prophet trend pipeline"
-                intro={<p>Prophet separates the long-term trend from short-term wiggles. Only the direction of that trend is used.</p>}
-                footer={() => <div className="mt-5 border-t border-border pt-5"><ProphetSlope /></div>} />
             )}
             {ml === 'finbert' && (
               <InteractiveDiagram spec={news} label="News sentiment pipeline"

@@ -8,7 +8,6 @@ from backend.agent.evidence import track_tools
 from backend.agent.schemas import AgentReport
 from backend.agent.state import AgentState
 from backend.agent.tools.fundamentals import get_fundamentals
-from backend.agent.tools.ml_pipeline import extract_prophet_features, get_xgboost_signal
 from backend.agent.tools.portfolio_tools import get_portfolio_position, get_portfolio_risk_summary
 from backend.agent.tools.screener import screen_nifty_stocks
 from backend.agent.tools.sentiment_tools import get_recent_headlines, get_sentiment_score
@@ -54,10 +53,10 @@ def _run_agent(name: str, prefix: str, funcs: List[Callable], prompt: str, state
         ])
         report = report.model_dump() if report else {
             "summary": "The agent did not return a structured report.", "signal": None, "confidence": 0.0,
-            "findings": [], "data_gaps": ["Agent output could not be parsed."]}
+            "findings": [], "data_gaps": ["Agent output could not be parsed."], "failed": True}
     except Exception as e:
         report = {"summary": f"{name} failed: {e}", "signal": None, "confidence": 0.0, "findings": [],
-                  "data_gaps": [f"{name} could not complete: {e}"]}
+                  "data_gaps": [f"{name} could not complete: {e}"], "failed": True}
     report["agent"] = name
     return {"report": report, "evidence": evidence}
 
@@ -73,15 +72,14 @@ def research_node(state: AgentState) -> dict:
                 "Report each candidate's momentum and fundamentals, and note sector overlap with current holdings.")
     else:
         task = (f"Analyse these stocks: {', '.join(tickers)}.\n"
-                "For EACH ticker call get_technical_indicators, get_fundamentals, get_xgboost_signal and extract_prophet_features.\n"
-                "Weigh the XGBoost signal by its holdout_accuracy. Point out conflicting signals explicitly.\n"
+                "For EACH ticker call get_technical_indicators and get_fundamentals. Point out conflicting signals explicitly.\n"
                 "Also call search_filings(ticker, query) 1-2 times per ticker for what the company itself reports in its "
                 "annual report / earnings calls (e.g. 'management guidance and outlook', 'asset quality GNPA NNPA' for banks, "
                 "'deal wins TCV and margin' for IT). Quote figures exactly as written in a passage and cite its F-id. "
                 "If it returns available=false, note 'no filings indexed' as a data gap - do not guess.")
     prompt = f"You are the Research Agent of FinSight AI (Indian equities).\n{task}"
     out = _run_agent("Research Agent", "R",
-                     [get_technical_indicators, get_fundamentals, get_xgboost_signal, extract_prophet_features, screen_nifty_stocks],
+                     [get_technical_indicators, get_fundamentals, screen_nifty_stocks],
                      prompt, state, extra=[("F", [search_filings])] if intent != "ideas" else None)
     return {"research_output": out["report"], "evidence": out["evidence"]}
 

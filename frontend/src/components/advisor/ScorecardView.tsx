@@ -3,7 +3,8 @@ import { ChevronDown, Info } from 'lucide-react';
 import type { Scorecard } from '../../lib/api';
 import { cn, tickerLabel } from '../../lib/format';
 
-const VERDICT_TEXT: Record<string, string> = { BUY: 'text-up', SELL: 'text-down', HOLD: 'text-warn' };
+const VERDICT_TEXT: Record<string, string> = { BUY: 'text-up', SELL: 'text-down', HOLD: 'text-warn', INSUFFICIENT_DATA: 'text-muted' };
+const VERDICT_LABEL: Record<string, string> = { INSUFFICIENT_DATA: 'no verdict' };
 
 /** Horizontal gauge from -100 to +100 with the SELL / BUY thresholds marked. */
 function Gauge({ card }: { card: Scorecard }) {
@@ -13,7 +14,7 @@ function Gauge({ card }: { card: Scorecard }) {
       <span className="absolute -top-1 h-4 w-px bg-border-strong" style={{ left: pos(card.thresholds.sell) }} />
       <span className="absolute -top-1 h-4 w-px bg-border-strong" style={{ left: pos(card.thresholds.buy) }} />
       <span className={cn('absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-surface shadow-md transition-[left] duration-700',
-        card.verdict === 'BUY' ? 'bg-up' : card.verdict === 'SELL' ? 'bg-down' : 'bg-warn')} style={{ left: pos(Math.max(-100, Math.min(100, card.score))) }} />
+        card.verdict === 'BUY' ? 'bg-up' : card.verdict === 'SELL' ? 'bg-down' : card.verdict === 'HOLD' ? 'bg-warn' : 'bg-muted')} style={{ left: pos(Math.max(-100, Math.min(100, card.score))) }} />
       <div className="absolute top-3.5 flex w-full justify-between text-[10px] text-muted tabular">
         <span>−100</span>
         <span className="absolute -translate-x-1/2" style={{ left: pos(card.thresholds.sell) }}>SELL {card.thresholds.sell}</span>
@@ -58,13 +59,14 @@ export default function ScorecardView({ card, onCite, citeNumber, defaultOpen = 
           <div className="text-[11px] font-medium uppercase tracking-wider text-muted">Signal scorecard · {tickerLabel(card.ticker)}</div>
           <div className="mt-0.5 flex items-baseline gap-2">
             <span className={cn('text-lg font-bold tabular', VERDICT_TEXT[card.verdict])}>{card.score > 0 ? '+' : ''}{card.score.toFixed(1)}</span>
-            <span className="text-[13px] text-muted">→ <span className={cn('font-semibold', VERDICT_TEXT[card.verdict])}>{card.verdict}</span> · {card.factors.length} factors</span>
+            <span className="text-[13px] text-muted">→ <span className={cn('font-semibold', VERDICT_TEXT[card.verdict])}>{VERDICT_LABEL[card.verdict] ?? card.verdict}</span> · {card.factors.length} factors</span>
           </div>
         </div>
         <ChevronDown className={cn('h-4 w-4 text-muted transition-transform duration-200', open && 'rotate-180')} />
       </button>
       {open && (
         <div className="border-t border-border px-4 pb-4 pt-1 animate-fade-in">
+          {card.insufficient_reason && <p className="mt-2 text-[12.5px] text-muted">{card.insufficient_reason}</p>}
           <div className="pb-6"><Gauge card={card} /></div>
           <div className="divide-y divide-border/60">
             {sorted.map(f => <FactorRow key={f.name} f={f} onCite={onCite} citeNum={f.evidence_id ? citeNumber?.(f.evidence_id) : undefined} />)}

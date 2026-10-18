@@ -265,8 +265,8 @@ def platform_receive(db: Session, body: dict) -> dict:
         raise ReviewError(422, "A note needs integer message_id and version")
     if mid < 1 or ver < 1:
         raise ReviewError(422, "message_id and version must be positive")
-    if body.get("verdict") not in (None, "BUY", "SELL", "HOLD"):
-        raise ReviewError(422, "verdict must be BUY, SELL, HOLD or null")
+    if body.get("verdict") not in (None, "BUY", "SELL", "HOLD", "INSUFFICIENT_DATA"):
+        raise ReviewError(422, "verdict must be BUY, SELL, HOLD, INSUFFICIENT_DATA or null")
     if body.get("ticker") is not None and (not isinstance(body["ticker"], str) or len(body["ticker"]) > 50):
         raise ReviewError(422, "ticker must be a string of at most 50 characters")
     if len(json.dumps(body, default=str)) > 200_000:

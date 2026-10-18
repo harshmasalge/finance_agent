@@ -51,7 +51,7 @@ function claimRows(before: string[], after: string[]): Row[] {
   return rows;
 }
 
-const VERDICT_TEXT: Record<string, string> = { BUY: 'text-up', SELL: 'text-down', HOLD: 'text-warn' };
+const VERDICT_TEXT: Record<string, string> = { BUY: 'text-up', SELL: 'text-down', HOLD: 'text-warn', INSUFFICIENT_DATA: 'text-muted' };
 
 export interface DiffViewProps {
   before: FinalAnswer;

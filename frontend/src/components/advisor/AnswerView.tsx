@@ -13,7 +13,9 @@ const TYPE_LABEL: Record<string, string> = {
 };
 const VERDICT_STYLE: Record<string, string> = {
   BUY: 'bg-up/10 text-up border-up/25', SELL: 'bg-down/10 text-down border-down/25', HOLD: 'bg-warn/10 text-warn border-warn/30',
+  INSUFFICIENT_DATA: 'bg-surface-2 text-fg-2 border-border',
 };
+const VERDICT_LABEL: Record<string, string> = { INSUFFICIENT_DATA: 'No verdict: insufficient data' };
 
 /** Tiny formatter for plain-text replies: **bold** and line breaks. */
 function RichText({ text }: { text: string }) {
@@ -50,7 +52,7 @@ export default function AnswerView({ payload, activeCitation, onCite, onOpenSour
         <div className={cn('flex flex-wrap items-center gap-4 rounded-xl border px-4 py-3', VERDICT_STYLE[a.verdict])}>
           <div>
             <div className="text-[11px] font-medium uppercase tracking-wider opacity-80">Verdict{a.verdict_ticker ? ` · ${tickerLabel(a.verdict_ticker)}` : ''}</div>
-            <div className="text-xl font-bold tracking-tight">{a.verdict}</div>
+            <div className="text-xl font-bold tracking-tight">{VERDICT_LABEL[a.verdict] ?? a.verdict}</div>
           </div>
           {a.confidence != null && (
             <div className="ml-auto min-w-[160px]">

@@ -241,7 +241,7 @@ export default function ReviewBar({ messageId, payload, onPayloadChange, classNa
               )}
               <form onSubmit={send} className="flex gap-2">
                 <Input ref={inputRef} value={text} onChange={e => setText(e.target.value)} disabled={busy === 'correct'} maxLength={2000}
-                  placeholder='Correct the answer, e.g. "Ignore the XGBoost signal" or "RSI should be 45"' aria-label="Correction" />
+                  placeholder='Correct the answer, e.g. "Weight valuation higher" or "RSI should be 45"' aria-label="Correction" />
                 <Button type="submit" loading={busy === 'correct'} disabled={!text.trim()}><Send className="h-3.5 w-3.5" />Send</Button>
               </form>
               </>}

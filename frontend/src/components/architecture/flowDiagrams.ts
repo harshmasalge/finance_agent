@@ -93,7 +93,7 @@ export const review: Spec = {
       summary: 'Types a correction in plain English in the review strip under the answer.' },
     { id: 'triage', x: 326, y: 160, w: 140, h: 72, title: 'Correction Agent', sub: 'cheapest path first', kind: 'agent',
       summary: 'Decides how to handle the correction, trying the cheapest and most predictable method first and the LLM last.' },
-    { id: 'rules', x: 506, y: 40, w: 170, h: 64, title: 'Re-weight', sub: '"ignore the XGBoost signal"', kind: 'ml',
+    { id: 'rules', x: 506, y: 40, w: 170, h: 64, title: 'Re-weight', sub: '"ignore the RSI"', kind: 'ml',
       summary: 'Weighting instructions are parsed by rules. The stored scorecard is recomputed from its factors with the new weights: same formula, same thresholds, no LLM. Claims quoting the old score are updated and an "Analyst adjustments" section is added.',
       points: ['Example: ignoring valuation turned one HOLD (−11.6) into SELL (−27.6), identically on every run'] },
     { id: 'check', x: 506, y: 164, w: 170, h: 64, title: 'Check a number', sub: '"RSI should be 45"', kind: 'process',
@@ -139,8 +139,8 @@ export const reviewModes: Mode[] = [
   {
     id: 'weight', label: 'Change a weight',
     steps: [
-      { title: 'Correction', text: '"Ignore the XGBoost signal for this one."', nodes: ['draft', 'analyst', 'triage'], edges: ['draft>analyst', 'analyst>triage'] },
-      { title: 'Rules, no LLM', text: 'Recognised as a weighting change. The scorecard is recomputed from its stored factors with XGBoost at weight 0. The verdict may flip, and does so the same way every time.', nodes: ['triage', 'rules'], edges: ['triage>rules'] },
+      { title: 'Correction', text: '"Ignore the RSI for this one."', nodes: ['draft', 'analyst', 'triage'], edges: ['draft>analyst', 'analyst>triage'] },
+      { title: 'Rules, no LLM', text: 'Recognised as a weighting change. The scorecard is recomputed from its stored factors with RSI at weight 0. The verdict may flip, and does so the same way every time.', nodes: ['triage', 'rules'], edges: ['triage>rules'] },
       { title: 'New version', text: 'Accepted: version n+1 with an "Analyst adjustments" section and a change log. The exchange is logged.', nodes: ['rules', 'decide', 'version', 'log'], edges: ['rules>decide', 'decide>version', 'decide>log'] },
       { title: 'Back to Draft', text: 'The new version is a Draft again. The analyst can correct further or approve it.', nodes: ['version', 'draft'], edges: ['version>draft'] },
     ],
@@ -201,7 +201,7 @@ export const evals: Spec = {
       summary: 'Daily prices for the NIFTY 50 and the index itself, downloaded once and cached.' },
     { id: 'bt', x: 216, y: 272, w: 170, h: 64, title: 'Backtest', sub: '12 monthly rebalances', kind: 'process',
       summary: 'Each month the scorecard is computed using only data available at that date, then each stock\'s next 30 trading days are compared with the index.',
-      points: ['Price factors only: fundamentals, sentiment, Prophet and XGBoost have no point-in-time history', 'Caveats: survivorship bias, overlapping windows, one market regime, no costs'] },
+      points: ['Price factors only: fundamentals and sentiment have no point-in-time history', 'Caveats: survivorship bias, overlapping windows, one market regime, no costs'] },
     { id: 'sig', x: 436, y: 272, w: 190, h: 64, title: 'Signal metrics', sub: 'hit rate · excess return · IC', kind: 'ml',
       summary: 'Does a BUY beat the index more often than a SELL? Hit rates, mean excess return per bucket with a resampled confidence interval, and rank IC per factor.',
       points: ['Reported honestly, as of the last update: the price-only scorecard showed no edge in the tested year; RSI mean-reversion was the only factor that helped'] },

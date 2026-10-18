@@ -41,7 +41,7 @@ def test_replay_case_details(replay):
     by = {c["id"]: c for c in replay["cases"]}
     assert by["research-lt"]["status"] == "not_run"
     pb = by["research-policybazaar"]
-    assert pb["status"] == "evaluated" and pb["scorecard_recheck"]["matches_stored"] is True
+    assert pb["status"] == "evaluated" and pb["scorecard_recheck"]["matches_stored"] is None  # recorded under the old rules
     hi = by["direct-hi"]
     assert hi["passed"] is True and hi["metrics"]["claims"] == 0 and hi["metrics"]["citation_coverage"] is None
     # portfolio answer has a single section -> app's rule checker and must_include flag it

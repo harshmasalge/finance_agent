@@ -53,12 +53,14 @@ export interface AlertItem {
 export interface HistoryPoint { time: string; TotalValue: number; [ticker: string]: number | string; }
 
 // ---------- Advisor types (mirror backend/agent/schemas.py) ----------
+/** INSUFFICIENT_DATA: the inputs a verdict needs were missing or invalid, so no BUY/SELL/HOLD is given. */
+export type Verdict = 'BUY' | 'SELL' | 'HOLD' | 'INSUFFICIENT_DATA';
 export interface Claim { text: string; citations: string[]; }
 export interface Section { title: string; claims: Claim[]; }
 export interface FinalAnswer {
   answer_type: 'stock_analysis' | 'comparison' | 'portfolio_health' | 'ideas' | 'sentiment' | 'general';
   headline: string;
-  verdict: 'BUY' | 'SELL' | 'HOLD' | null;
+  verdict: Verdict | null;
   verdict_ticker: string | null;
   confidence: number | null;
   sections: Section[];
@@ -73,8 +75,9 @@ export interface Validation {
 }
 export interface ScoreFactor { name: string; label: string; score: number; weight: number; reason: string; evidence_id: string | null; }
 export interface Scorecard {
-  ticker: string; score: number; verdict: 'BUY' | 'SELL' | 'HOLD'; confidence: number; evidence_id?: string;
+  ticker: string; score: number; verdict: Verdict; confidence: number; evidence_id?: string;
   thresholds: { buy: number; sell: number }; factors: ScoreFactor[]; missing: string[]; coverage: number;
+  insufficient_reason?: string | null;
 }
 export interface ToolCall { id: string; tool: string; input: Record<string, unknown>; }
 export interface Step { node: string; label: string; status: 'running' | 'done'; detail?: string; tools?: ToolCall[]; }

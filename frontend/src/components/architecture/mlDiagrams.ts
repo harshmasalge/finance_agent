@@ -3,65 +3,6 @@ import type { DEdge, Mode, Spec } from './types';
 type P = [number, number];
 const e = (from: string, to: string, pts: P[], extra: Partial<DEdge> = {}): DEdge => ({ from, to, pts, ...extra });
 
-/* ---------------------------- XGBoost ---------------------------- */
-
-const xw = 218, xr1 = 30, xr2 = 150, xh = 72;
-const xs = [16, 266, 516, 766];
-
-export const xgboost: Spec = {
-  width: 1000, height: 240, minWidth: 820,
-  nodes: [
-    { id: 'hist', x: xs[0], y: xr1, w: xw, h: xh, title: 'Price history', sub: '2 years of daily candles\nfor this one stock', kind: 'external',
-      summary: 'The model is trained on the stock\'s own history only, fetched from Yahoo Finance when the question is asked. At least 150 trading days are needed.' },
-    { id: 'feat', x: xs[1], y: xr1, w: xw, h: xh, title: 'Features', sub: 'RSI(14) · % vs 20-day EMA\n5-day return · volume ratio', kind: 'process',
-      summary: 'Four features per trading day, all computed from prices and volume known on that day.',
-      points: ['RSI(14): overbought / oversold', 'How far the close is above or below its 20-day EMA, in %', 'Return over the last 5 days, in %', 'Volume divided by its 20-day average'] },
-    { id: 'label', x: xs[2], y: xr1, w: xw, h: xh, title: 'Label', sub: 'next 5 days: > +2% BUY\n< −2% SELL · otherwise HOLD', kind: 'process',
-      summary: 'What the model learns to predict: where the price is 5 trading days later. Three classes.' },
-    { id: 'split', x: xs[3], y: xr1, w: xw, h: xh, title: 'Time split', sub: 'first 80% train\nlast 20% test, never shuffled', kind: 'process',
-      summary: 'The split follows time, so the model is tested on a period it has never seen, the way it will be used. Shuffling would leak the future into training.' },
-    { id: 'train', x: xs[0], y: xr2, w: xw, h: xh, title: 'XGBoost classifier', sub: '3 classes · depth 3 · 80 trees', kind: 'ml',
-      summary: 'Gradient-boosted decision trees with a softmax output, kept deliberately small (depth 3, 80 trees) because there are only a few hundred rows.' },
-    { id: 'acc', x: xs[1], y: xr2, w: xw, h: xh, title: 'Holdout accuracy', sub: 'measured on the unseen\nlast 20%', kind: 'ml',
-      summary: 'Share of test days where the predicted class was right. With three classes, a coin-toss model scores about 33%.' },
-    { id: 'refit', x: xs[2], y: xr2, w: xw, h: xh, title: 'Refit & predict', sub: 'all rows → today\'s\nBUY / HOLD / SELL odds', kind: 'ml',
-      summary: 'The model is refitted on all rows and asked about today. The output is a probability for each class, plus the holdout accuracy, which the Research Agent must mention.' },
-    { id: 'cred', x: xs[3], y: xr2, w: xw, h: xh, title: 'Credibility weight', sub: 'clamp((accuracy − 0.33) ÷ 0.33)\n→ scorecard factor', kind: 'ml',
-      summary: 'A model no better than chance gets zero say in the verdict; one right two-thirds of the time or more gets full say. The factor is (P(BUY) − P(SELL)) × 2 × credibility.' },
-  ],
-  edges: [
-    e('hist', 'feat', [[234, 66], [266, 66]]),
-    e('feat', 'label', [[484, 66], [516, 66]]),
-    e('label', 'split', [[734, 66], [766, 66]]),
-    e('split', 'train', [[875, 102], [875, 126], [125, 126], [125, 150]]),
-    e('train', 'acc', [[234, 186], [266, 186]]),
-    e('acc', 'refit', [[484, 186], [516, 186]]),
-    e('refit', 'cred', [[734, 186], [766, 186]]),
-  ],
-};
-
-/* ---------------------------- Prophet ---------------------------- */
-
-const pw = 148, px = [16, 180, 344, 508, 672, 836];
-export const prophet: Spec = {
-  width: 1000, height: 132, minWidth: 820,
-  nodes: [
-    { id: 'closes', x: px[0], y: 30, w: pw, h: 72, title: 'Daily closes', sub: '2 years (Yahoo)', kind: 'external',
-      summary: 'At least 100 trading days are needed.' },
-    { id: 'fit', x: px[1], y: 30, w: pw, h: 72, title: 'Fit Prophet', sub: 'trend + yearly\nseasonality', kind: 'ml',
-      summary: 'Meta\'s Prophet splits a series into a smooth trend plus seasonality. Daily and weekly seasonality are off; yearly seasonality is used only with 500+ days of data. The last day is held out of the fit.' },
-    { id: 'fc', x: px[2], y: 30, w: pw, h: 72, title: 'Forecast', sub: 'one day ahead', kind: 'ml',
-      summary: 'Forecast one step ahead and read the fitted trend for the last two days.' },
-    { id: 'slope', x: px[3], y: 30, w: pw, h: 72, title: 'Trend slope', sub: '% change per day', kind: 'ml',
-      summary: 'How fast the fitted trend line is rising or falling, as a percentage per day. Also reported: how far the last close sits above or below the trend.' },
-    { id: 'cls', x: px[4], y: 30, w: pw, h: 72, title: 'Classify', sub: '± 0.03% per day', kind: 'process',
-      summary: 'Above +0.03% a day is an uptrend, below −0.03% a downtrend, anything in between sideways. +0.03% a day is roughly +7.5% a year.' },
-    { id: 'pfac', x: px[5], y: 30, w: pw, h: 72, title: 'Scorecard factor', sub: '+1 · 0 · −1', kind: 'output',
-      summary: 'Uptrend +1, sideways 0, downtrend −1, with weight 1.0 in the scorecard.' },
-  ],
-  edges: px.slice(0, 5).map((x, i) => e(['closes', 'fit', 'fc', 'slope', 'cls'][i], ['fit', 'fc', 'slope', 'cls', 'pfac'][i], [[x + pw, 66], [px[i + 1], 66]])),
-};
-
 /* ------------------------- FinBERT news -------------------------- */
 
 export const news: Spec = {

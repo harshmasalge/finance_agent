@@ -1,5 +1,6 @@
 import pandas as pd
-import yfinance as yf
+
+from backend.providers.prices import get_history
 
 
 def get_technical_indicators(ticker: str) -> dict:
@@ -9,7 +10,7 @@ def get_technical_indicators(ticker: str) -> dict:
     1-month / 3-month returns and the 52-week high/low.
     """
     try:
-        df = yf.Ticker(ticker).history(period="1y")
+        df = get_history(ticker, period="1y")
         if df.empty:
             return {"ticker": ticker, "available": False, "message": f"No price data found for {ticker}. Check the symbol."}
         close, volume = df["Close"], df["Volume"]

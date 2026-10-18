@@ -170,7 +170,18 @@ def test_policybazaar_fixture_scorecard_reproduces():
     rec = next(r for r in json.loads(FIXTURES.read_text()) if "policy" in r["question"])
     p = rec["payload"]
     d = M.verdict_determinism(p["evidence"], p["tickers"], p["scorecards"], p["answer"])
-    assert d["deterministic"] and d["matches_stored"] is True and d["answer_consistent"] is True
+    # Recorded with the XGBoost/Prophet factors: reproduction is not applicable, consistency uses the stored cards.
+    assert d["deterministic"] and d["legacy_rules"] is True and d["matches_stored"] is None and d["answer_consistent"] is True
+
+
+def test_current_rules_reproduce_their_own_cards():
+    rec = next(r for r in json.loads(FIXTURES.read_text()) if "policy" in r["question"])
+    from backend.agent.scoring import build_scorecards
+    p = rec["payload"]
+    raw = [e for e in p["evidence"] if e.get("tool") != "compute_signal_scorecard"]
+    cards = build_scorecards(raw, p["tickers"])
+    d = M.verdict_determinism(p["evidence"], p["tickers"], cards, {"verdict": cards[0]["verdict"]})
+    assert d["legacy_rules"] is False and d["matches_stored"] is True and d["answer_consistent"] is True
 
 
 # ---------------- stats ----------------

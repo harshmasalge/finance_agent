@@ -2,7 +2,7 @@
 Correction Agent: turns an analyst's natural-language correction into a revised answer.
 
 Order of operations (cheapest and most deterministic first):
-1. Weighting corrections ("ignore the XGBoost signal", "weight valuation higher") are parsed
+1. Weighting corrections ("ignore the RSI", "weight valuation higher") are parsed
    with rules and applied to the scorecard deterministically - no LLM call, same input gives
    the same verdict.
 2. Checkable fact corrections ("RSI should be 45") are compared with the numeric tool outputs.
@@ -351,7 +351,7 @@ class CorrectionAgent:
             raw = self.llm.invoke(build_messages(answer, evidence, scorecards, text, target))
         except Exception as e:  # no credits / network / parse failure
             raise LLMUnavailable(f"The Correction Agent's language model is unavailable ({type(e).__name__}: {str(e)[:160]}). "
-                                 "Weighting corrections (e.g. 'ignore the XGBoost signal') and evidence-checkable numbers still work.") from e
+                                 "Weighting corrections (e.g. 'ignore the RSI') and evidence-checkable numbers still work.") from e
         res = raw if isinstance(raw, CorrectionResult) else CorrectionResult.model_validate(raw)
         return self._finish_llm(res, answer, evidence, scorecards, reason)
 

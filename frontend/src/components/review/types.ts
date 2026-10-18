@@ -18,7 +18,7 @@ export interface AnswerVersion {
 
 export interface NoteSummary {
   id: number; message_id: number; version: number; ticker: string | null; title: string;
-  verdict: 'BUY' | 'SELL' | 'HOLD' | null; published_at: string | null;
+  verdict: 'BUY' | 'SELL' | 'HOLD' | 'INSUFFICIENT_DATA' | null; published_at: string | null;
   connector_status: 'pending' | 'published' | 'received' | 'failed';
 }
 

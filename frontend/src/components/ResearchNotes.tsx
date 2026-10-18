@@ -6,7 +6,7 @@ import { Badge, Button, Card, EmptyState, PageHeader, Skeleton } from './ui';
 import { useToast } from './toast';
 import type { NoteDetail, NoteSummary } from './review/types';
 
-const VERDICT_TONE = { BUY: 'up', SELL: 'down', HOLD: 'warn' } as const;
+const VERDICT_TONE = { BUY: 'up', SELL: 'down', HOLD: 'warn', INSUFFICIENT_DATA: 'neutral' } as const;
 const CONNECTOR_TONE = { published: 'up', received: 'primary', pending: 'neutral', failed: 'down' } as const;
 
 function download(name: string, text: string, type = 'text/markdown') {

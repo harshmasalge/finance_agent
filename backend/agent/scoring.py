@@ -6,15 +6,22 @@ factor scores in [-1, +1], combines them with fixed weights, and maps the total
 to a verdict. The same data always gives the same verdict, and every factor is
 shown to the user, so the reasoning is auditable.
 """
+import math
 from typing import Dict, List, Optional
 
 BUY_THRESHOLD = 15    # score >= +15 -> BUY
 SELL_THRESHOLD = -15  # score <= -15 -> SELL
+INSUFFICIENT = "INSUFFICIENT_DATA"  # no verdict: the inputs a verdict needs are missing or invalid
 
+# The per-request XGBoost classifier and the Prophet trend were removed on 2026-10-18: both were
+# tested out of sample and had no predictive value (docs/xgboost_review.md, docs/ml_forecasting_decision.md).
 WEIGHTS = {
-    "trend": 1.5, "momentum": 1.0, "rsi": 0.75, "returns": 1.0, "prophet": 1.0,
-    "xgboost": 1.0, "valuation": 1.0, "growth": 0.75, "sentiment": 0.75,
+    "trend": 1.5, "momentum": 1.0, "rsi": 0.75, "returns": 1.0,
+    "valuation": 1.0, "growth": 0.75, "sentiment": 0.75,
 }
+FUNDAMENTAL_FACTORS = ("valuation", "growth")
+MAX_CONFIDENCE = 0.9
+NO_FUNDAMENTALS_CONFIDENCE_CAP = 0.6  # a price-only scorecard never claims more than this
 
 
 def _clamp(v: float, lo: float = -1.0, hi: float = 1.0) -> float:
@@ -22,8 +29,12 @@ def _clamp(v: float, lo: float = -1.0, hi: float = 1.0) -> float:
 
 
 def _num(d: dict, key: str) -> Optional[float]:
+    """A finite number from a tool output, else None. NaN/inf (e.g. an unsettled yfinance row) count as missing."""
     v = (d or {}).get(key)
-    return float(v) if isinstance(v, (int, float)) else None
+    if isinstance(v, bool) or not isinstance(v, (int, float)):
+        return None
+    v = float(v)
+    return v if math.isfinite(v) else None
 
 
 def _factor(name: str, label: str, value: float, reason: str, evidence_id: Optional[str]) -> dict:
@@ -31,21 +42,56 @@ def _factor(name: str, label: str, value: float, reason: str, evidence_id: Optio
             "reason": reason, "evidence_id": evidence_id}
 
 
+def _valid(f: dict) -> bool:
+    s, w = f.get("score"), f.get("weight")
+    return all(isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x) for x in (s, w))
+
+
+def summarize(factors: List[dict], thresholds: Optional[dict] = None, insufficient_reason: Optional[str] = None) -> dict:
+    """Score, verdict, confidence and coverage from a list of factors.
+
+    Shared by `score_ticker` and the analyst re-weighting in `backend.review.reweight`, so both use one formula.
+    Only finite factors count, and coverage is the share of the full weight that valid factors carry.
+    """
+    th = thresholds or {"buy": BUY_THRESHOLD, "sell": SELL_THRESHOLD}
+    valid = [f for f in factors if _valid(f)]
+    total_w = sum(f["weight"] for f in valid)
+    score = round(sum(f["score"] * f["weight"] for f in valid) / total_w * 100, 1) if total_w else 0.0
+    verdict = "BUY" if score >= th["buy"] else "SELL" if score <= th["sell"] else "HOLD"
+
+    # Confidence: how strongly and consistently the factors point one way, and how much data we had.
+    direction = 1 if score > 0 else -1 if score < 0 else 0
+    voting = [f for f in valid if abs(f["score"]) >= 0.15 and f["weight"] > 0]
+    agreement = (sum(1 for f in voting if (f["score"] > 0) == (direction > 0)) / len(voting)) if voting and direction else 0.5
+    coverage = min(1.0, total_w / sum(WEIGHTS.values()))
+    strength = min(1.0, abs(score) / 50)
+    confidence = min(round(0.25 + 0.35 * strength + 0.25 * agreement + 0.15 * coverage, 2), MAX_CONFIDENCE)
+    if not any(f["name"] in FUNDAMENTAL_FACTORS and f["weight"] > 0 for f in valid):
+        confidence = min(confidence, NO_FUNDAMENTALS_CONFIDENCE_CAP)
+    if insufficient_reason or total_w == 0:
+        verdict, confidence = INSUFFICIENT, 0.0
+    return {"score": score, "verdict": verdict, "confidence": confidence, "coverage": round(coverage, 2),
+            "thresholds": th, "insufficient_reason": insufficient_reason or (None if total_w else "No usable factors.")}
+
+
 def score_ticker(ticker: str, outputs: Dict[str, dict], evidence_ids: Dict[str, str]) -> dict:
     """outputs: tool name -> output dict for this ticker; evidence_ids: tool name -> evidence id."""
     factors: List[dict] = []
     missing: List[str] = []
+    insufficient_reason: Optional[str] = None
     tech = outputs.get("get_technical_indicators") or {}
     fund = outputs.get("get_fundamentals") or {}
-    xgb = outputs.get("get_xgboost_signal") or {}
-    proph = outputs.get("extract_prophet_features") or {}
     sent = outputs.get("get_sentiment_score") or {}
     eid = evidence_ids.get
 
-    if tech.get("available"):
+    price = _num(tech, "last_close") if tech.get("available") else None
+    if price is None or price <= 0:
+        missing.append("technical indicators")
+        insufficient_reason = ("No valid current price: technical indicators were unavailable or invalid, "
+                               "so no BUY/SELL/HOLD verdict is given.")
+    else:
         e50, e200 = _num(tech, "ema_50"), _num(tech, "ema_200")
-        price = _num(tech, "last_close")
-        if price and e50 and e200:
+        if e50 and e200 and e50 > 0 and e200 > 0:
             above = (price > e50) + (price > e200)
             v = {2: 1.0, 1: 0.0, 0: -1.0}[above]
             desc = {2: "above both its 50- and 200-day EMAs", 1: "between its 50- and 200-day EMAs", 0: "below both its 50- and 200-day EMAs"}[above]
@@ -56,33 +102,13 @@ def score_ticker(ticker: str, outputs: Dict[str, dict], evidence_ids: Dict[str, 
             factors.append(_factor("momentum", "Short-term momentum", v,
                                    f"{p20:+.1f}% vs 20-day EMA, MACD histogram {macd:+.2f}", eid("get_technical_indicators")))
         rsi = _num(tech, "rsi_14")
-        if rsi is not None:
+        if rsi is not None and 0 <= rsi <= 100:
             v = 1.0 if rsi < 30 else -1.0 if rsi > 70 else (50 - rsi) / 40
             note = "oversold" if rsi < 30 else "overbought" if rsi > 70 else "neutral range"
             factors.append(_factor("rsi", "RSI (14)", v, f"RSI {rsi:.0f} ({note})", eid("get_technical_indicators")))
         r3 = _num(tech, "return_3m_pct")
         if r3 is not None:
             factors.append(_factor("returns", "3-month return", r3 / 15, f"{r3:+.1f}% over 3 months", eid("get_technical_indicators")))
-    else:
-        missing.append("technical indicators")
-
-    if proph.get("available"):
-        d = proph.get("trend_direction")
-        v = {"UPTREND": 1.0, "DOWNTREND": -1.0}.get(d, 0.0)
-        factors.append(_factor("prophet", "Prophet trend", v, f"Fitted trend is {str(d).lower()}", eid("extract_prophet_features")))
-    else:
-        missing.append("Prophet trend")
-
-    if xgb.get("available"):
-        probs = xgb.get("probabilities") or {}
-        acc = _num(xgb, "holdout_accuracy") or 0.0
-        credibility = _clamp((acc - 0.33) / 0.33, 0.0, 1.0)  # 33% = random guess for 3 classes
-        edge = (probs.get("BUY", 0) - probs.get("SELL", 0)) * 2
-        factors.append(_factor("xgboost", "XGBoost model", edge * credibility,
-                               f"{xgb.get('signal')} (BUY {probs.get('BUY', 0):.0%} / SELL {probs.get('SELL', 0):.0%}), "
-                               f"holdout accuracy {acc:.0%} → weighted ×{credibility:.2f}", eid("get_xgboost_signal")))
-    else:
-        missing.append("XGBoost model")
 
     if fund.get("available"):
         pe_f, pe_t, eg = _num(fund, "pe_forward"), _num(fund, "pe_trailing"), _num(fund, "earnings_growth_pct")
@@ -99,34 +125,21 @@ def score_ticker(ticker: str, outputs: Dict[str, dict], evidence_ids: Dict[str, 
         rg = _num(fund, "revenue_growth_pct")
         if rg is not None:
             factors.append(_factor("growth", "Revenue growth", (rg - 5) / 15, f"Revenue growth {rg:+.1f}% YoY", eid("get_fundamentals")))
-    else:
+    if not any(f["name"] in FUNDAMENTAL_FACTORS for f in factors):
         missing.append("fundamentals")
 
-    if sent.get("available"):
-        s = next((v for v in (_num(sent, k) for k in ("score", "avg_score_last_n", "latest_score")) if v is not None), 0.0)
+    s = next((v for v in (_num(sent, k) for k in ("score", "avg_score_last_n", "latest_score")) if v is not None), None) \
+        if sent.get("available") else None
+    if s is not None:
         n = sent.get("n_articles")
         detail = f"Average sentiment {s:+.2f}" + (f" across {n} articles" if n else "")
         factors.append(_factor("sentiment", "News sentiment", s * 2, detail, eid("get_sentiment_score")))
     else:
         missing.append("news sentiment")
 
-    total_w = sum(f["weight"] for f in factors)
-    score = round(sum(f["score"] * f["weight"] for f in factors) / total_w * 100, 1) if total_w else 0.0
-    verdict = "BUY" if score >= BUY_THRESHOLD else "SELL" if score <= SELL_THRESHOLD else "HOLD"
-
-    # Confidence: how strongly and consistently the factors point one way, and how much data we had.
-    direction = 1 if score > 0 else -1 if score < 0 else 0
-    voting = [f for f in factors if abs(f["score"]) >= 0.15]
-    agreement = (sum(1 for f in voting if (f["score"] > 0) == (direction > 0)) / len(voting)) if voting and direction else 0.5
-    coverage = total_w / sum(WEIGHTS.values())
-    strength = min(1.0, abs(score) / 50)
-    confidence = round(0.25 + 0.35 * strength + 0.25 * agreement + 0.15 * coverage, 2)
-
-    return {
-        "ticker": ticker, "score": score, "verdict": verdict, "confidence": min(confidence, 0.9),
-        "thresholds": {"buy": BUY_THRESHOLD, "sell": SELL_THRESHOLD},
-        "factors": factors, "missing": missing, "coverage": round(coverage, 2),
-    }
+    factors = [f for f in factors if _valid(f)]
+    return {"ticker": ticker, **summarize(factors, insufficient_reason=insufficient_reason),
+            "factors": factors, "missing": missing}
 
 
 def build_scorecards(evidence: List[dict], tickers: List[str]) -> List[dict]:
